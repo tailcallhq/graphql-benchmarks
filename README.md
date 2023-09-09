@@ -1,5 +1,5 @@
 ### Frameworks compared
-- Tailcall (Rust)
+- Tailcall (Rust) (**TODO add installation instructions**)
 - gqlgen (Go)
 - Apollo graphql (NodeJS)
 - Netflix DGS (Java)
