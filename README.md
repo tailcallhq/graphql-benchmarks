@@ -1,35 +1,34 @@
-Frameworks
+### Frameworks compared
 - Tailcall (Rust)
 - gqlgen (Go)
 - Apollo graphql (NodeJS)
 - Netflix DGS (Java)
 
-Requirements
+To run the benchmarks, you will need the following installed.
 - Rust
 - GoLang
 - NodeJs
-  install nvm
-  nvm install v18.17.1
-- Java
-- wrk (sudo apt install wrk)
-- Set ulimit
+- Java 17
+- wrk 
 
-Build steps
-Run build.sh in each dir
-...
+### Benchmarking setup
+- Each GraphQL server runs on port `8000`, and is configured with the same schema, and a resolver to fetch the list of posts from `http://jsonplaceholder.typicode.com/posts`, through a proxy server at `http://localhost:8080`
+- Nginx runs on port `8080`, with proxy forwarding and caching enabled
+- The wrk.sh script in the wrk directory runs a load test with the following query to fetch a list of Posts 
+```{"query":"{ posts {title} }"} ```
 
-Benchmark setup
-- GraphQL server runs on 8000
-- Nginx on 8080, as proxy with caching enabled
-- query to fetch a list of Posts {"query":"{ posts {title} }"} 
-	- resolvers fetch posts from jsonplaceholder.typicode.com/posts 
-- wrk - runs a load test to http://localhost:8000/graphql
+### Build
 
-To run
-- execute run.sh in each dir to start the corresponding server
-- execute wrk.sh in top level dir to run wrk
+- Execute `build.sh` in each framework directory in the graphql dir.
 
-Results
+
+
+## Running a benchmark
+- execute `run.sh` in a framework dir to start the server.
+- After the server has started, execute `wrk.sh` in the top level dir to run wrk
+
+
+### Results 
 
 |Name   | Language| Latency Avg | Requests Avg |
 |-------|---------|-----------|----------|
