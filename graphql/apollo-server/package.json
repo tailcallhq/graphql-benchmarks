@@ -5,7 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node index.js"
+    "start": "pm2 start index.js -i max",
+    "stop": "pm2 stop index",
+    "delete-from-pm2": "pm2 delete index"
   },
   "keywords": [],
   "author": "",
@@ -13,6 +15,7 @@
   "dependencies": {
     "@apollo/server": "^4.9.3",
     "axios": "^1.5.0",
-    "graphql": "^16.8.0"
+    "graphql": "^16.8.0",
+    "pm2": "^5.3.0"
   }
 }

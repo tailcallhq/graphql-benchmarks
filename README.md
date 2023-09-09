@@ -1,8 +1,8 @@
 ### Frameworks compared
-- Tailcall (Rust) (**TODO add installation instructions**)
-- gqlgen (Go)
-- Apollo graphql (NodeJS)
-- Netflix DGS (Java)
+- [Tailcall](https://github.com/tailcallhq/tailcall) (Rust)
+- [gqlgen](https://github.com/99designs/gqlgen) (Go)
+- [Apollo Server](https://www.apollographql.com/docs/apollo-server/) (NodeJS)
+- [Netflix DGS](https://netflix.github.io/dgs/) (Java)
 
 To run the benchmarks, you will need the following installed.
 - Rust
@@ -18,8 +18,10 @@ To run the benchmarks, you will need the following installed.
 ```{"query":"{ posts {title} }"} ```
 
 ### Build
-
 - Execute `build.sh` in each framework directory in the graphql dir.
+
+*(Note: to build tailcall, checkout the tailcall source in a different dir, and ensure that `build.sh` and `run.sh` refer to the source dir)*
+
 
 
 
@@ -30,10 +32,10 @@ To run the benchmarks, you will need the following installed.
 
 ### Results 
 
-|Name   | Language| Latency Avg | Requests Avg |
+|Name   | Language| Latency Avg (ms) | Requests/Sec  |
 |-------|---------|-----------|----------|
-| Tailcall | Rust | 27.16ms | 15kps |
-| Netflix DGS | Java / Kotlin | 75.35ms | 6.5kps|
-| gqlgen | Go | 73.60ms | 5.5kps |
-| Apollo graphql | Node | 356.29ms | 1kps |
+| Tailcall | Rust | 5.86 | 17048.67 |
+| Netflix DGS | Java / Kotlin | 18.37  | 7209.24|
+| gqlgen | Go | 18.59 | 5510.89 |
+| Apollo graphql (clustered) | Node | 24.74 | 4054.00 |
 
