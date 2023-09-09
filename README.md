@@ -26,5 +26,15 @@ Benchmark setup
 - wrk - runs a load test to http://localhost:8000/graphql
 
 To run
-execute run.sh in each dir to start
-execute benchmark.sh in top level dir to run wrk
+- execute run.sh in each dir to start the corresponding server
+- execute wrk.sh in top level dir to run wrk
+
+Results
+
+|Name   | Language| Latency Avg | Requests Avg |
+|-------|---------|-----------|----------|
+| Tailcall | Rust | 27.16ms | 15kps |
+| Netflix DGS | Java / Kotlin | 75.35ms | 6.5kps|
+| gqlgen | Go | 73.60ms | 5.5kps |
+| Apollo graphql | Node | 356.29ms | 1kps |
+
