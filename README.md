@@ -34,8 +34,8 @@ To run the benchmarks, you will need the following installed.
 
 |Name   | Language| Latency Avg (ms) | Requests/Sec  |
 |-------|---------|-----------|----------|
-| Tailcall | Rust | 5.86 | 17048.67 |
-| Netflix DGS | Java / Kotlin | 18.37  | 7209.24|
-| gqlgen | Go | 18.59 | 5510.89 |
-| Apollo graphql (clustered) | Node | 24.74 | 4054.00 |
+| Tailcall | Rust | `5.86` | `17048` |
+| Netflix DGS | Java / Kotlin | `18.37`  | `7209`|
+| gqlgen | Go | 18.59 | `5510.89` |
+| Apollo graphql (clustered) | Node | `24.74` | `4054` |
 
