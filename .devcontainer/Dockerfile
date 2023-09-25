@@ -7,6 +7,8 @@ RUN wget https://dl.google.com/go/go1.17.2.linux-amd64.tar.gz && \
     rm go1.17.2.linux-amd64.tar.gz
 ENV PATH=$PATH:/usr/local/go/bin
 
+# Install OpenJDK-11
+RUN apt-get update && apt-get install -y openjdk-11-jdk
 
 # Install OpenJDK-11
 RUN apt-get install -y openjdk-11-jdk
