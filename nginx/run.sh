@@ -1,5 +1,6 @@
 #!/bin/bash
 ulimit -n 1000000
+
 # Get the present working directory
 current_dir=$(pwd)
 
