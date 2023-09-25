@@ -1,0 +1,9 @@
+{
+  "name": "tc-benchmarks Codespace",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "settings": {
+    "terminal.integrated.shell.linux": "/bin/bash"
+  }
+}
