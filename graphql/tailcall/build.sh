@@ -1,2 +1,2 @@
-cd ../../tailcall-src
+cd ../../../tailcall
 cargo build --release

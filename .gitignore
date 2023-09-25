@@ -17,6 +17,7 @@ yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
 node_modules/
+/.idea
 # gqlgen
 graphql/gqlgen/main
 # Tailcall

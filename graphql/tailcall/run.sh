@@ -1,1 +1,1 @@
-../../tailcall-src/target/release/tailcall start benchmark.graphql
+../../../tailcall/target/release/tailcall start benchmark.graphql

@@ -5,6 +5,7 @@ go 1.21.1
 require (
 	github.com/99designs/gqlgen v0.17.36
 	github.com/vektah/gqlparser/v2 v2.5.8
+	golang.org/x/sync v0.2.0
 )
 
 require (
