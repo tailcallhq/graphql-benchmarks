@@ -1,3 +1,3 @@
 #!/bin/bash
-cd graphql/netflixdgs
+cd graphql/netflix_dgs
 ./gradlew bootRun

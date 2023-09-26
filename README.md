@@ -31,3 +31,12 @@ Below are the visualizations for latency and throughput comparisons across the f
 | ![Latency Histogram](assets/latency_histogram.png) | ![Requests/sec Histogram](assets/req_sec_histogram.png) |
 |:--------------------------------------------:|:------------------------------------------------:|
 |                 Latency Histogram             |              Requests/sec Histogram              |
+<!-- PERFORMANCE_RESULTS_START -->
+| Server | Requests/sec | Latency (ms) |
+|--------|--------------|--------------|
+| apollo | 774.227 | 132.44 |
+| netflixdgs | -nan | -nan |
+| gqlgen | 964.177 | 112.787 |
+| tailcall | 2820.57 | 35.61 |
+<!-- PERFORMANCE_RESULTS_END -->
+
