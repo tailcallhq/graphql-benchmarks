@@ -28,10 +28,10 @@ Once the post-creation setup in Codespaces is complete, initiate the benchmark t
 <!-- PERFORMANCE_RESULTS_START -->
 | Server | Requests/sec | Latency (ms) |
 |--------|--------------|--------------|
-| apollo | 775.3 | 132.24 |
-| netflixdgs | 497.43 | 213.723 |
-| gqlgen | 914.94 | 118.85 |
-| tailcall | 2888.45 | 34.7867 |
+| apollo | 761.363 | 134.837 |
+| netflixdgs | 575.743 | 191.197 |
+| gqlgen | 914.147 | 119.123 |
+| tailcall | 2904.45 | 34.4233 |
 <!-- PERFORMANCE_RESULTS_END -->
 
 Below are the visualizations for latency and throughput comparisons across the frameworks:
