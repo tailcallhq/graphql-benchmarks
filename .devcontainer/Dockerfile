@@ -15,10 +15,7 @@ RUN wget https://dl.google.com/go/go1.21.1.linux-amd64.tar.gz && \
 ENV PATH=$PATH:/usr/local/go/bin
 
 # Install OpenJDK-11
-RUN apt-get update && apt-get install -y openjdk-11-jdk
-
-# Install OpenJDK-11
-RUN apt-get install -y openjdk-11-jdk
+RUN apt-get update && apt-get install -y openjdk-17-jdk
 
 # Install Nginx
 RUN apt-get install -y nginx
