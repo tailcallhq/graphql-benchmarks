@@ -4,6 +4,10 @@ FROM mcr.microsoft.com/vscode/devcontainers/base:ubuntu-22.04
 RUN apt-get update
 RUN apt-get install -y build-essential libssl-dev
 
+# Install the latest LTS version of Node.js
+RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
+    apt-get install -y nodejs
+
 # Install Go
 RUN wget https://dl.google.com/go/go1.21.1.linux-amd64.tar.gz && \
     tar -C /usr/local -xzf go1.21.1.linux-amd64.tar.gz && \
