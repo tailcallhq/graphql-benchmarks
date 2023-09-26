@@ -60,3 +60,13 @@ gnuplot <<- EOF
 EOF
 
 echo "Generated reqSecHistogram.png and latencyHistogram.png"
+
+# Add, commit, and push PNGs
+git add reqSecHistogram.png latencyHistogram.png
+git commit -m "Added performance histograms"
+git push
+
+# Delete the TXT files
+for file in "${resultFiles[@]}"; do
+    rm "$file"
+done
