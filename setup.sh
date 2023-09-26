@@ -1,19 +1,18 @@
 #!/bin/bash
 
-# Ensure you're in the workspace directory
-cd /workspace
-
 # For gqlgen:
 cd graphql/gqlgen
 go build -o main main.go
-
+cd ../../
 # For apollo-server:
-cd /workspace/graphql/apollo-server
+cd graphql/apollo-server
 npm i
+cd ../../
 
 # For netflix dgs
-cd /workspace/graphql/netflixdgs
+cd graphql/netflixdgs
 ./gradlew build
+cd ../../
 
 # For tailcall:
 curl -sSL https://raw.githubusercontent.com/tailcallhq/tailcall/main/install.sh | bash -s -- v0.9.0
