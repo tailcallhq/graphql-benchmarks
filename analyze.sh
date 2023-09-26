@@ -22,7 +22,7 @@ for idx in "${!servers[@]}"; do
     latencyVals=()
     for j in 0 1 2; do
         fileIdx=$((startIdx + j))
-        reqSecVals+=($(extractMetric "${resultFiles[$fileIdx]}" "Req/Sec"))
+        reqSecVals+=($(extractMetric "${resultFiles[$fileIdx]}" "Requests/sec"))
         latencyVals+=($(extractMetric "${resultFiles[$fileIdx]}" "Latency"))
     done
     avgReqSecs[${servers[$idx]}]=$(average "${reqSecVals[@]}")

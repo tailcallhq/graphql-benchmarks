@@ -5,5 +5,6 @@
     "context": ".."
   },
   "runArgs": [ "-v", "/var/run/docker.sock:/var/run/docker.sock" ],
-  "forwardPorts": [8080, 8081, 8082, 8083, 3000]
+  "forwardPorts": [8080, 8081, 8082, 8083, 3000],
+  "postCreateCommand": "/workspace/setup.sh"
 }
