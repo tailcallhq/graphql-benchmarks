@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     wget \
     wrk \
+    gnuplot \
     && rm -rf /var/lib/apt/lists/*
 
 # Install the latest LTS version of Node.js

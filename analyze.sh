@@ -10,7 +10,6 @@ function average() {
     echo "$@" | awk '{for(i=1;i<=NF;i++) s+=$i; print s/NF}'
 }
 
-# Assuming you run benchmarks for 4 servers
 servers=("apollo" "netflixdgs" "gqlgen" "tailcall")
 resultFiles=("$@")
 declare -A avgReqSecs
@@ -29,15 +28,35 @@ for idx in "${!servers[@]}"; do
     avgLatencies[${servers[$idx]}]=$(average "${latencyVals[@]}")
 done
 
-echo "Comparative Analysis:"
+# Generating data files for gnuplot
+reqSecData="/tmp/reqSec.dat"
+latencyData="/tmp/latency.dat"
 
-# Generating histograms (using '#' for visualization)
-echo -e "\nReq/Sec Histogram:"
+echo "Server Value" > "$reqSecData"
 for server in "${servers[@]}"; do
-    echo "$server ${avgReqSecs[$server]} $(printf '#%.0s' $(seq 1 ${avgReqSecs[$server]}))"
+    echo "$server ${avgReqSecs[$server]}" >> "$reqSecData"
 done
 
-echo -e "\nLatency Histogram (in ms):"
+echo "Server Value" > "$latencyData"
 for server in "${servers[@]}"; do
-    echo "$server ${avgLatencies[$server]} $(printf '#%.0s' $(seq 1 ${avgLatencies[$server]}))"
+    echo "$server ${avgLatencies[$server]}" >> "$latencyData"
 done
+
+# Plotting using gnuplot
+gnuplot <<- EOF
+    set term png
+    set output "reqSecHistogram.png"
+    set style data histograms
+    set style histogram cluster gap 1
+    set style fill solid border -1
+    set xtics rotate by -45
+    set boxwidth 0.9
+    set title "Requests/Sec"
+    plot "$reqSecData" using 2:xtic(1) title "Req/Sec"
+
+    set output "latencyHistogram.png"
+    set title "Latency (in ms)"
+    plot "$latencyData" using 2:xtic(1) title "Latency"
+EOF
+
+echo "Generated reqSecHistogram.png and latencyHistogram.png"
