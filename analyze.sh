@@ -1,20 +1,43 @@
 #!/bin/bash
 
-function extractData() {
+function extractMetric() {
     local file="$1"
-    local requestsPerSec=$(awk '/Requests\/sec:/ {print $2}' "$file")
-    local transferPerSec=$(awk '/Transfer\/sec:/ {print $2}' "$file")
-    echo "$requestsPerSec requests/sec, $transferPerSec transfer/sec"
+    local metric="$2"
+    grep "$metric" "$file" | awk '{print $2}' | sed 's/ms//'
 }
 
-files=("$@")
+function average() {
+    echo "$@" | awk '{for(i=1;i<=NF;i++) s+=$i; print s/NF}'
+}
 
-echo "Comparison Report"
-echo "-----------------"
+# Assuming you run benchmarks for 4 servers
+servers=("apollo" "netflixdgs" "gqlgen" "tailcall")
+resultFiles=("$@")
+declare -A avgReqSecs
+declare -A avgLatencies
 
-for file in "${files[@]}"; do
-    result=$(extractData "$file")
-    echo "Result from $file: $result"
+for idx in "${!servers[@]}"; do
+    startIdx=$((idx * 3))
+    reqSecVals=()
+    latencyVals=()
+    for j in 0 1 2; do
+        fileIdx=$((startIdx + j))
+        reqSecVals+=($(extractMetric "${resultFiles[$fileIdx]}" "Req/Sec"))
+        latencyVals+=($(extractMetric "${resultFiles[$fileIdx]}" "Latency"))
+    done
+    avgReqSecs[${servers[$idx]}]=$(average "${reqSecVals[@]}")
+    avgLatencies[${servers[$idx]}]=$(average "${latencyVals[@]}")
 done
 
-# Add more comparison logic if needed
+echo "Comparative Analysis:"
+
+# Generating histograms (using '#' for visualization)
+echo -e "\nReq/Sec Histogram:"
+for server in "${servers[@]}"; do
+    echo "$server ${avgReqSecs[$server]} $(printf '#%.0s' $(seq 1 ${avgReqSecs[$server]}))"
+done
+
+echo -e "\nLatency Histogram (in ms):"
+for server in "${servers[@]}"; do
+    echo "$server ${avgLatencies[$server]} $(printf '#%.0s' $(seq 1 ${avgLatencies[$server]}))"
+done

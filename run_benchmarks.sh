@@ -12,14 +12,18 @@ function killServerOnPort() {
         echo "No process found running on port $port"
     fi
 }
+allResults=()
 killServerOnPort 3000
 sh nginx/run.sh
 
 function runBenchmark() {
     local serviceScript="$1"
     local benchmarkScript="$2"
-    local tempFile="temp_bench.txt"
-    local resultFiles=("result1.txt" "result2.txt" "result3.txt")
+    
+    # Replace / with _
+    local sanitizedServiceScriptName=$(echo "$serviceScript" | tr '/' '_')
+    
+    local resultFiles=("result1_${sanitizedServiceScriptName}.txt" "result2_${sanitizedServiceScriptName}.txt" "result3_${sanitizedServiceScriptName}.txt")
 
     bash "$serviceScript" &   # Run in daemon mode
     sleep 30   # Give some time for the service to start up
@@ -30,18 +34,8 @@ function runBenchmark() {
     # 3 benchmark runs
     for resultFile in "${resultFiles[@]}"; do
         bash "$benchmarkScript" > "$resultFile"
+        allResults+=("$resultFile")
     done
-
-    analyzeResults "${resultFiles[@]}"
-
-    rm -f "${resultFiles[@]}"
-}
-
-function analyzeResults() {
-    local resultFiles=("$@")
-    # Analysis and comparison logic goes here, or you can call another script
-    # that takes these files as input and outputs a report.
-    bash analyze.sh "${resultFiles[@]}"
 }
 
 runBenchmark "graphql/apollo-server/run.sh" "wrk/apollo-bench.sh"
@@ -60,3 +54,6 @@ killServerOnPort 8081
 killServerOnPort 8083
 runBenchmark "graphql/tailcall/run.sh" "wrk/tc-bench.sh"
 killServerOnPort 8083
+
+# Now, analyze all results together
+bash analyze.sh "${allResults[@]}"
