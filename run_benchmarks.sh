@@ -26,7 +26,7 @@ function runBenchmark() {
     local resultFiles=("result1_${sanitizedServiceScriptName}.txt" "result2_${sanitizedServiceScriptName}.txt" "result3_${sanitizedServiceScriptName}.txt")
 
     bash "$serviceScript" &   # Run in daemon mode
-    sleep 30   # Give some time for the service to start up
+    sleep 15   # Give some time for the service to start up
 
     # Warmup run
     bash "$benchmarkScript" > /dev/null
