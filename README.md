@@ -1,29 +1,20 @@
----
 
 # GraphQL Frameworks Benchmark
 
 A comparative analysis of several popular GraphQL frameworks:
 
-- **Tailcall** - [GitHub](https://github.com/tailcallhq/tailcall) (Rust)
-- **gqlgen** - [GitHub](https://github.com/99designs/gqlgen) (Go)
-- **Apollo Server** - [Official Docs](https://www.apollographql.com/docs/apollo-server/) (NodeJS)
-- **Netflix DGS** - [Official Docs](https://netflix.github.io/dgs/) (Java)
-
-## Prerequisites
-
-Before you start with the benchmarks, ensure you have the following tools and languages installed:
-
-- Rust
-- GoLang
-- NodeJs
-- Java 17
-- `wrk` (Benchmarking tool)
-
+- **Tailcall** - [GitHub](https://github.com/tailcallhq/tailcall)
+- **gqlgen** - [GitHub](https://github.com/99designs/gqlgen)
+- **Apollo Server** - [Official Docs](https://www.apollographql.com/docs/apollo-server/)
+- **Netflix DGS** - [Official Docs](https://netflix.github.io/dgs/)
+---
 ## Setting up the Benchmark
 
 Kickstart your benchmarking environment with just one click:
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/tailcallhq/benchmarks)
+
+---
 
 ## Execution
 
