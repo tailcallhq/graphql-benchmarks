@@ -5,8 +5,5 @@
     "context": ".."
   },
   "runArgs": [ "-v", "/var/run/docker.sock:/var/run/docker.sock" ],
-  "settings": {
-    "terminal.integrated.shell.linux": "/bin/bash"
-  },
   "forwardPorts": [8080, 8081, 8082, 8083, 3000]
 }
