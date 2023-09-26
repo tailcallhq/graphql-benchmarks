@@ -12,7 +12,7 @@ A comparative analysis of several popular GraphQL frameworks:
 
 Kickstart your benchmarking environment with just one click:
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/tailcallhq/benchmarks)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/tailcallhq/graphql-benchmarks)
 
 ---
 
