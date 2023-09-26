@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Start services and run benchmarks
-# sh nginx/run.sh
+sh nginx/run.sh
 
 function runBenchmark() {
     local serviceScript="$1"
@@ -9,7 +9,8 @@ function runBenchmark() {
     local tempFile="temp_bench.txt"
     local resultFiles=("result1.txt" "result2.txt" "result3.txt")
 
-    bash "$serviceScript"
+    bash "$serviceScript" &   # Run in daemon mode
+    sleep 30   # Give some time for the service to start up
 
     # Warmup run
     bash "$benchmarkScript" > /dev/null
