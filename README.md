@@ -1,6 +1,12 @@
+# GraphQL Benchmarks <!-- omit from toc -->
+
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/tailcallhq/graphql-benchmarks)
 
-- [Results](#results)
+Explore and compare the performance of the fastest GraphQL frameworks through our comprehensive benchmarks.
+
+- [Introduction](#introduction)
+- [Quick Start](#quick-start)
+- [Benchmark Results](#benchmark-results)
   - [Throughput (Higher is better)](#throughput-higher-is-better)
   - [Latency (Lower is better)](#latency-lower-is-better)
 - [Architecture](#architecture)
@@ -9,17 +15,31 @@
   - [Nginx](#nginx)
   - [Jsonplaceholder](#jsonplaceholder)
 - [GraphQL Schema](#graphql-schema)
-- [Quick Start](#quick-start)
 - [Contribute](#contribute)
-
-This document presents a comparative analysis of several renowned GraphQL frameworks:
 
 [Tailcall]: https://tailcall.run/
 [Gqlgen]: https://gqlgen.com/
 [Apollo GraphQL]: https://new.apollographql.com/
 [Netflix DGS]: https://netflix.github.io/dgs/
 
-## Results
+## Introduction
+
+This document presents a comparative analysis of several renowned GraphQL frameworks. Dive deep into the performance metrics, and get insights into their throughput and latency.
+
+> **NOTE:** This is a work in progress suite of benchmarks, and we would appreciate help from the community to add more frameworks or tune the existing ones for better performance.
+
+## Quick Start
+
+Get started with the benchmarks:
+
+1. Click on this [link](https://codespaces.new/tailcallhq/graphql-benchmarks) to set up on GitHub Codespaces.
+2. Once set up in Codespaces, initiate the benchmark tests:
+
+```bash
+./run_benchmarks.sh
+```
+
+## Benchmark Results
 
 <!-- PERFORMANCE_RESULTS_START -->
 
@@ -44,7 +64,7 @@ This document presents a comparative analysis of several renowned GraphQL framew
 
 ![Architecture Diagram](assets/architecture.png)
 
-A client (in this case `wrk`) sends a request to the GraphQL server to fetch posts with title:
+A client (`wrk`) sends requests to a GraphQL server to fetch post titles. The GraphQL server, in turn, retrieves data from an external source, `jsonplaceholder.typicode.com`, routed through the `nginx` reverse proxy. Here is the complete GraphQL query:
 
 ```graphql
 {
@@ -54,29 +74,27 @@ A client (in this case `wrk`) sends a request to the GraphQL server to fetch pos
 }
 ```
 
-The GraphQL server receives the request and identifies that it needs to fetch data from the external source (`http://jsonplaceholder.typicode.com`). The request is sent to `jsonplaceholder` through a reverse proxy which is nginx in our case.
-
 ### WRK
 
-We use wrk as our test client to send GraphQL requests at a very high rate.
+`wrk` serves as our test client, sending GraphQL requests at a high rate.
 
 ### GraphQL
 
-This is the actual GraphQL server that we are testing. We use various GraphQL implementations as mentioned above. While running the server we ensure that nothing is cached on the GraphQL server and it always has to make a request to the upstream service (nginx in this case) whenever a GraphQL request is received.
+Our tested GraphQL server. We evaluated various implementations, ensuring no caching on the GraphQL server side.
 
 ### Nginx
 
-Acts as our reverse-proxy and sits behind the GraphQL server and caches every response. It is used to tackle rate-limiting and minimize network uncertainties produced while going over the internet to connect to jsonplaceholder.
+A reverse-proxy that caches every response, mitigating rate-limiting and reducing network uncertainties.
 
 ### Jsonplaceholder
 
-This acts as our core upstream service on which we are building a GraphQL API. We try to make a request to its `/posts` API multiple times via the GraphQL server.
+The primary upstream service forming the base for our GraphQL API. We query its `/posts` API via the GraphQL server.
 
 ## GraphQL Schema
 
-This is the generated GraphQL schema.
+Inspect the generated GraphQL schema employed for the benchmarks:
 
-```graphql showLineNumbers
+```graphql
 schema {
   query: Query
 }
@@ -93,15 +111,6 @@ type Post {
 }
 ```
 
-## Quick Start
-
-1. Click on this [link](https://codespaces.new/tailcallhq/graphql-benchmarks) to set up on GitHub Codespaces.
-2. After completing the setup in Codespaces, you can start the benchmark tests by running:
-
-```bash
-./run_benchmarks.sh
-```
-
 ## Contribute
 
-We encourage you to try out these benchmarks for yourself and provide feedback. If you've worked with other GraphQL frameworks or have suggestions for tuning the existing ones for better performance, your contributions are most welcome. Open an issue or a pull request, and let's make this a comprehensive benchmarking setup for the GraphQL community!
+Your insights are invaluable! Test these benchmarks, share feedback, or contribute by adding more GraphQL frameworks or refining existing ones. Open an issue or a pull request, and let's build a robust benchmarking resource together!
