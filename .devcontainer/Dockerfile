@@ -1,6 +1,9 @@
 # Start with the Microsoft's Ubuntu 20.04 base image for Codespaces
 FROM mcr.microsoft.com/vscode/devcontainers/base:ubuntu-22.04
 
+RUN apt-get update
+RUN apt-get install -y build-essential libssl-dev
+
 # Install Go
 RUN wget https://dl.google.com/go/go1.17.2.linux-amd64.tar.gz && \
     tar -C /usr/local -xzf go1.17.2.linux-amd64.tar.gz && \
@@ -43,6 +46,12 @@ RUN mkdir -p /var/log/nginx /var/lib/nginx/body /var/lib/nginx/proxy /var/lib/ng
 RUN touch /var/log/nginx/access.log /var/log/nginx/error.log && \
     chown www-data:www-data /var/log/nginx/access.log /var/log/nginx/error.log
 
+# Install wrk
+RUN git clone https://github.com/wg/wrk.git /opt/wrk \
+    && cd /opt/wrk \
+    && make \
+    && mv wrk /usr/local/bin
+    
 # Set the working directory (if you want to change the default set by Microsoft's base image)
 WORKDIR /workspace
 
