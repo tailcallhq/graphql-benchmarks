@@ -40,3 +40,6 @@ Once the post-creation setup in Codespaces is complete, initiate the benchmark t
 
 ## Latency (Lower is better)
 ![Latency Histogram](assets/latency_histogram.png)
+
+## Architecture
+![Architecture Diagram](assets/architecture.png)
