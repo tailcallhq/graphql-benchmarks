@@ -25,13 +25,15 @@ Once the post-creation setup in Codespaces is complete, initiate the benchmark t
 ```
 
 ## Benchmark Results
-
-Below are the visualizations for latency and throughput comparisons across the frameworks:
-
-| ![Latency Histogram](assets/latency_histogram.png) | ![Requests/sec Histogram](assets/req_sec_histogram.png) |
-|:--------------------------------------------:|:------------------------------------------------:|
-|                 Latency Histogram             |              Requests/sec Histogram              |
 <!-- PERFORMANCE_RESULTS_START -->
+| Server | Requests/sec | Latency (ms) |
+|--------|--------------|--------------|
+| apollo | 775.3 | 132.24 |
+| netflixdgs | 497.43 | 213.723 |
+| gqlgen | 914.94 | 118.85 |
+| tailcall | 2888.45 | 34.7867 |
+<!-- PERFORMANCE_RESULTS_END -->
+
 | Server | Requests/sec | Latency (ms) |
 |--------|--------------|--------------|
 | apollo | 774.227 | 132.44 |
@@ -39,4 +41,11 @@ Below are the visualizations for latency and throughput comparisons across the f
 | gqlgen | 964.177 | 112.787 |
 | tailcall | 2820.57 | 35.61 |
 <!-- PERFORMANCE_RESULTS_END -->
+
+Below are the visualizations for latency and throughput comparisons across the frameworks:
+
+| ![Latency Histogram](assets/latency_histogram.png) | ![Requests/sec Histogram](assets/req_sec_histogram.png) |
+|:--------------------------------------------:|:------------------------------------------------:|
+|                 Latency Histogram             |              Requests/sec Histogram              |
+
 
