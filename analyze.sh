@@ -71,51 +71,34 @@ mkdir -p assets
 mv req_sec_histogram.png assets/
 mv latency_histogram.png assets/
 
-# Generate the new performance results for README.md
-new_results=$(cat <<- EOM
-<!-- PERFORMANCE_RESULTS_START -->
-| Server | Requests/sec | Latency (ms) |
-|--------|--------------|--------------|
-EOM
-)
+# Generating the table results for README.md
+resultsTable="<!-- PERFORMANCE_RESULTS_START -->\n| Server | Requests/sec | Latency (ms) |\n|--------|--------------|--------------|"
 
 for server in "${servers[@]}"; do
-    new_results+=$'\n'"| $server | ${avgReqSecs[$server]} | ${avgLatencies[$server]} |"
+    resultsTable+="\n| $server | ${avgReqSecs[$server]} | ${avgLatencies[$server]} |"
 done
 
-new_results+=$'\n'"<!-- PERFORMANCE_RESULTS_END -->"$'\n'
+resultsTable+="\n<!-- PERFORMANCE_RESULTS_END -->"
 
-# Check for marker in README.md
-if grep -q "<!-- PERFORMANCE_RESULTS_START -->" README.md; then
-    # If marker exists, replace the old results with the new ones
-    awk -v r="$new_results" '
-        /<!-- PERFORMANCE_RESULTS_START -->/, /<!-- PERFORMANCE_RESULTS_END -->/ {
-            if (/<!-- PERFORMANCE_RESULTS_START -->/) {
-                print r;
-            }
-        }
-        ! /<!-- PERFORMANCE_RESULTS_START -->/, ! /<!-- PERFORMANCE_RESULTS_END -->/ {
-            print;
-        }
-    ' README.md > README.md.tmp && mv README.md.tmp README.md
+# Check if the markers are present
+if grep -q "PERFORMANCE_RESULTS_START" README.md; then
+    # Replace the old results with the new results
+    sed -i "/PERFORMANCE_RESULTS_START/,/PERFORMANCE_RESULTS_END/c\\$resultsTable" README.md
 else
-    # If marker doesn't exist, append the marker and performance results to the end of README.md
-    echo "$new_results" >> README.md
+    # Append the results at the end of the README.md file
+    echo -e "\n$resultsTable" >> README.md
 fi
 
-# Print results in terminal as table
-echo -e "\nPerformance Results:"
-echo "----------------------------------"
-printf "| %-10s | %-12s | %-12s |\n" "Server" "Requests/sec" "Latency (ms)"
-echo "----------------------------------"
-for server in "${servers[@]}"; do
-    printf "| %-10s | %-12s | %-12s |\n" "$server" "${avgReqSecs[$server]}" "${avgLatencies[$server]}"
-done
-echo "----------------------------------"
+# Print the results as a table in the terminal
+echo -e $resultsTable | sed "s/<!-- PERFORMANCE_RESULTS_START -->//;s/<!-- PERFORMANCE_RESULTS_END -->//"
 
-# Add, commit, and push PNGs and README.md
-git add assets/req_sec_histogram.png assets/latency_histogram.png README.md
-git commit -m "Added performance histograms and updated README"
+# Move the generated images to the assets folder
+mv req_sec_histogram.png assets/
+mv latency_histogram.png assets/
+
+# Add and commit changes
+git add README.md assets/req_sec_histogram.png assets/latency_histogram.png
+git commit -m "Updated performance results in README.md"
 git push
 
 # Delete the result TXT files
