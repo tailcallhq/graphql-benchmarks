@@ -1,6 +1,18 @@
 #!/bin/bash
 
 # Start services and run benchmarks
+function killServerOnPort() {
+    local port="$1"
+    local pid=$(lsof -t -i:"$port")
+
+    if [ -n "$pid" ]; then
+        kill "$pid"
+        echo "Killed process running on port $port"
+    else
+        echo "No process found running on port $port"
+    fi
+}
+killServerOnPort 3000
 sh nginx/run.sh
 
 function runBenchmark() {
@@ -32,28 +44,19 @@ function analyzeResults() {
     bash analyze.sh "${resultFiles[@]}"
 }
 
-function killServerOnPort() {
-    local port="$1"
-    local pid=$(lsof -t -i:"$port")
-
-    if [ -n "$pid" ]; then
-        kill "$pid"
-        echo "Killed process running on port $port"
-    else
-        echo "No process found running on port $port"
-    fi
-}
-
 runBenchmark "graphql/apollo-server/run.sh" "wrk/apollo-bench.sh"
 cd graphql/apollo-server/
 npm stop
 cd ../../
 
+killServerOnPort 8082
 runBenchmark "graphql/netflixdgs/run.sh" "wrk/dgs-bench.sh"
-killServerOnPort 8081
-
-runBenchmark "graphql/gqlgen/run.sh" "wrk/gqlgen-bench.sh"
 killServerOnPort 8082
 
+killServerOnPort 8081
+runBenchmark "graphql/gqlgen/run.sh" "wrk/gqlgen-bench.sh"
+killServerOnPort 8081
+
+killServerOnPort 8083
 runBenchmark "graphql/tailcall/run.sh" "wrk/tc-bench.sh"
 killServerOnPort 8083
