@@ -38,21 +38,21 @@ function runBenchmark() {
     done
 }
 
-runBenchmark "graphql/apollo-server/run.sh" "wrk/apollo-bench.sh"
-cd graphql/apollo-server/
+runBenchmark "graphql/apollo_server/run.sh" "wrk/apollo_bench.sh"
+cd graphql/apollo_server/
 npm stop
 cd ../../
 
 killServerOnPort 8082
-runBenchmark "graphql/netflixdgs/run.sh" "wrk/dgs-bench.sh"
+runBenchmark "graphql/netflix_dgs/run.sh" "wrk/dgs_bench.sh"
 killServerOnPort 8082
 
 killServerOnPort 8081
-runBenchmark "graphql/gqlgen/run.sh" "wrk/gqlgen-bench.sh"
+runBenchmark "graphql/gqlgen/run.sh" "wrk/gqlgen_bench.sh"
 killServerOnPort 8081
 
 killServerOnPort 8083
-runBenchmark "graphql/tailcall/run.sh" "wrk/tc-bench.sh"
+runBenchmark "graphql/tailcall/run.sh" "wrk/tc_bench.sh"
 killServerOnPort 8083
 
 # Now, analyze all results together

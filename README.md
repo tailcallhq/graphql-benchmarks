@@ -28,6 +28,6 @@ Once the post-creation setup in Codespaces is complete, initiate the benchmark t
 
 Below are the visualizations for latency and throughput comparisons across the frameworks:
 
-| ![Latency Histogram](./latencyHistogram.png) | ![Requests/sec Histogram](./reqSecHistogram.png) |
+| ![Latency Histogram](assets/latency_histogram.png) | ![Requests/sec Histogram](assets/req_sec_histogram.png) |
 |:--------------------------------------------:|:------------------------------------------------:|
 |                 Latency Histogram             |              Requests/sec Histogram              |

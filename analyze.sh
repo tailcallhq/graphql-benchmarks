@@ -62,7 +62,7 @@ EOF
 echo "Generated reqSecHistogram.png and latencyHistogram.png"
 
 # Add, commit, and push PNGs
-git add reqSecHistogram.png latencyHistogram.png
+git add req_sec_histogram.png latency_histogram.png
 git commit -m "Added performance histograms"
 git push
 

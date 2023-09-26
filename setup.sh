@@ -4,13 +4,13 @@
 cd graphql/gqlgen
 go build -o main main.go
 cd ../../
-# For apollo-server:
-cd graphql/apollo-server
+# For apollo server:
+cd graphql/apollo_server
 npm i
 cd ../../
 
 # For netflix dgs
-cd graphql/netflixdgs
+cd graphql/netflix_dgs
 ./gradlew build
 cd ../../
 
