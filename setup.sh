@@ -15,5 +15,5 @@ cd graphql/netflixdgs
 cd ../../
 
 # For tailcall:
-curl -sSL https://raw.githubusercontent.com/tailcallhq/tailcall/main/install.sh | bash -s -- v0.9.0
+curl -sSL https://raw.githubusercontent.com/tailcallhq/tailcall/main/install.sh | bash -s -- v0.10.0
 export PATH=$PATH:/root/.tailcall/bin
