@@ -1,41 +1,42 @@
-### Frameworks compared
-- [Tailcall](https://github.com/tailcallhq/tailcall) (Rust)
-- [gqlgen](https://github.com/99designs/gqlgen) (Go)
-- [Apollo Server](https://www.apollographql.com/docs/apollo-server/) (NodeJS)
-- [Netflix DGS](https://netflix.github.io/dgs/) (Java)
+---
 
-To run the benchmarks, you will need the following installed.
+# GraphQL Frameworks Benchmark
+
+A comparative analysis of several popular GraphQL frameworks:
+
+- **Tailcall** - [GitHub](https://github.com/tailcallhq/tailcall) (Rust)
+- **gqlgen** - [GitHub](https://github.com/99designs/gqlgen) (Go)
+- **Apollo Server** - [Official Docs](https://www.apollographql.com/docs/apollo-server/) (NodeJS)
+- **Netflix DGS** - [Official Docs](https://netflix.github.io/dgs/) (Java)
+
+## Prerequisites
+
+Before you start with the benchmarks, ensure you have the following tools and languages installed:
+
 - Rust
 - GoLang
 - NodeJs
 - Java 17
-- wrk 
+- `wrk` (Benchmarking tool)
 
-### Benchmarking setup
-- Each GraphQL server runs on port `8000`, and is configured with the same schema, and a resolver to fetch the list of posts from `http://jsonplaceholder.typicode.com/posts`, through a proxy server at `http://localhost:8080`
-- Nginx runs on port `8080`, with proxy forwarding and caching enabled
-- The wrk.sh script in the wrk directory runs a load test with the following query to fetch a list of Posts 
-```{"query":"{ posts {title} }"} ```
+## Setting up the Benchmark
 
-### Build
-- Execute `build.sh` in each framework directory in the graphql dir.
+Kickstart your benchmarking environment with just one click:
 
-*(Note: to build tailcall, checkout the tailcall source in a different dir, and ensure that `build.sh` and `run.sh` refer to the source dir)*
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/tailcallhq/benchmarks)
 
+## Execution
 
+Once the post-creation setup in Codespaces is complete, initiate the benchmark tests using:
 
+```bash
+./run_benchmarks.sh
+```
 
-## Running a benchmark
-- execute `run.sh` in a framework dir to start the server.
-- After the server has started, execute `wrk.sh` in the top level dir to run wrk
+## Benchmark Results
 
+Below are the visualizations for latency and throughput comparisons across the frameworks:
 
-### Results 
-
-|Name   | Language| Latency Avg (ms) | Requests/Sec  |
-|-------|---------|-----------|----------:|
-| Tailcall | Rust | `5.86` | `17,048` |
-| Netflix DGS | Java / Kotlin | `18.37`  | `7,209`|
-| gqlgen | Go | `18.59` | `5,510` |
-| Apollo graphql (clustered) | Node | `24.74` | `4,054` |
-
+| ![Latency Histogram](./latencyHistogram.png) | ![Requests/sec Histogram](./reqSecHistogram.png) |
+|:--------------------------------------------:|:------------------------------------------------:|
+|                 Latency Histogram             |              Requests/sec Histogram              |
