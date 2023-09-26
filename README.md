@@ -3,10 +3,10 @@
 
 A comparative analysis of several popular GraphQL frameworks:
 
-- **Tailcall** - [GitHub](https://github.com/tailcallhq/tailcall)
-- **gqlgen** - [GitHub](https://github.com/99designs/gqlgen)
-- **Apollo Server** - [Official Docs](https://www.apollographql.com/docs/apollo-server/)
-- **Netflix DGS** - [Official Docs](https://netflix.github.io/dgs/)
+- [**Tailcall**](https://tailcall.run/)
+- [**Gqlgen** ](https://gqlgen.com/)
+- [**Apollo Server**](https://new.apollographql.com/)
+- [**Netflix DGS** ](https://netflix.github.io/dgs/)
 ---
 ## Setting up the Benchmark
 
