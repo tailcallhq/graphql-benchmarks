@@ -42,14 +42,12 @@ Get started with the benchmarks:
 ## Benchmark Results
 
 <!-- PERFORMANCE_RESULTS_START -->
-
-| Server           | Requests/sec | Latency (ms) |
-| ---------------- | -----------: | -----------: |
-| [Tailcall]       |   `2,890.68` |      `34.69` |
-| [Gqlgen]         |     `935.00` |     `115.73` |
-| [Apollo GraphQL] |     `793.37` |     `128.22` |
-| [Netflix DGS]    |     `597.39` |     `191.85` |
-
+| Server | Requests/sec | Latency (ms) |
+|--------|--------------|--------------|
+| apollo | 707.007 | 145.483 |
+| netflixdgs | 467.623 | 230.67 |
+| gqlgen | 839.063 | 129.387 |
+| tailcall | 1484.52 | 108.02 |
 <!-- PERFORMANCE_RESULTS_END -->
 
 ### Throughput (Higher is better)
