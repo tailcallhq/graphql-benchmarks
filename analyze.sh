@@ -72,7 +72,7 @@ mv req_sec_histogram.png assets/
 mv latency_histogram.png assets/
 
 # Generating the table results for README.md
-resultsTable="<!-- PERFORMANCE_RESULTS_START -->\n| Server | Requests/sec | Latency (ms) |\n|--------|--------------|--------------|"
+resultsTable="<!-- PERFORMANCE_RESULTS_START -->\n| Server | Requests/sec | Latency (ms) |\n|--------|--------------:|--------------:|"
 
 for server in "${servers[@]}"; do
     resultsTable+="\n| $server | ${avgReqSecs[$server]} | ${avgLatencies[$server]} |"
