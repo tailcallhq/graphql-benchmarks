@@ -44,10 +44,10 @@ Get started with the benchmarks:
 <!-- PERFORMANCE_RESULTS_START -->
 | Server | Requests/sec | Latency (ms) |
 |--------|--------------|--------------|
-| apollo | 707.007 | 145.483 |
-| netflixdgs | 467.623 | 230.67 |
-| gqlgen | 839.063 | 129.387 |
-| tailcall | 1484.52 | 108.02 |
+| apollo | 725.187 | 141.443 |
+| netflixdgs | 553.247 | 205.13 |
+| gqlgen | 852.613 | 127.687 |
+| tailcall | 2752.37 | 36.39 |
 <!-- PERFORMANCE_RESULTS_END -->
 
 ### Throughput (Higher is better)
