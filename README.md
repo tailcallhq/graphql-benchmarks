@@ -18,20 +18,15 @@ Explore and compare the performance of the fastest GraphQL frameworks through ou
 - [Contribute](#contribute)
 
 [Tailcall]: https://tailcall.run/
-
 [Gqlgen]: https://gqlgen.com/
-
 [Apollo GraphQL]: https://new.apollographql.com/
-
 [Netflix DGS]: https://netflix.github.io/dgs/
 
 ## Introduction
 
-This document presents a comparative analysis of several renowned GraphQL frameworks. Dive deep into the performance
-metrics, and get insights into their throughput and latency.
+This document presents a comparative analysis of several renowned GraphQL frameworks. Dive deep into the performance metrics, and get insights into their throughput and latency.
 
-> **NOTE:** This is a work in progress suite of benchmarks, and we would appreciate help from the community to add more
-frameworks or tune the existing ones for better performance.
+> **NOTE:** This is a work in progress suite of benchmarks, and we would appreciate help from the community to add more frameworks or tune the existing ones for better performance.
 
 ## Quick Start
 
@@ -49,7 +44,7 @@ Get started with the benchmarks:
 <!-- PERFORMANCE_RESULTS_START -->
 
 | Server           | Requests/sec | Latency (ms) |
-|------------------|-------------:|-------------:|
+| ---------------- | -----------: | -----------: |
 | [Tailcall]       |    `2752.37` |      `36.39` |
 | [Gqlgen]         |     `852.61` |     `127.68` |
 | [Apollo GraphQL] |     `725.18` |     `141.44` |
@@ -69,15 +64,13 @@ Get started with the benchmarks:
 
 ![Architecture Diagram](assets/architecture.png)
 
-A client (`wrk`) sends requests to a GraphQL server to fetch post titles. The GraphQL server, in turn, retrieves data
-from an external source, `jsonplaceholder.typicode.com`, routed through the `nginx` reverse proxy. Here is the complete
-GraphQL query:
+A client (`wrk`) sends requests to a GraphQL server to fetch post titles. The GraphQL server, in turn, retrieves data from an external source, `jsonplaceholder.typicode.com`, routed through the `nginx` reverse proxy. Here is the complete GraphQL query:
 
 ```graphql
 {
-    posts {
-        title
-    }
+  posts {
+    title
+  }
 }
 ```
 
@@ -103,22 +96,21 @@ Inspect the generated GraphQL schema employed for the benchmarks:
 
 ```graphql
 schema {
-    query: Query
+  query: Query
 }
 
 type Query {
-    posts: [Post]
+  posts: [Post]
 }
 
 type Post {
-    id: Int!
-    userId: Int!
-    title: String!
-    body: String!
+  id: Int!
+  userId: Int!
+  title: String!
+  body: String!
 }
 ```
 
 ## Contribute
 
-Your insights are invaluable! Test these benchmarks, share feedback, or contribute by adding more GraphQL frameworks or
-refining existing ones. Open an issue or a pull request, and let's build a robust benchmarking resource together!
+Your insights are invaluable! Test these benchmarks, share feedback, or contribute by adding more GraphQL frameworks or refining existing ones. Open an issue or a pull request, and let's build a robust benchmarking resource together!
