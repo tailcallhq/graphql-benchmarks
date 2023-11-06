@@ -33,6 +33,8 @@ function runBenchmark() {
     # Warmup run
     bash "$benchmarkScript" > /dev/null
 
+    sleep 2   # Give some time for apps to finish in-flight requests from warmup
+
     # 3 benchmark runs
     for resultFile in "${resultFiles[@]}"; do
         bash "$benchmarkScript" > "$resultFile"
@@ -50,6 +52,10 @@ runBenchmark "graphql/netflix_dgs/run.sh"
 runBenchmark "graphql/gqlgen/run.sh"
 
 runBenchmark "graphql/tailcall/run.sh"
+
+killServerOnPort 8084
+runBenchmark "graphql/caliban/run.sh" "wrk/caliban_bench.sh"
+killServerOnPort 8084
 
 # Now, analyze all results together
 bash analyze.sh "${allResults[@]}"
