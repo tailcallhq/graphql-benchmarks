@@ -9,8 +9,6 @@ lazy val root = (project in file("."))
     libraryDependencies ++= Seq(
       "dev.zio"                               %% "zio"                   % "2.0.18",
       "com.github.ghostdogpr"                 %% "caliban-zio-http"      % "2.4.1",
-      "com.softwaremill.sttp.client3"         %% "zio"                   % "3.9.0",
-      "com.softwaremill.sttp.client3"         %% "jsoniter"              % "3.9.0",
       "com.softwaremill.sttp.tapir"           %% "tapir-jsoniter-scala"  % "1.8.2",
       "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-core"   % "2.24.4",
       "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.24.4" % Provided
