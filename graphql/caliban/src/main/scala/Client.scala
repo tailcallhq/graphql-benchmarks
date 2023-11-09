@@ -23,8 +23,7 @@ object Client {
   }
 
   val live: TaskLayer[Client] = ZLayer.scoped {
-    ZIO
-      .fromAutoCloseable(ZIO.executor.map { executor =>
+    ZIO.executor.map { executor =>
         HttpClient
           .newBuilder()
           .followRedirects(HttpClient.Redirect.NEVER)
@@ -32,8 +31,7 @@ object Client {
           .executor(executor.asJava)
           .proxy(proxy())
           .build()
-      })
-      .map(new Live(_))
+      }.map(new Live(_))
   }
 
   private def proxy() = new ProxySelector {
