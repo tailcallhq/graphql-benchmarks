@@ -7,9 +7,8 @@ lazy val root = (project in file("."))
   .settings(
     name := "scala-caliban",
     libraryDependencies ++= Seq(
-      "dev.zio"                               %% "zio"                   % "2.0.18",
-      "com.github.ghostdogpr"                 %% "caliban-zio-http"      % "2.4.1",
-      "com.softwaremill.sttp.tapir"           %% "tapir-jsoniter-scala"  % "1.8.2",
+      "dev.zio"                               %% "zio-http"              % "3.0.0-RC2",
+      "com.github.ghostdogpr"                 %% "caliban"               % "2.4.2",
       "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-core"   % "2.24.4",
       "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.24.4" % Provided
     )
