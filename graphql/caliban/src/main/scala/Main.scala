@@ -34,7 +34,7 @@ final class RequestHandler(interpreter: GraphQLInterpreter[Service, CalibanError
     for {
       arr  <- request.body.asArray.orDie
       resp <- interpreter.executeRequest(readFromArray[GraphQLRequest](arr))
-    } yield Response(Status.Ok, contentTypeJson, Body.fromChunk(Chunk.fromArray(writeToArray(resp))))
+    } yield Response(Status.Ok, contentTypeJson, Body.fromChunk(Chunk.fromArray(writeToArray(resp)))).withServerTime
   }
 
 }
