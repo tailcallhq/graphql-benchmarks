@@ -93,14 +93,16 @@ IFS=$'\n' sortedServers=($(for server in "${!serverRPS[@]}"; do echo "$server ${
 
 echo "Sorted servers: ${sortedServers[@]}"
 # Start building the resultsTable
-resultsTable="<!-- PERFORMANCE_RESULTS_START -->\n| Server | Requests/sec | Latency (ms) |\n|--------|--------------|--------------|"
+resultsTable="<!-- PERFORMANCE_RESULTS_START -->\n\n| Server | Requests/sec | Latency (ms) |\n|--------|--------------|--------------|"
 
 # Build the resultsTable with sorted servers and formatted numbers
 for server in "${sortedServers[@]}"; do
-    resultsTable+="\n| [${formattedServerNames[$server]}] | \`${avgReqSecs[$server]}\` | \`${avgLatencies[$server]}\` |"
+    formattedReqSecs=$(printf "\`%'.2f\`" ${avgReqSecs[$server]})
+    formattedLatencies=$(printf "\`%'.2f\`" ${avgLatencies[$server]})
+    resultsTable+="\n| [${formattedServerNames[$server]}] | \`${formattedReqSecs}\` | \`${formattedLatencies}\` |"
 done
 
-resultsTable+="\n<!-- PERFORMANCE_RESULTS_END -->"
+resultsTable+="\n\n<!-- PERFORMANCE_RESULTS_END -->"
 
 # Check if the markers are present
 if grep -q "PERFORMANCE_RESULTS_START" README.md; then
