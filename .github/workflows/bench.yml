@@ -3,23 +3,25 @@ name: 'Run benchmark'
 on: # rebuild any PRs and main branch changes
   pull_request:
 
-env:
-  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+permissions: write-all
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      contents: write
-
+    permissions: write-all
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
 
-      # Create new file to simulate change and test it's committing/pushing
       - name: Create new file
         run: |
-          echo "test" > test.txt
+          echo "This is a random file created at $(date)" > random_file.txt
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git add random_file.txt
+          git commit -m "Add random file"
 
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
