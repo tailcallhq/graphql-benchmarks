@@ -12,7 +12,7 @@ jobs:
 
     steps:
 
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - uses: actions/checkout@v4
 
       - name: Build and run Dev Container task
         uses: devcontainers/ci@v0.3
@@ -27,3 +27,4 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Update performance results in README.md"
+          branch: ${{ github.head_ref }}
