@@ -99,7 +99,7 @@ resultsTable="<!-- PERFORMANCE_RESULTS_START -->\n\n| Server | Requests/sec | La
 for server in "${sortedServers[@]}"; do
     formattedReqSecs=$(printf "%.2f" ${avgReqSecs[$server]} | perl -pe 's/(?<=\d)(?=(\d{3})+(\.\d*)?$)/,/g')
     formattedLatencies=$(printf "%.2f" ${avgLatencies[$server]} | perl -pe 's/(?<=\d)(?=(\d{3})+(\.\d*)?$)/,/g')
-    resultsTable+="\n| [${formattedServerNames[$server]}] | ${formattedReqSecs} | ${formattedLatencies} |"
+    resultsTable+="\n| [${formattedServerNames[$server]}] | `${formattedReqSecs}` | `${formattedLatencies}` |"
 done
 
 resultsTable+="\n\n<!-- PERFORMANCE_RESULTS_END -->"
