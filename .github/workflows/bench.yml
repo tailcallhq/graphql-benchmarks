@@ -14,6 +14,8 @@ jobs:
       contents: write
 
     steps:
+      - uses: actions/checkout@v4
+
       - name: Checkout PR using gh-cli
         run: |
           gh pr checkout ${{ github.event.number }}
