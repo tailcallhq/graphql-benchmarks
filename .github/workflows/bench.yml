@@ -4,9 +4,7 @@ on:
   pull_request_target:
     types: [assigned, opened, synchronize, reopened, edited]
 
-permissions:
-  contents: write
-  pull-requests: write
+permissions: write-all
 
 
 jobs:
@@ -44,5 +42,3 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Update performance results in README.md"
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          branch: ${{ github.event.pull_request.head.ref }}
