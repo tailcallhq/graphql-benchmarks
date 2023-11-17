@@ -1,0 +1,37 @@
+name: 'Run benchmark'
+
+on: # rebuild any PRs and main branch changes
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: benchmarking-runner
+
+    steps:
+
+      - name: Checkout (GitHub)
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Set up Git
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+      - name: Build and run Dev Container task
+        uses: devcontainers/ci@v0.3
+        with:
+          imageName: graphql-benchmarks
+          push: never
+          runCmd: |
+            bash ./setup.sh
+            bash ./run_benchmarks.sh
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          branch: ${{ github.head_ref }}
