@@ -37,4 +37,4 @@ RUN mkdir -p /var/cache/nginx-cache \
 WORKDIR /workspace
 
 # Expose necessary ports
-EXPOSE 8080 8081 8082 8083 3000
+EXPOSE 8000 3000

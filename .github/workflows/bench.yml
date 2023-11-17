@@ -1,29 +1,40 @@
 name: 'Run benchmark'
 
-on: # rebuild any PRs and main branch changes
-  # pull_request:
+on:
   pull_request_target:
-    branches: [ main ]
-
+    types: [assigned, opened, synchronize, reopened, edited]
 
 permissions: write-all
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    permissions: write-all
+    runs-on: benchmarking-runner
+
     steps:
-      - uses: actions/checkout@v3
+
+      - name: Checkout (GitHub)
+        uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
+          persist-credentials: false # Avoids persisting credentials
 
-      - name: Create new file
+      - name: Set up Git
         run: |
-          echo "This is a random file created at $(date)" > random_file.txt
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git remote set-url --push origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.event.pull_request.head.repo.full_name }}
+
+      - name: Run benchmarks
+        uses: devcontainers/ci@v0.3
+        with:
+          imageName: graphql-benchmarks
+          push: never
+          runCmd: |
+            bash ./setup.sh
+            bash ./run_benchmarks.sh
 
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Update performance results in README.md"
-          branch: ${{ github.head_ref }}
