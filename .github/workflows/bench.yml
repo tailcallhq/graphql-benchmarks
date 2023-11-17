@@ -25,7 +25,7 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git remote set-url --push origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.event.pull_request.head.repo.full_name }}
 
-      - name: Run benchmarks
+      - name: Build devcontainer and run benchmarks
         uses: devcontainers/ci@v0.3
         with:
           imageName: graphql-benchmarks
