@@ -43,17 +43,19 @@ cd graphql/apollo_server/
 npm stop
 cd ../../
 
-killServerOnPort 8082
+killServerOnPort 8000
+
 runBenchmark "graphql/netflix_dgs/run.sh" "wrk/dgs_bench.sh"
-killServerOnPort 8082
 
-killServerOnPort 8081
+killServerOnPort 8000
+
 runBenchmark "graphql/gqlgen/run.sh" "wrk/gqlgen_bench.sh"
-killServerOnPort 8081
 
-killServerOnPort 8083
+killServerOnPort 8000
+
 runBenchmark "graphql/tailcall/run.sh" "wrk/tc_bench.sh"
-killServerOnPort 8083
+
+killServerOnPort 8000
 
 # Now, analyze all results together
 bash analyze.sh "${allResults[@]}"

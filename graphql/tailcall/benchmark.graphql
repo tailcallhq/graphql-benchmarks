@@ -1,6 +1,6 @@
 schema
   @server(
-    port: 8083
+    port: 8000
     baseURL: "http://jsonplaceholder.typicode.com"
     enableHttpCache: false
     enableGraphiql: "/graphiql"
