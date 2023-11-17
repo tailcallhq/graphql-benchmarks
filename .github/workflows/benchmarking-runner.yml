@@ -14,6 +14,11 @@ jobs:
       - name: Checkout (GitHub)
         uses: actions/checkout@v3
 
+      - name: Set up Git
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
       - name: Build and run Dev Container task
         uses: devcontainers/ci@v0.3
         with:
@@ -22,3 +27,8 @@ jobs:
           runCmd: |
             bash ./setup.sh
             bash ./run_benchmarks.sh
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          branch: ${{ github.head_ref }}
