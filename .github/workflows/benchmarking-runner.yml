@@ -1,0 +1,24 @@
+name: 'Benchmarking Runner'
+
+on: # rebuild any PRs and main branch changes
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout (GitHub)
+        uses: actions/checkout@v3
+
+      - name: Build and run Dev Container task
+        uses: devcontainers/ci@v0.3
+        with:
+          imageName: graphql-benchmarks
+          push: never
+          runCmd: |
+            bash ./setup.sh
+            bash ./run_benchmarks.sh
