@@ -21,6 +21,7 @@ jobs:
 
       - name: Pull any changes
         run: |
+          git config pull.ff only
           git pull origin ${{ github.head_ref }}
 
       - name: Build and run Dev Container task
