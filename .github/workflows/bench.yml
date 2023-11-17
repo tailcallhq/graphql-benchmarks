@@ -11,13 +11,6 @@ jobs:
       contents: write
 
     steps:
-
-      - uses: actions/checkout@v4
-        with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.pull_request.head.ref }}
-      # -
-
       # Create new file to simulate change and test it's committing/pushing
       - name: Create new file
         run: |
@@ -37,4 +30,3 @@ jobs:
         with:
           commit_message: "Update performance results in README.md"
           branch: ${{ github.head_ref }}
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
