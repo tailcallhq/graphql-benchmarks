@@ -8,8 +8,12 @@ permissions: write-all
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions: write-all
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
 
       - name: Create new file
         run: |
@@ -19,3 +23,5 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Update performance results in README.md"
+          branch: ${{ github.head_ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
