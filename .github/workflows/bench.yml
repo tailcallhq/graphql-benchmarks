@@ -25,7 +25,7 @@ jobs:
             bash ./setup.sh
             bash ./run_benchmarks.sh
 
-      - name: Push changes
-        uses: ad-m/github-push-action@master
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          branch: ${{ github.head_ref }}
+          commit_message: "Update performance results in README.md"

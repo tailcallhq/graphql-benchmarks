@@ -120,11 +120,6 @@ echo -e $resultsTable | sed "s/<!-- PERFORMANCE_RESULTS_START -->//;s/<!-- PERFO
 mv req_sec_histogram.png assets/
 mv latency_histogram.png assets/
 
-# Add and commit changes
-git add README.md assets/req_sec_histogram.png assets/latency_histogram.png
-git commit -m "Updated performance results in README.md"
-git push
-
 # Delete the result TXT files
 for file in "${resultFiles[@]}"; do
     rm "$file"
