@@ -1,5 +1,5 @@
 #!/bin/bash
 pwd
 cd graphql/gqlgen
-pwd
-./main
+go build -o main main.go
+./main -port 8000
