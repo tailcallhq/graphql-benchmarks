@@ -45,10 +45,10 @@ Get started with the benchmarks:
 
 | Server | Requests/sec | Latency (ms) |
 |--------:|--------------:|--------------:|
-| [Tailcall] | `6066.06` | `16.46` |
-| [Gqlgen] | `2088.87` | `49.66` |
-| [Apollo GraphQL] | `1673.16` | `59.97` |
-| [Netflix DGS] | `1444.94` | `73.29` |
+| [Tailcall] | ` | ` |
+| [Gqlgen] | ` | ` |
+| [Apollo GraphQL] | ` | ` |
+| [Netflix DGS] | ` | ` |
 
 <!-- PERFORMANCE_RESULTS_END -->
 
