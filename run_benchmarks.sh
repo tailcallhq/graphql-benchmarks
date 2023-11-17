@@ -17,8 +17,10 @@ killServerOnPort 3000
 sh nginx/run.sh
 
 function runBenchmark() {
+    killServerOnPort 8000
+    
     local serviceScript="$1"
-    local benchmarkScript="$2"
+    local benchmarkScript="wrk/bench.sh"
     
     # Replace / with _
     local sanitizedServiceScriptName=$(echo "$serviceScript" | tr '/' '_')
@@ -38,24 +40,16 @@ function runBenchmark() {
     done
 }
 
-runBenchmark "graphql/apollo_server/run.sh" "wrk/apollo_bench.sh"
+runBenchmark "graphql/apollo_server/run.sh"
 cd graphql/apollo_server/
 npm stop
 cd ../../
 
-killServerOnPort 8000
+runBenchmark "graphql/netflix_dgs/run.sh"
 
-runBenchmark "graphql/netflix_dgs/run.sh" "wrk/dgs_bench.sh"
+runBenchmark "graphql/gqlgen/run.sh"
 
-killServerOnPort 8000
-
-runBenchmark "graphql/gqlgen/run.sh" "wrk/gqlgen_bench.sh"
-
-killServerOnPort 8000
-
-runBenchmark "graphql/tailcall/run.sh" "wrk/tc_bench.sh"
-
-killServerOnPort 8000
+runBenchmark "graphql/tailcall/run.sh"
 
 # Now, analyze all results together
 bash analyze.sh "${allResults[@]}"

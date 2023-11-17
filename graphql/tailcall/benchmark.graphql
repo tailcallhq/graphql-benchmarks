@@ -3,7 +3,6 @@ schema
     port: 8000
     baseURL: "http://jsonplaceholder.typicode.com"
     enableHttpCache: false
-    enableGraphiql: "/graphiql"
     proxy: {url: "http://localhost:3000"}
   ) {
   query: Query
