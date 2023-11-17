@@ -11,11 +11,7 @@ jobs:
       contents: write
 
     steps:
-      # - uses: actions/checkout@v4
-      - name: Checkout PR branch
-        run: |
-          git fetch origin pull/${{ github.event.pull_request.number }}/head:pr
-          git checkout pr
+      - uses: actions/checkout@v4
 
       # Create new file to simulate change and test it's committing/pushing
       - name: Create new file
