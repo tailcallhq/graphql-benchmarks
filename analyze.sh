@@ -10,6 +10,14 @@ function average() {
     echo "$@" | awk '{for(i=1;i<=NF;i++) s+=$i; print s/NF}'
 }
 
+declare -A formattedServerNames
+formattedServerNames=(
+    ["tailcall"]="Tailcall"
+    ["gqlgen"]="Gqlgen"
+    ["apollo"]="Apollo GraphQL"
+    ["netflixdgs"]="Netflix DGS"
+)
+
 servers=("apollo" "netflixdgs" "gqlgen" "tailcall")
 resultFiles=("$@")
 declare -A avgReqSecs
@@ -71,11 +79,25 @@ mkdir -p assets
 mv req_sec_histogram.png assets/
 mv latency_histogram.png assets/
 
-# Generating the table results for README.md
+# Declare an associative array for server RPS
+declare -A serverRPS
+
+# Populate the serverRPS array
+for server in "${servers[@]}"; do
+    serverRPS[$server]=${avgReqSecs[$server]}
+done
+
+# Get the servers sorted by RPS in descending order
+IFS=$'\n' sortedServers=($(for server in "${!serverRPS[@]}"; do echo "$server ${serverRPS[$server]}"; done | sort -rn -k2 | cut -d' ' -f1))
+
+
+echo "Sorted servers: ${sortedServers[@]}"
+# Start building the resultsTable
 resultsTable="<!-- PERFORMANCE_RESULTS_START -->\n| Server | Requests/sec | Latency (ms) |\n|--------|--------------|--------------|"
 
-for server in "${servers[@]}"; do
-    resultsTable+="\n| $server | ${avgReqSecs[$server]} | ${avgLatencies[$server]} |"
+# Build the resultsTable with sorted servers and formatted numbers
+for server in "${sortedServers[@]}"; do
+    resultsTable+="\n| [${formattedServerNames[$server]}] | \`${avgReqSecs[$server]}\` | \`${avgLatencies[$server]}\` |"
 done
 
 resultsTable+="\n<!-- PERFORMANCE_RESULTS_END -->"
