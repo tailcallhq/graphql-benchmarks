@@ -14,8 +14,8 @@ jobs:
 
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
-          fetch-depth: 1000
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
       # -
 
       # Create new file to simulate change and test it's committing/pushing
