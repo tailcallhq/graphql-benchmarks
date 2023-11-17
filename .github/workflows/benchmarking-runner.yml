@@ -19,6 +19,10 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
 
+      - name: Pull any changes
+        run: |
+          git pull origin ${{ github.head_ref }}
+
       - name: Build and run Dev Container task
         uses: devcontainers/ci@v0.3
         with:
