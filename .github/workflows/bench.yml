@@ -6,10 +6,9 @@ on:
 
 permissions: write-all
 
-
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: benchmarking-runner
 
     steps:
 
@@ -26,17 +25,14 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git remote set-url --push origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.event.pull_request.head.repo.full_name }}
 
-      - name: Create new file
-        run: |
-          echo "This is a random file created at $(date)" > random_file.txt
-      # - name: Build and run Dev Container task
-      #   uses: devcontainers/ci@v0.3
-      #   with:
-      #     imageName: graphql-benchmarks
-      #     push: never
-      #     runCmd: |
-      #       bash ./setup.sh
-      #       bash ./run_benchmarks.sh
+      - name: Run benchmarks
+        uses: devcontainers/ci@v0.3
+        with:
+          imageName: graphql-benchmarks
+          push: never
+          runCmd: |
+            bash ./setup.sh
+            bash ./run_benchmarks.sh
 
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
