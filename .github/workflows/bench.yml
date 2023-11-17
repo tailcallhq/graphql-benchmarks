@@ -25,6 +25,7 @@ jobs:
       #       bash ./setup.sh
       #       bash ./run_benchmarks.sh
 
+      - uses: actions/checkout@v4
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
