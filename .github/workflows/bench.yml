@@ -37,3 +37,4 @@ jobs:
         with:
           commit_message: "Update performance results in README.md"
           branch: ${{ github.head_ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
