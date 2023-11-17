@@ -5,22 +5,27 @@ on: # rebuild any PRs and main branch changes
 
 jobs:
   build:
-    runs-on: benchmarking-runner
+    runs-on: ubuntu-latest
     permissions:
       pull-requests: write
       contents: write
 
     steps:
-      - name: Build and run Dev Container task
-        uses: devcontainers/ci@v0.3
-        with:
-          imageName: graphql-benchmarks
-          push: never
-          runCmd: |
-            bash ./setup.sh
-            bash ./run_benchmarks.sh
-
       - uses: actions/checkout@v4
+
+      # Create new file to simulate change and test it's committing/pushing
+      - name: Create new file
+        run: |
+          echo "test" > test.txt
+
+      # - name: Build and run Dev Container task
+      #   uses: devcontainers/ci@v0.3
+      #   with:
+      #     imageName: graphql-benchmarks
+      #     push: never
+      #     runCmd: |
+      #       bash ./setup.sh
+      #       bash ./run_benchmarks.sh
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
