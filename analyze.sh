@@ -97,8 +97,8 @@ resultsTable="<!-- PERFORMANCE_RESULTS_START -->\n\n| Server | Requests/sec | La
 
 # Build the resultsTable with sorted servers and formatted numbers
 for server in "${sortedServers[@]}"; do
-    formattedReqSecs=$(printf "\`%'.2f\`" ${avgReqSecs[$server]})
-    formattedLatencies=$(printf "\`%'.2f\`" ${avgLatencies[$server]})
+    formattedReqSecs=$(echo ${avgReqSecs[$server]} | awk '{printf "`%,.2f`\n", $1}')
+    formattedLatencies=$(echo ${avgLatencies[$server]} | awk '{printf "`%,.2f`\n", $1}')
     resultsTable+="\n| [${formattedServerNames[$server]}] | ${formattedReqSecs} | ${formattedLatencies} |"
 done
 
