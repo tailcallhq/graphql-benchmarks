@@ -11,21 +11,15 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout PR using gh-cli
+        run: |
+          gh pr checkout ${{ github.event.number }}
 
       # Create new file to simulate change and test it's committing/pushing
       - name: Create new file
         run: |
           echo "test" > test.txt
 
-      # - name: Build and run Dev Container task
-      #   uses: devcontainers/ci@v0.3
-      #   with:
-      #     imageName: graphql-benchmarks
-      #     push: never
-      #     runCmd: |
-      #       bash ./setup.sh
-      #       bash ./run_benchmarks.sh
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
