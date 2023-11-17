@@ -1,4 +1,4 @@
-name: 'Benchmarking Runner'
+name: 'Run benchmark'
 
 on: # rebuild any PRs and main branch changes
   pull_request:
@@ -8,7 +8,7 @@ on: # rebuild any PRs and main branch changes
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: benchmarking-runner
     steps:
 
       - name: Checkout (GitHub)
