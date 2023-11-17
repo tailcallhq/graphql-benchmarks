@@ -3,6 +3,9 @@ name: 'Run benchmark'
 on: # rebuild any PRs and main branch changes
   pull_request:
 
+env:
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
