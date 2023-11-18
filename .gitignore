@@ -23,3 +23,4 @@ graphql/gqlgen/main
 # Tailcall
 tailcall-src
 
+metals.*

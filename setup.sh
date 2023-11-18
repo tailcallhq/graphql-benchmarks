@@ -17,3 +17,8 @@ cd ../../
 # For tailcall:
 curl -sSL https://raw.githubusercontent.com/tailcallhq/tailcall/main/install.sh | bash -s -- v0.15.1
 export PATH=$PATH:/root/.tailcall/bin
+
+# For caliban
+cd graphql/caliban
+./sbt compile
+cd ../../

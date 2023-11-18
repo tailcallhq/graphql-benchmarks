@@ -21,6 +21,7 @@ Explore and compare the performance of the fastest GraphQL frameworks through ou
 [Gqlgen]: https://gqlgen.com/
 [Apollo GraphQL]: https://new.apollographql.com/
 [Netflix DGS]: https://netflix.github.io/dgs/
+[Caliban]: https://ghostdogpr.github.io/caliban/
 
 ## Introduction
 
@@ -45,10 +46,11 @@ Get started with the benchmarks:
 
 | Server | Requests/sec | Latency (ms) |
 |--------:|--------------:|--------------:|
-| [Tailcall] | `7,128.72` | `14.02` |
-| [Gqlgen] | `2,132.83` | `48.66` |
-| [Apollo GraphQL] | `1,796.82` | `55.58` |
-| [Netflix DGS] | `1,469.71` | `88.02` |
+| [Tailcall] | `7,033.32` | `14.20` |
+| [Caliban] | `6,440.48` | `15.57` |
+| [Gqlgen] | `2,090.34` | `49.65` |
+| [Apollo GraphQL] | `1,769.72` | `56.37` |
+| [Netflix DGS] | `1,470.80` | `87.61` |
 
 <!-- PERFORMANCE_RESULTS_END -->
 

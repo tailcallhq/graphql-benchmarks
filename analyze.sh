@@ -16,9 +16,10 @@ formattedServerNames=(
     ["gqlgen"]="Gqlgen"
     ["apollo"]="Apollo GraphQL"
     ["netflixdgs"]="Netflix DGS"
+    ["caliban"]="Caliban"
 )
 
-servers=("apollo" "netflixdgs" "gqlgen" "tailcall")
+servers=("apollo" "caliban" "netflixdgs" "gqlgen" "tailcall")
 resultFiles=("$@")
 declare -A avgReqSecs
 declare -A avgLatencies

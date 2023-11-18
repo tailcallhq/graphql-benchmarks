@@ -18,7 +18,7 @@ sh nginx/run.sh
 
 function runBenchmark() {
     killServerOnPort 8000
-    
+
     local serviceScript="$1"
     local benchmarkScript="wrk/bench.sh"
     
@@ -32,6 +32,12 @@ function runBenchmark() {
 
     # Warmup run
     bash "$benchmarkScript" > /dev/null
+    sleep 1   # Give some time for apps to finish in-flight requests from warmup
+    bash "$benchmarkScript" > /dev/null
+    sleep 1
+    bash "$benchmarkScript" > /dev/null
+    sleep 1
+
 
     # 3 benchmark runs
     for resultFile in "${resultFiles[@]}"; do
@@ -44,6 +50,8 @@ runBenchmark "graphql/apollo_server/run.sh"
 cd graphql/apollo_server/
 npm stop
 cd ../../
+
+runBenchmark "graphql/caliban/run.sh"
 
 runBenchmark "graphql/netflix_dgs/run.sh"
 
