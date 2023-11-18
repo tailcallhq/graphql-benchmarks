@@ -1,6 +1,6 @@
 schema
 @server(
-  port: 8083
+  port: 8000
   enableGraphiql: true
   workers: 16
 ) @upstream(
