@@ -20,7 +20,7 @@ object Main extends ZIOAppDefault {
     yield ()
   }.provide(
     Server.live,
-    ZLayer.succeed(Server.Config.default.port(8084).logWarningOnFatalError(false)),
+    ZLayer.succeed(Server.Config.default.port(8000).logWarningOnFatalError(false)),
     Service.layer,
     Client.live
   )
