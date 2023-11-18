@@ -47,7 +47,7 @@ Get started with the benchmarks:
 | Server | Requests/sec | Latency (ms) |
 |--------:|--------------:|--------------:|
 | [Tailcall] | `7,184.54` | `13.88` |
-| [] | `6,565.43` | `15.27` |
+| [Caliban] | `6,565.43` | `15.27` |
 | [Gqlgen] | `2,137.41` | `48.53` |
 | [Apollo GraphQL] | `1,859.68` | `53.67` |
 | [Netflix DGS] | `1,466.55` | `86.46` |
