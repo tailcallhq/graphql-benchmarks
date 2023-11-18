@@ -21,6 +21,7 @@ Explore and compare the performance of the fastest GraphQL frameworks through ou
 [Gqlgen]: https://gqlgen.com/
 [Apollo GraphQL]: https://new.apollographql.com/
 [Netflix DGS]: https://netflix.github.io/dgs/
+[Caliban]: https://ghostdogpr.github.io/caliban/
 
 ## Introduction
 
