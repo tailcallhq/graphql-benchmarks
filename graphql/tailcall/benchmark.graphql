@@ -1,10 +1,15 @@
 schema
-  @server(
-    port: 8000
-    baseURL: "http://jsonplaceholder.typicode.com"
-    enableHttpCache: false
-    proxy: {url: "http://localhost:3000"}
-  ) {
+@server(
+  port: 8083
+  enableGraphiql: true
+  workers: 16
+) @upstream(
+  baseURL: "http://jsonplaceholder.typicode.com"
+  enableHttpCache: false
+  poolMaxIdlePerHost: 200
+  tcpKeepAlive: 60
+  proxy: {url: "http://127.0.0.1:3000"}
+){
   query: Query
 }
 
