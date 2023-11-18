@@ -16,7 +16,7 @@ formattedServerNames=(
     ["gqlgen"]="Gqlgen"
     ["apollo"]="Apollo GraphQL"
     ["netflixdgs"]="Netflix DGS"
-    ["caliban"] = "Caliban"
+    ["caliban"]="Caliban"
 )
 
 servers=("apollo" "caliban" "netflixdgs" "gqlgen" "tailcall")
