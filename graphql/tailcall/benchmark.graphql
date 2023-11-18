@@ -2,7 +2,6 @@ schema
   @server(port: 8000, enableGraphiql: true, enableQueryValidation: false)
   @upstream(
     baseURL: "http://jsonplaceholder.typicode.com"
-    enableHttpCache: false
     poolMaxIdlePerHost: 200
     tcpKeepAlive: 60
     proxy: { url: "http://127.0.0.1:3000" }
