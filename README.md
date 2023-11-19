@@ -114,3 +114,15 @@ type Post {
 ## Contribute
 
 Your insights are invaluable! Test these benchmarks, share feedback, or contribute by adding more GraphQL frameworks or refining existing ones. Open an issue or a pull request, and let's build a robust benchmarking resource together!
+
+<!-- PERFORMANCE_RESULTS_START -->
+
+| Server | Requests/sec | Latency (ms) |
+|--------:|--------------:|--------------:|
+| [Tailcall] | `7,168.19` | `13.94` |
+| [Caliban] | `6,449.33` | `15.55` |
+| [Gqlgen] | `2,133.79` | `48.62` |
+| [Apollo GraphQL] | `1,873.45` | `53.29` |
+| [Netflix DGS] | `1,460.52` | `89.35` |
+
+<!-- PERFORMANCE_RESULTS_END -->
