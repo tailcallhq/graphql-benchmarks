@@ -8,10 +8,7 @@ permissions: write-all
 
 jobs:
   build:
-    runs-on:
-      labels: ubuntu-latest-4core
-      group: benchmarking-runner
-
+    runs-on: benchmarking-runner
     steps:
 
       - name: Checkout (GitHub)
