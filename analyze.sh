@@ -95,7 +95,6 @@ IFS=$'\n' sortedServers=($(for server in "${!serverRPS[@]}"; do echo "$server ${
 echo "Sorted servers: ${sortedServers[@]}"
 # Start building the resultsTable
 resultsTable="<!-- PERFORMANCE_RESULTS_START -->\n\n| Server | Requests/sec | Latency (ms) |\n|--------:|--------------:|--------------:|"
-resultsTable="| Server | Requests/sec | Latency (ms) |\n|--------:|--------------:|--------------:|"
 
 # Build the resultsTable with sorted servers and formatted numbers
 for server in "${sortedServers[@]}"; do
