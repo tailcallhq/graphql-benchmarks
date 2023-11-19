@@ -105,6 +105,8 @@ done
 
 resultsTable+="\n\n<!-- PERFORMANCE_RESULTS_END -->"
 
+echo -e $resultsTable
+
 # Check if the markers are present
 if grep -q "PERFORMANCE_RESULTS_START" README.md; then
     # Replace the old results with the new results

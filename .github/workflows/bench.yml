@@ -1,8 +1,11 @@
 name: 'Run benchmark'
 
 on:
-  pull_request_target:
+  pull_request:
     types: [assigned, opened, synchronize, reopened, edited]
+  push:
+    branches:
+      - main
 
 permissions: write-all
 
@@ -33,7 +36,8 @@ jobs:
             bash ./setup.sh
             bash ./run_benchmarks.sh
 
-      - name: Commit and push changes
+      - name: Commit and push changes (on main branch)
+        if: github.ref == 'refs/heads/main'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Update performance results in README.md"
