@@ -119,10 +119,10 @@ Your insights are invaluable! Test these benchmarks, share feedback, or contribu
 
 | Server | Requests/sec | Latency (ms) |
 |--------:|--------------:|--------------:|
-| [Tailcall] | `7,168.19` | `13.94` |
-| [Caliban] | `6,449.33` | `15.55` |
-| [Gqlgen] | `2,133.79` | `48.62` |
-| [Apollo GraphQL] | `1,873.45` | `53.29` |
-| [Netflix DGS] | `1,460.52` | `89.35` |
+| [Tailcall] | `7,158.04` | `13.95` |
+| [Caliban] | `6,636.09` | `15.11` |
+| [Gqlgen] | `2,125.38` | `48.76` |
+| [Apollo GraphQL] | `1,854.74` | `53.78` |
+| [Netflix DGS] | `1,469.88` | `86.75` |
 
 <!-- PERFORMANCE_RESULTS_END -->
