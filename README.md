@@ -42,13 +42,15 @@ Get started with the benchmarks:
 
 ## Benchmark Results
 
+<!-- PERFORMANCE_RESULTS_START -->
+
 | Server | Requests/sec | Latency (ms) |
 |--------:|--------------:|--------------:|
-| [Tailcall] | `7,104.15` | `14.00` |
-| [Caliban] | `6,510.70` | `15.51` |
-| [Gqlgen] | `2,111.74` | `49.08` |
-| [Apollo GraphQL] | `1,797.26` | `55.44` |
-| [Netflix DGS] | `1,462.09` | `89.95` |
+| [Tailcall] | `7,045.22` | `14.15` |
+| [Caliban] | `6,490.24` | `15.48` |
+| [Gqlgen] | `2,098.33` | `49.28` |
+| [Apollo GraphQL] | `1,817.35` | `54.93` |
+| [Netflix DGS] | `1,458.36` | `88.69` |
 
 <!-- PERFORMANCE_RESULTS_END -->
 
@@ -114,15 +116,3 @@ type Post {
 ## Contribute
 
 Your insights are invaluable! Test these benchmarks, share feedback, or contribute by adding more GraphQL frameworks or refining existing ones. Open an issue or a pull request, and let's build a robust benchmarking resource together!
-
-<!-- PERFORMANCE_RESULTS_START -->
-
-| Server | Requests/sec | Latency (ms) |
-|--------:|--------------:|--------------:|
-| [Tailcall] | `7,158.04` | `13.95` |
-| [Caliban] | `6,636.09` | `15.11` |
-| [Gqlgen] | `2,125.38` | `48.76` |
-| [Apollo GraphQL] | `1,854.74` | `53.78` |
-| [Netflix DGS] | `1,469.88` | `86.75` |
-
-<!-- PERFORMANCE_RESULTS_END -->
