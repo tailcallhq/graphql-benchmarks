@@ -12,6 +12,7 @@ permissions: write-all
 jobs:
   build:
     runs-on: benchmarking-runner
+    if: github.ref != 'refs/heads/main' || github.event.head_commit.message != 'Update performance results in README.md'
     steps:
 
       - name: Checkout (GitHub)
