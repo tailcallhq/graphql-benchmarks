@@ -19,21 +19,24 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
-          persist-credentials: false # Avoids persisting credentials
 
       - name: Set up Git
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
 
-      - name: Build devcontainer and run benchmarks
-        uses: devcontainers/ci@v0.3
-        with:
-          imageName: graphql-benchmarks
-          push: never
-          runCmd: |
-            bash ./setup.sh
-            bash ./run_benchmarks.sh
+      - name: Create fake file with current timestamp to test push
+        run: |
+          date > timestamp.txt
+
+      # - name: Build devcontainer and run benchmarks
+      #   uses: devcontainers/ci@v0.3
+      #   with:
+      #     imageName: graphql-benchmarks
+      #     push: never
+      #     runCmd: |
+      #       bash ./setup.sh
+      #       bash ./run_benchmarks.sh
 
       - name: Commit and push changes (on main branch)
         if: github.ref == 'refs/heads/main'
