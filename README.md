@@ -116,3 +116,4 @@ type Post {
 ## Contribute
 
 Your insights are invaluable! Test these benchmarks, share feedback, or contribute by adding more GraphQL frameworks or refining existing ones. Open an issue or a pull request, and let's build a robust benchmarking resource together!
+
