@@ -11,7 +11,9 @@ permissions: write-all
 
 jobs:
   build:
-    runs-on: benchmarking-runner
+    # runs-on: benchmarking-runner
+    # using ubuntu-latest to speed up testing
+    runs-on: ubuntu-latest
     steps:
 
       - name: Checkout (GitHub)
