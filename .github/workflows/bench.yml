@@ -9,6 +9,9 @@ on:
 
 permissions: write-all
 
+env:
+  GITHUB_TOKEN: ${{ secrets.GIT_BOT_PAT }}
+
 jobs:
   build:
     # runs-on: benchmarking-runner
