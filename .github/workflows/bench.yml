@@ -1,29 +1,30 @@
 name: "Run benchmark"
 
 on:
-  pull_request_target:
+  pull_request:
     types: [assigned, opened, synchronize, reopened, edited]
+  push:
+    branches:
+      - main
 
 permissions: write-all
 
 jobs:
   build:
-    runs-on:
-      group: benchmarking-runner
-
+    runs-on: benchmarking-runner
+    if: github.event.head_commit.message != 'Update performance results in README.md'
     steps:
       - name: Checkout (GitHub)
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
+          token: ${{ secrets.GIT_BOT_PAT }}
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
-          persist-credentials: false # Avoids persisting credentials
 
       - name: Set up Git
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
-          git remote set-url --push origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.event.pull_request.head.repo.full_name }}
 
       - name: Build devcontainer and run benchmarks
         uses: devcontainers/ci@v0.3
@@ -34,7 +35,8 @@ jobs:
             bash ./setup.sh
             bash ./run_benchmarks.sh
 
-      - name: Commit and push changes
+      - name: Commit and push changes (on main branch)
+        if: github.ref == 'refs/heads/main'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Update performance results in README.md"
