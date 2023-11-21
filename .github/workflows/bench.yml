@@ -9,9 +9,6 @@ on:
 
 permissions: write-all
 
-env:
-  GITHUB_TOKEN: ${{ secrets.GIT_BOT_PAT }}
-
 jobs:
   build:
     # runs-on: benchmarking-runner
@@ -22,6 +19,7 @@ jobs:
       - name: Checkout (GitHub)
         uses: actions/checkout@v4
         with:
+          token: ${{ secrets.GIT_BOT_PAT }}
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
 
