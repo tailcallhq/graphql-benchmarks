@@ -1,4 +1,4 @@
-name: 'Run benchmark'
+name: "Run benchmark"
 
 on:
   pull_request:
@@ -13,7 +13,6 @@ jobs:
   build:
     runs-on: benchmarking-runner
     steps:
-
       - name: Checkout (GitHub)
         uses: actions/checkout@v4
         with:
@@ -34,6 +33,67 @@ jobs:
           runCmd: |
             bash ./setup.sh
             bash ./run_benchmarks.sh
+
+            - name: Run Benchmarks and Update README (Main Branch)
+            if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+            run: |
+              # Execute benchmarking script
+              ./run_benchmarks.sh || { echo "Benchmark generation failed"; exit 1; }
+
+              # Extract benchmark information and update README
+              for file in result*.txt; do
+                if [[ -f $file ]]; then
+                  REQ_SEC=$(grep -oP 'Req/Sec\s+\K[\d.]+' "$file")
+                  LATENCY=$(grep -oP 'Latency\s+\K[\d.]+' "$file")
+                  # Update README with the extracted values
+                  # Your logic to update README goes here
+                fi
+              done
+
+              # Commit changes to README
+              git add README.md
+              git commit -m "Update benchmark results" || { echo "Failed to commit changes"; exit 1; }
+              git push || { echo "Failed to push changes"; exit 1; }
+
+              # Extract benchmark information and update README
+              for file in result1_graphql_*.txt; do
+               if [[ -f $file ]]; then
+                 SERVER=$(awk -F ']' '{print $1}' <<< $(awk -F '[' '{print $2}' <<< $(basename "$file" .txt)))
+                 REQ_SEC=$(grep -oP '[0-9.]+\s*\|\s*[0-9.]+' "$file" | awk -F '|' '{print $2}' | tr -d '[:space:]')
+                 LATENCY=$(grep -oP '[0-9.]+\s*\|\s*[0-9.]+' "$file" | awk -F '|' '{print $3}' | tr -d '[:space:]')
+                 
+                 sed -i "s/\[$SERVER\] \| [0-9.]\+ \| [0-9.]\+/\[$SERVER\] \| $REQ_SEC \| $LATENCY/g" README.md
+               fi
+              done
+
+              # Commit changes to README
+              git add README.md
+              git commit -m "Update benchmark results" || { echo "Failed to commit changes"; exit 1; }
+              git push || { echo "Failed to push changes"; exit 1; }
+
+              # Check for benchmark generation failure or README update failure
+              if [ $? -ne 0 ]; then
+                echo "CI failed due to benchmark generation or README update failure"
+                exit 1
+              else
+                echo "CI successful"
+              fi
+
+              - name: Run Benchmarks (PR)
+              if: github.event_name == 'pull_request'
+              run: |
+                # Execute benchmarking script for pull requests
+                ./run_benchmarks.sh || { echo "Benchmark generation failed"; exit 1; }
+
+              - name: Final Checks and Reporting
+              run: |
+                # Check for benchmark generation failure or README update failure
+                if [ $? -ne 0 ]; then
+                  echo "CI failed due to benchmark generation or README update failure"
+                  exit 1
+                else
+                  echo "CI successful"
+                fi
 
       - name: Commit and push changes (on main branch)
         if: github.ref == 'refs/heads/main'
