@@ -1,41 +1,34 @@
 package com.example.netflixdgs;
 
 public class Post {
-	private Integer id;
-	private Integer userId;
-	private String title;
-	private String body;
-	private User user;
+  private int id;
+  private int userId;
+  private String title;
+  private String body;
 
-	public Integer getUserId() {
-		return userId;
-	}
-	
-	public String getBody() {
-		return body;
-	}
-	
-	public User getUser() {
-		return user;
-	}
-	
-	public Integer getId() {
-		return id;
-	}
-	public String getTitle() {
-		return title;
-	}
+  public Post() {
+  }
 
-	public Post() {
-		super();
-	}
-	
-	public Post(Integer id, Integer userId, String title, String body, User user) {
-		this.id = id;
-		this.userId = userId;
-		this.title = title;
-		this.body = body;
-		this.user = user;
-	}
-	
+  public Post(int id, int userId, String title, String body) {
+    this.id = id;
+    this.userId = userId;
+    this.title = title;
+    this.body = body;
+  }
+
+  public int getId() {
+    return id;
+  }
+
+  public int getUserId() {
+    return userId;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public String getBody() {
+    return body;
+  }
 }
