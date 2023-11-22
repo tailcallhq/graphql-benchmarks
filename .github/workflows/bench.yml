@@ -35,6 +35,11 @@ jobs:
           runCmd: |
             bash ./setup.sh
             bash ./run_benchmarks.sh
+      
+      - name: Print and delete benchmark results file
+        run: |
+          cat ./results.md
+          rm ./results.md
 
       - name: Commit and push changes (on main branch)
         if: github.ref == 'refs/heads/main'
