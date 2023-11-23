@@ -17,10 +17,10 @@ jobs:
 
       - name: Checkout (GitHub)
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GIT_BOT_PAT }}
-          ref: ${{ github.event.pull_request.head.ref }}
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
+#        with:
+#          token: ${{ secrets.GITHUB_TOKEN }}
+#          ref: ${{ github.event.pull_request.head.ref }}
+#          repository: ${{ github.event.pull_request.head.repo.full_name }}
 
       - name: Set up Git
         run: |
@@ -35,11 +35,20 @@ jobs:
           runCmd: |
             bash ./setup.sh
             bash ./run_benchmarks.sh
-      
-      - name: Print and delete benchmark results file
-        run: |
-          cat ./results.md
-          rm ./results.md
+
+      - name: Print benchmark results
+        run: cat ./results.md
+
+      - name: Comment benchmark results on PR
+        if: github.event_name == 'pull_request'
+        uses: thollander/actions-comment-pull-request@v1
+        with:
+          message: |
+            ## Benchmark Results
+            \`\`\`
+            $(cat ./results.md)
+            \`\`\`
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit and push changes (on main branch)
         if: github.ref == 'refs/heads/main'
