@@ -45,6 +45,7 @@ jobs:
         if: github.event_name == 'pull_request_target'
         uses: peter-evans/commit-comment@v3
         with:
+          sha : ${{ github.event.pull_request.head.sha }}
           body-path: 'results.md'
           reactions: eyes
 
