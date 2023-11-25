@@ -24,11 +24,26 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-#      - name: Set up Git
-#        run: |
-#          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-#          git config --global user.name "github-actions[bot]"
+      # Cache for Scala (SBT) dependencies
+      - name: Cache SBT dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.ivy2/cache
+            ~/.sbt
+            ~/.cache/coursier
+          key: ${{ runner.os }}-sbt-${{ hashFiles('**/*.sbt') }}, ${{ hashFiles('**/project/build.properties') }}
 
+      # Cache Docker layers
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ hashFiles('**/Dockerfile', '**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      # Build devcontainer and run benchmarks
       - name: Build devcontainer and run benchmarks
         uses: devcontainers/ci@v0.3
         with:
