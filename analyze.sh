@@ -116,6 +116,9 @@ else
     echo -e "\n$resultsTable" >> README.md
 fi
 
+# Print the results table in a new file
+echo -e $resultsTable > results.md
+
 # Print the results as a table in the terminal
 echo -e $resultsTable | sed "s/<!-- PERFORMANCE_RESULTS_START -->//;s/<!-- PERFORMANCE_RESULTS_END -->//"
 

@@ -1,30 +1,33 @@
 name: "Run benchmark"
 
 on:
-  pull_request:
+  pull_request_target:
     types: [assigned, opened, synchronize, reopened, edited]
   push:
     branches:
       - main
 
-permissions: write-all
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
 
 jobs:
   build:
     runs-on: benchmarking-runner
     if: github.event.head_commit.message != 'Update performance results in README.md'
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout (GitHub)
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GIT_BOT_PAT }}
-          ref: ${{ github.event.pull_request.head.ref }}
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set up Git
-        run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
+#      - name: Set up Git
+#        run: |
+#          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+#          git config --global user.name "github-actions[bot]"
 
       - name: Build devcontainer and run benchmarks
         uses: devcontainers/ci@v0.3
@@ -34,6 +37,16 @@ jobs:
           runCmd: |
             bash ./setup.sh
             bash ./run_benchmarks.sh
+
+      - name: Print benchmark results
+        run: cat ./results.md
+
+      - name: Comment benchmark results on PR
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/commit-comment@v3
+        with:
+          body-path: 'results.md'
+          reactions: eyes
 
       - name: Commit and push changes (on main branch)
         if: github.ref == 'refs/heads/main'
