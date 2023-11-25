@@ -53,7 +53,7 @@ cd ../../
 
 runBenchmark "graphql/caliban/run.sh"
 
-runBenchmark "graphql/netflix_dgs/run.sh"
+# runBenchmark "graphql/netflix_dgs/run.sh"
 
 runBenchmark "graphql/gqlgen/run.sh"
 
