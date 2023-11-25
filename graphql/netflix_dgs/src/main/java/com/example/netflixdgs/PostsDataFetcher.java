@@ -1,22 +1,23 @@
 package com.example.netflixdgs;
 
-import java.net.URI;
+//import java.net.URI;
+//import java.util.stream.Collectors;
+//import org.springframework.stereotype.Service;
+//import org.springframework.web.reactive.function.client.WebClient;
+//import reactor.core.publisher.Mono;
+//import reactor.netty.http.client.HttpClient;
+//import reactor.netty.transport.ProxyProvider;
+//import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsQuery;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
-import reactor.netty.http.client.HttpClient;
-import reactor.netty.transport.ProxyProvider;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 
 @DgsComponent
 public class PostsDataFetcher {
@@ -63,7 +64,7 @@ public class PostsDataFetcher {
             new ParameterizedTypeReference<List<Post>>() {}
         );
 
-				return responseEntity.getBody();
+		return responseEntity.getBody();
 				
 		// try {
 		// 	Mono<List<Post>> responseBody = webClient

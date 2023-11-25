@@ -15,15 +15,22 @@ repositories {
 	mavenCentral()
 }
 
+dependencyManagement {
+    imports {
+        mavenBom "com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:8.1.1"
+        mavenBom "io.projectreactor:reactor-bom:2023.0.0"
+    }
+}
+
 dependencies {
-	implementation(platform("com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:latest.release"))
-  implementation "com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter"
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-webflux'
-	implementation platform('io.projectreactor:reactor-bom:2023.0.0') 
-	implementation 'io.projectreactor.netty:reactor-netty-core' 
-	implementation 'io.projectreactor.netty:reactor-netty-http'
-  testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'io.projectreactor.netty:reactor-netty-core'
+    implementation 'io.projectreactor.netty:reactor-netty-http'
+    implementation 'org.apache.httpcomponents.core5:httpcore5:5.2.3'
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.3-alpha1'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 tasks.named('test') {
