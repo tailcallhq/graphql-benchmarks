@@ -7,7 +7,10 @@ on:
     branches:
       - main
 
-permissions: write-all
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
 
 jobs:
   build:
@@ -17,10 +20,10 @@ jobs:
 
       - name: Checkout (GitHub)
         uses: actions/checkout@v4
-#        with:
-#          token: ${{ secrets.GITHUB_TOKEN }}
-#          ref: ${{ github.event.pull_request.head.ref }}
-#          repository: ${{ github.event.pull_request.head.repo.full_name }}
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
 
       - name: Set up Git
         run: |
