@@ -16,19 +16,19 @@ jobs:
   build:
     runs-on: benchmarking-runner
     if: github.event.head_commit.message != 'Update performance results in README.md'
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
 
       - name: Checkout (GitHub)
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          ref: ${{ github.event.pull_request.head.ref }}
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
 
-      - name: Set up Git
-        run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
+#      - name: Set up Git
+#        run: |
+#          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+#          git config --global user.name "github-actions[bot]"
 
       - name: Build devcontainer and run benchmarks
         uses: devcontainers/ci@v0.3
@@ -47,7 +47,6 @@ jobs:
         uses: peter-evans/commit-comment@v3
         with:
           body-path: 'results.md'
-          token: ${{ secrets.GITHUB_TOKEN }}
           reactions: eyes
 
       - name: Commit and push changes (on main branch)
