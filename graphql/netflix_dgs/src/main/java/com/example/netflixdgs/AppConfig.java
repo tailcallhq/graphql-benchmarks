@@ -20,7 +20,7 @@ public class AppConfig {
         // the maximum number of connections. See https://github.com/tailcallhq/graphql-benchmarks/blob/main/wrk/bench.sh
         connectionManager.setMaxTotal(100); 
 
-        final HttpHost proxy = new HttpHost("localhost", 3000);        
+        final HttpHost proxy = new HttpHost("127.0.0.1", 3000);        
         final CloseableHttpClient httpClient = HttpClients.custom()
                 .setConnectionManager(connectionManager)
                 .setConnectionManagerShared(true)
