@@ -27,7 +27,6 @@ public class AppConfig {
                 .setProxy(proxy)
                 .build();
         final HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory(httpClient);
-            	
         return new RestTemplate(factory);
     }
 
