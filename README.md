@@ -46,10 +46,10 @@ Get started with the benchmarks:
 
 | Server | Requests/sec | Latency (ms) |
 |--------:|--------------:|--------------:|
-| [Tailcall] | `27,100.70` | `3.68` |
-| [Gqlgen] | `20,715.80` | `5.66` |
-| [Caliban] | `10,406.60` | `9.60` |
-| [Apollo GraphQL] | `3,953.43` | `25.46` |
+| [Tailcall] | `6,966.69` | `14.33` |
+| [Caliban] | `6,468.09` | `15.46` |
+| [Gqlgen] | `2,125.08` | `48.88` |
+| [Apollo GraphQL] | `1,796.95` | `55.55` |
 
 <!-- PERFORMANCE_RESULTS_END -->
 
