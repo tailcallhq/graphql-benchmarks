@@ -30,6 +30,8 @@ function runBenchmark() {
     bash "$serviceScript" &   # Run in daemon mode
     sleep 15   # Give some time for the service to start up
 
+    bash "test_query.sh"
+
     # Warmup run
     bash "$benchmarkScript" > /dev/null
     sleep 1   # Give some time for apps to finish in-flight requests from warmup
