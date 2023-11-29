@@ -19,6 +19,7 @@ public class AppConfig {
         final PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
         // the maximum number of connections. See https://github.com/tailcallhq/graphql-benchmarks/blob/main/wrk/bench.sh
         connectionManager.setMaxTotal(100); 
+        connectionManager.setDefaultMaxPerRoute(20);
 
         final HttpHost proxy = new HttpHost("127.0.0.1", 3000);        
         final CloseableHttpClient httpClient = HttpClients.custom()
