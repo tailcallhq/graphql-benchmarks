@@ -2,9 +2,9 @@
 
 | Server | Requests/sec | Latency (ms) |
 |--------:|--------------:|--------------:|
-| [Tailcall] | `7,068.57` | `14.09` |
-| [Caliban] | `6,695.44` | `14.93` |
-| [Gqlgen] | `2,152.47` | `48.13` |
-| [Apollo GraphQL] | `1,851.09` | `53.92` |
+| [Tailcall] | `6,980.77` | `14.30` |
+| [Caliban] | `6,686.36` | `14.93` |
+| [Gqlgen] | `2,114.17` | `48.98` |
+| [Apollo GraphQL] | `1,862.61` | `53.50` |
 
 <!-- PERFORMANCE_RESULTS_END -->
