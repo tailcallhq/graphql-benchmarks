@@ -27,7 +27,7 @@ public class AppConfig {
         final PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
         // the maximum number of connections. See https://github.com/tailcallhq/graphql-benchmarks/blob/main/wrk/bench.sh
         connectionManager.setMaxTotal(100); 
-        connectionManager.setDefaultMaxPerRoute(20);
+        connectionManager.setDefaultMaxPerRoute(100);
         
         final ConnectionKeepAliveStrategy keepAliveStrategy = new ConnectionKeepAliveStrategy() {
             public TimeValue getKeepAliveDuration(HttpResponse response, HttpContext context) {
