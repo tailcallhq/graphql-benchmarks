@@ -32,7 +32,7 @@ public class AppConfig {
         final ConnectionKeepAliveStrategy keepAliveStrategy = new ConnectionKeepAliveStrategy() {
             public TimeValue getKeepAliveDuration(HttpResponse response, HttpContext context) {
             	// Keep alive for 5 seconds
-                return TimeValue.of(5, TimeUnit.SECONDS);
+                return TimeValue.of(60, TimeUnit.SECONDS);
             }
         };
         
