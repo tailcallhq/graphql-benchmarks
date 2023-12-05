@@ -1,6 +1,6 @@
 module example.com/gqlgen-users
 
-go 1.21.4
+go 1.21.5
 
 require (
 	github.com/99designs/gqlgen v0.17.41
