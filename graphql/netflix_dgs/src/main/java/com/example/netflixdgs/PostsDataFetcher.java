@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 @DgsComponent
 public class PostsDataFetcher {
   private final RestTemplate restTemplate;
+  private static final ParameterizedTypeReference<List<Post>> typeReference = new ParameterizedTypeReference<List<Post>>() {};
 
  	@Autowired
   	public PostsDataFetcher(RestTemplate restTemplate) {
@@ -27,7 +28,7 @@ public class PostsDataFetcher {
             apiUrl,
             org.springframework.http.HttpMethod.GET,
             null,
-            new ParameterizedTypeReference<List<Post>>() {}
+            typeReference
         );
 
 		return responseEntity.getBody();
