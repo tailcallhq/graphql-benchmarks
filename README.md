@@ -37,6 +37,7 @@ Get started with the benchmarks:
 2. Once set up in Codespaces, initiate the benchmark tests:
 
 ```bash
+./setup.sh
 ./run_benchmarks.sh
 ```
 
