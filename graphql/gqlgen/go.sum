@@ -4,6 +4,8 @@ github.com/99designs/gqlgen v0.17.40 h1:/l8JcEVQ93wqIfmH9VS1jsAkwm6eAF1NwQn3N+SD
 github.com/99designs/gqlgen v0.17.40/go.mod h1:b62q1USk82GYIVjC60h02YguAZLqYZtvWml8KkhJps4=
 github.com/99designs/gqlgen v0.17.41 h1:C1/zYMhGVP5TWNCNpmZ9Mb6CqT1Vr5SHEWoTOEJ3v3I=
 github.com/99designs/gqlgen v0.17.41/go.mod h1:GQ6SyMhwFbgHR0a8r2Wn8fYgEwPxxmndLFPhU63+cJE=
+github.com/99designs/gqlgen v0.17.42 h1:BVWDOb2VVHQC5k3m6oa0XhDnxltLLrU4so7x/u39Zu4=
+github.com/99designs/gqlgen v0.17.42/go.mod h1:GQ6SyMhwFbgHR0a8r2Wn8fYgEwPxxmndLFPhU63+cJE=
 github.com/agnivade/levenshtein v1.1.1 h1:QY8M92nrzkmr798gCo3kmMyqXFzdQVpxLlGPRBij0P8=
 github.com/agnivade/levenshtein v1.1.1/go.mod h1:veldBMzWxcCG2ZvUTKD2kJNRdCk5hVbJomOvKkmgYbo=
 github.com/andreyvit/diff v0.0.0-20170406064948-c7f18ee00883 h1:bvNMNQO63//z+xNgfBlViaCIJKLlCJ6/fmUseuG0wVQ=
