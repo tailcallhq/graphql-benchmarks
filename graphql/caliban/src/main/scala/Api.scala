@@ -21,10 +21,10 @@ case class User(
 ) derives ServiceSchema.SemiAuto
 
 case class Post(
-    id: Int,
     userId: Int,
+    id: Int,
     title: String,
-    body: String,
+    body: String
 ) derives ServiceSchema.SemiAuto {
   @GQLField def user: RQuery[Service, User] = Service.user(userId)
 }

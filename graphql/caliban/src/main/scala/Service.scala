@@ -31,7 +31,7 @@ object Service {
       client.get[User](URI.create(BaseUrl + "/users/" + req.id))
     }
 
-    private given JsonValueCodec[User]       = JsonCodecMaker.make
-    private given JsonValueCodec[List[Post]] = JsonCodecMaker.make
+    private given JsonValueCodec[User]       = JsonCodecMaker.make(CodecMakerConfig.withDecodingOnly(true))
+    private given JsonValueCodec[List[Post]] = JsonCodecMaker.make(CodecMakerConfig.withDecodingOnly(true))
   }
 }

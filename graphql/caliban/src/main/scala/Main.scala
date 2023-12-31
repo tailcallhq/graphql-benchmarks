@@ -4,6 +4,7 @@ import zio.*
 
 object Main extends ZIOAppDefault {
   private val api = graphQL(RootResolver(Query(Service.posts)))
+  override val bootstrap: ZLayer[ZIOAppArgs, Any, Any] = Runtime.removeDefaultLoggers
 
   def run =
     api
