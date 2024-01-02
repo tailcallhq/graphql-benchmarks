@@ -10,7 +10,7 @@ lazy val root = (project in file("."))
     run / javaOptions ++= Seq("-Xms4G", "-Xmx4G"),
     libraryDependencies ++= Seq(
       "com.github.ghostdogpr"                 %% "caliban-quick"         % "2.5.0",
-      "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-core"   % "2.26.2",
+      "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-core"   % "2.27.0",
       "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.26.2" % Provided,
       "org.apache.httpcomponents.client5"      % "httpclient5"           % "5.3"
     )
