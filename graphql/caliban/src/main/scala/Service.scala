@@ -24,14 +24,21 @@ object Service {
       client.get[List[Post]](uri)
     }
 
-    def user(id: Int): TaskQuery[User] = ZQuery.fromRequest(GetUser(id))(usersDS)
+    def user(id: Int): TaskQuery[User] =
+      UsersDataSource.get(id)
 
-    private case class GetUser(id: Int) extends Request[Throwable, User]
-    private val usersDS = DataSource.fromFunctionZIO("UsersDataSource") { (req: GetUser) =>
-      client.get[User](URI.create(BaseUrl + "/users/" + req.id))
+    private object UsersDataSource {
+      def get(id: Int): TaskQuery[User] = ZQuery.fromRequest(Req(id))(usersDS)
+
+      private case class Req(id: Int) extends Request[Throwable, User]
+
+      private val usersDS = DataSource.fromFunctionZIO("UsersDataSource") { (req: Req) =>
+        client.get[User](URI.create(BaseUrl + "/users/" + req.id))
+      }
+
+      private given JsonValueCodec[User] = JsonCodecMaker.make(CodecMakerConfig.withDecodingOnly(true))
     }
 
-    private given JsonValueCodec[User]       = JsonCodecMaker.make(CodecMakerConfig.withDecodingOnly(true))
     private given JsonValueCodec[List[Post]] = JsonCodecMaker.make(CodecMakerConfig.withDecodingOnly(true))
   }
 }
