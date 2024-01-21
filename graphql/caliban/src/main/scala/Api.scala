@@ -1,7 +1,9 @@
 import caliban.*
 import caliban.schema.Schema.*
+import caliban.schema.Annotations.GQLField
 import caliban.schema.{Schema, SchemaDerivation}
 import zio.*
+import zio.query.RQuery
 
 object ServiceSchema extends SchemaDerivation[Service]
 
@@ -19,9 +21,10 @@ case class User(
 ) derives ServiceSchema.SemiAuto
 
 case class Post(
-    id: Int,
     userId: Int,
+    id: Int,
     title: String,
-    body: String,
-    user: RIO[Service, User]
-) derives ServiceSchema.SemiAuto
+    body: String
+) derives ServiceSchema.SemiAuto {
+  @GQLField def user: RQuery[Service, User] = Service.user(userId)
+}

@@ -17,7 +17,7 @@ object Client {
 
     private def mkCallback[A](cb: ZIO[Any, Throwable, A] => Unit)(using JsonValueCodec[A], Trace) =
       new FutureCallback[SimpleHttpResponse] {
-        def completed(result: SimpleHttpResponse): Unit = cb(ZIO.succeed(readFromArray[A](result.getBodyBytes)))
+        def completed(result: SimpleHttpResponse): Unit = cb(ZIO.attempt(readFromArray[A](result.getBodyBytes)))
         def failed(ex: Exception): Unit                 = cb(ZIO.fail(ex))
         def cancelled(): Unit                           = cb(ZIO.fail(new InterruptedException("cancelled")))
       }
