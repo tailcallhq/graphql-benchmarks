@@ -61,5 +61,7 @@ runBenchmark "graphql/gqlgen/run.sh"
 
 runBenchmark "graphql/tailcall/run.sh"
 
+runBenchmark "graphql/async_graphql/run.sh"
+
 # Now, analyze all results together
 bash analyze.sh "${allResults[@]}"

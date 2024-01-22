@@ -1,0 +1,18 @@
+[package]
+name = "async_graphql_tailcall"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1"
+async-trait = "0.1"
+async-graphql = "7"
+async-graphql-axum = "7"
+axum = "0.7"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "net", "parking_lot"] }
+reqwest = { version = "0.11", features = ["json"] }
+hyper = { version = "1", features = ["client", "http1", "http2"] }
+hyper-util = "0.1"
+serde = "1"
+serde_json = "1"
+dataloader = "0.17"    # Rust implementation of Facebook's DataLoader using async-await.
