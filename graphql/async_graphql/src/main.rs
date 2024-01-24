@@ -57,7 +57,7 @@ impl QueryRoot {
     }
 }
 
-#[tokio::main(worker_threads = 10)]
+#[tokio::main]
 async fn main() {
     let client = reqwest::ClientBuilder::new()
         .proxy(Proxy::all("http://127.0.0.1:3000").unwrap())
