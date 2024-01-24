@@ -12,7 +12,7 @@ lazy val root = (project in file("."))
       "com.github.ghostdogpr"                 %% "caliban-quick"         % "2.5.1",
       "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-core"   % "2.27.5",
       "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.27.5" % Provided,
-      "org.apache.httpcomponents.client5"      % "httpclient5"           % "5.3"
+      "org.apache.httpcomponents.client5"      % "httpclient5"           % "5.3.1"
     )
   )
 
