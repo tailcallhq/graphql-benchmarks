@@ -22,3 +22,7 @@ export PATH=$PATH:/root/.tailcall/bin
 cd graphql/caliban
 ./sbt compile
 cd ../../
+
+# For async-graphql
+./graphql/async_graphql/build.sh
+cd ../../
