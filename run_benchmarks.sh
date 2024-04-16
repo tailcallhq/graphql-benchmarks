@@ -1,17 +1,16 @@
 #!/bin/bash
 
-# Start services and run benchmarks
+# Function to kill a server running on a specific port
 function killServerOnPort() {
   local port="$1"
   local pid=$(lsof -t -i:"$port")
-
   if [ -n "$pid" ]; then
-    kill "$pid"
-    echo "Killed process running on port $port"
+    kill "$pid" && echo "Killed process running on port $port" || echo "Failed to kill process on port $port"
   else
     echo "No process found running on port $port"
   fi
 }
+
 allResults=()
 killServerOnPort 3000
 sh nginx/run.sh
@@ -26,60 +25,49 @@ fetch_date() {
 
 # Function to validate that the Date header changes every second
 validate_date_change() {
-  # Fetch the Date header for the first time
   local first_date=$(fetch_date)
   echo "First Date: $first_date"
-
-  # Ensure that the Date header is not empty
   if [ -z "$first_date" ]; then
     echo "Error: Date header is missing in the response."
-    return 0 # Indicates failure
+    return 0 # Failure
   fi
 
-  # Sleep for a second to ensure the next Date header should be different
   sleep 1
-
-  # Fetch the Date header for the second time
   local second_date=$(fetch_date)
   echo "Second Date: $second_date"
-
-  # Compare the two Date headers
   if [ "$first_date" = "$second_date" ]; then
     echo "Error: Date header did not change."
-    return 0 # Indicates failure
+    return 0 # Failure
   else
     echo "Success: Date header changes every second."
-    return 1 # Indicates success
+    return 1 # Success
   fi
 }
 
 function runBenchmark() {
+  local serviceScript="$1"
   killServerOnPort 8000
   sleep 5
-  local serviceScript="$1"
-  local benchmarkScript="wrk/bench.sh"
-
-  # Replace / with _
-  local sanitizedServiceScriptName=$(echo "$serviceScript" | tr '/' '_')
-
-  local resultFiles=("result1_${sanitizedServiceScriptName}.txt" "result2_${sanitizedServiceScriptName}.txt" "result3_${sanitizedServiceScriptName}.txt")
-
-  bash "$serviceScript" & # Run in daemon mode
-  sleep 15                # Give some time for the service to start up
-
-  bash "test_query.sh"
+  bash "$serviceScript" & # Start the server
+  sleep 15                # Wait for the server to start
 
   if validate_date_change; then
-    echo "Error: Date header did not change every second."
-    # Warmup run
-    bash "$benchmarkScript" >/dev/null
-    sleep 1 # Give some time for apps to finish in-flight requests from warmup
-    bash "$benchmarkScript" >/dev/null
-    sleep 1
-    bash "$benchmarkScript" >/dev/null
-    sleep 1
+    local benchmarkScript="wrk/bench.sh"
+    local resultFiles=("result1_${serviceScript}.txt" "result2_${serviceScript}.txt" "result3_${serviceScript}.txt")
 
-    # 3 benchmark runs
+    # Warmup phase
+    bash "$benchmarkScript" >/dev/null # Warmup run to stabilize performance
+    sleep 1                            # Short pause between warmup and actual benchmark
+
+    # Warmup phase
+    bash "$benchmarkScript" >/dev/null # Warmup run to stabilize performance
+    sleep 1                            # Short pause between warmup and actual benchmark
+
+    # Warmup phase
+    bash "$benchmarkScript" >/dev/null # Warmup run to stabilize performance
+    sleep 1                            # Short pause between warmup and actual benchmark
+
+    # Actual benchmarking
     for resultFile in "${resultFiles[@]}"; do
       bash "$benchmarkScript" >"$resultFile"
       allResults+=("$resultFile")
@@ -87,20 +75,10 @@ function runBenchmark() {
   fi
 }
 
-runBenchmark "graphql/apollo_server/run.sh"
-cd graphql/apollo_server/
-npm stop
-cd ../../
+# Run benchmarks for each service
+for script in "graphql/apollo_server/run.sh" "graphql/caliban/run.sh" "graphql/netflix_dgs/run.sh" "graphql/gqlgen/run.sh" "graphql/tailcall/run.sh" "graphql/async_graphql/run.sh"; do
+  runBenchmark "$script"
+done
 
-runBenchmark "graphql/caliban/run.sh"
-
-runBenchmark "graphql/netflix_dgs/run.sh"
-
-runBenchmark "graphql/gqlgen/run.sh"
-
-runBenchmark "graphql/tailcall/run.sh"
-
-runBenchmark "graphql/async_graphql/run.sh"
-
-# Now, analyze all results together
+# Analyze all results
 bash analyze.sh "${allResults[@]}"
