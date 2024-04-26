@@ -48,12 +48,12 @@ Get started with the benchmarks:
 
 | Server | Requests/sec | Latency (ms) |
 |--------:|--------------:|--------------:|
-| [Caliban] | `8,177.72` | `12.21` |
-| [Tailcall] | `8,071.37` | `12.38` |
-| [async-graphql] | `7,422.02` | `13.45` |
-| [Gqlgen] | `2,149.86` | `48.14` |
-| [Apollo GraphQL] | `1,756.79` | `56.71` |
-| [Netflix DGS] | `1,350.23` | `78.28` |
+| [Caliban] | `8,453.90` | `11.85` |
+| [Tailcall] | `8,300.99` | `12.04` |
+| [async-graphql] | `7,383.98` | `13.55` |
+| [Gqlgen] | `2,185.68` | `47.41` |
+| [Apollo GraphQL] | `1,839.03` | `54.16` |
+| [Netflix DGS] | `1,347.54` | `78.74` |
 
 <!-- PERFORMANCE_RESULTS_END -->
 
