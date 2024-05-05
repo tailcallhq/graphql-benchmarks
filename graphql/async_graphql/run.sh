@@ -1,2 +1,6 @@
 #!/bin/bash
-cargo run --release
+
+set -e
+
+cd graphql/async_graphql
+./target/release/async_graphql_tailcall

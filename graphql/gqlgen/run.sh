@@ -1,3 +1,5 @@
 #!/bin/bash
-go build -o main main.go
+pwd
+cd graphql/gqlgen
+pwd
 ./main
