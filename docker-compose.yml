@@ -1,7 +1,7 @@
 version: "3"
 services:
   nginx:
-    image: nginx:latest
+    image: nginx
     ports:
       - "3000:3000"
     expose:
@@ -19,7 +19,7 @@ services:
           nginx -c /home/app/nginx.conf
           tail -F /dev/null
   apollo_server:
-    image: "node:latest"
+    image: node
     working_dir: /home/node/app
     depends_on:
       - nginx
@@ -43,7 +43,7 @@ services:
         npm start
         tail -F /dev/null
   async_graphql:
-    image: rust:latest
+    image: rust
     working_dir: /home/app/
     volumes:
       - ./graphql/async_graphql/src:/home/app/src
@@ -63,7 +63,7 @@ services:
         - |
           cargo run --release
   caliban:
-    image: openjdk:latest
+    image: openjdk
     working_dir: /home/app/
     volumes:
       - ./graphql/caliban/:/home/app/
@@ -80,7 +80,7 @@ services:
       - |
         ./sbt run
   gqlgen:
-    image: golang:latest
+    image: golang
     working_dir: /home/app/
     volumes:
       - ./graphql/gqlgen/:/home/app/
@@ -97,7 +97,7 @@ services:
       - |
         go run main.go
   netflix_dgs:
-    image: gradle:latest
+    image: gradle
     working_dir: /home/app/
     volumes:
       - ./graphql/netflix_dgs/:/home/app/
@@ -114,7 +114,7 @@ services:
       - |
         ./gradlew bootRun
   tailcall:
-    image: node:latest
+    image: node
     working_dir: /home/app/
     volumes:
       - ./graphql/tailcall/benchmark.graphql:/home/app/benchmark.graphql
