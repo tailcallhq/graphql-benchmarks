@@ -59,8 +59,12 @@ impl QueryRoot {
 
 #[tokio::main]
 async fn main() {
+    let nginx_host = std::env::var("NGINX_HOST").unwrap_or("127.0.0.1".into());
+    let nginx_port = std::env::var("NGINX_PORT").unwrap_or("3000".into());
+    let nginx_url = format!("http://{}:{}", nginx_host, nginx_port);
+
     let client = reqwest::ClientBuilder::new()
-        .proxy(Proxy::all("http://127.0.0.1:3000").unwrap())
+        .proxy(Proxy::all(nginx_url).unwrap())
         .tcp_keepalive(Some(Duration::from_secs(60)))
         .tcp_nodelay(true)
         .no_gzip()
@@ -75,10 +79,11 @@ async fn main() {
 
     let app = Router::new().route("/graphql", get(graphiql).post_service(GraphQL::new(schema)));
 
+    let listener = std::net::TcpListener::bind("0.0.0.0:8000").unwrap();
+    listener.set_nonblocking(true).unwrap();
+
     println!("GraphiQL IDE: http://localhost:8000");
 
-    let listener = std::net::TcpListener::bind("127.0.0.1:8000").unwrap();
-    listener.set_nonblocking(true).unwrap();
     axum::serve(TcpListener::from_std(listener).unwrap(), app)
         .await
         .unwrap();

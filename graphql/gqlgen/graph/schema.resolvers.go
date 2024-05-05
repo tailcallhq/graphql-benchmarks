@@ -9,11 +9,12 @@ import (
 	"net/url"
 	"example.com/gqlgen-users/graph/model"
 	"time"
+	"os"
 )
 
 var proxyURL = &url.URL{
 	Scheme: "http", // or "https" if your proxy is using HTTPS
-	Host:   "127.0.0.1:3000",
+	Host: os.Getenv("NGINX_HOST") + ":" + os.Getenv("NGINX_PORT"),
 }
 
 // Global HTTP client for reuse

@@ -41,8 +41,8 @@ const resolvers = {
         const response = await axiosInstance.get('http://jsonplaceholder.typicode.com/posts', {
           proxy: {
             protocol: 'http',
-            host: '127.0.0.1',
-            port: 3000
+            host: process.env.NGINX_HOST,
+            port: process.env.NGINX_PORT
           },
         });
         return response.data;
@@ -58,5 +58,8 @@ const server = new ApolloServer({typeDefs, resolvers});
 const { url } = await startStandaloneServer(server, {
   listen: { port: 8000 },
 });
+
+console.log('NGINX_HOST: ', process.env.NGINX_HOST);
+console.log('NGINX_PORT: ', process.env.NGINX_PORT);
 
 console.log(`🚀  Server ready at: ${url}`);

@@ -8,6 +8,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 
 import java.util.concurrent.TimeUnit;
+import java.util.Map;
 
 import org.apache.hc.client5.http.ConnectionKeepAliveStrategy;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -35,8 +36,11 @@ public class AppConfig {
                 return TimeValue.of(60, TimeUnit.SECONDS);
             }
         };
-        
-        final HttpHost proxy = new HttpHost("127.0.0.1", 3000);        
+
+        final Map<String, String> env = System.getenv();
+        final String nginxHost = env.get("NGINX_HOST");
+        final int nginxPort = Integer.parseInt(env.get("NGINX_PORT"));
+        final HttpHost proxy = new HttpHost(nginxHost, nginxPort);
         final DefaultProxyRoutePlanner routePlanner = new DefaultProxyRoutePlanner(proxy);
         final CloseableHttpClient httpClient = HttpClients.custom()
         		.setRoutePlanner(routePlanner)

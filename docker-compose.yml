@@ -1,0 +1,136 @@
+version: "3"
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "3000:3000"
+    expose:
+      - "3000"
+    working_dir: /home/app
+    volumes:
+        - ./nginx/nginx.conf:/home/app/nginx.conf
+        - ./nginx/run.sh:/home/app/run.sh
+    networks:
+      - network
+    command:
+        - /bin/sh
+        - -c
+        - |
+          sh run.sh
+          tail -F /dev/null
+  apollo_server:
+    image: "node:latest"
+    working_dir: /home/node/app
+    depends_on:
+      - nginx
+    networks:
+      - network
+    environment:
+      - NGINX_HOST=nginx
+      - NGINX_PORT=3000
+    volumes:
+      - ./graphql/apollo_server/index.js:/home/node/app/index.js
+      - ./graphql/apollo_server/package.json:/home/node/app/package.json
+      - ./graphql/apollo_server/package-lock.json:/home/node/app/package-lock.json
+      - ./graphql/apollo_server/run.sh:/home/node/app/run.sh
+    ports:
+      - "8001:8000"
+    command:
+      - /bin/sh
+      - -c
+      - |
+        sh run.sh
+        tail -F /dev/null
+  async_graphql:
+    image: rust:latest
+    working_dir: /home/app/
+    volumes:
+      - ./graphql/async_graphql/src:/home/app/src
+      - ./graphql/async_graphql/Cargo.toml:/home/app/Cargo.toml
+      - ./graphql/async_graphql/Cargo.lock:/home/app/Cargo.lock
+      - ./graphql/async_graphql/run.sh:/home/app/run.sh
+    networks:
+      - network
+    environment:
+      - NGINX_HOST=nginx
+      - NGINX_PORT=3000
+    ports:
+      - "8002:8000"
+    command:
+        - /bin/sh
+        - -c
+        - |
+          sh run.sh
+  caliban:
+    image: openjdk:latest
+    working_dir: /home/app/
+    volumes:
+      - ./graphql/caliban/:/home/app/
+    networks:
+      - network
+    environment:
+      - NGINX_HOST=nginx
+      - NGINX_PORT=3000
+    ports:
+      - "8003:8000"
+    command:
+      - /bin/sh
+      - -c
+      - |
+        sh run.sh
+  gqlgen:
+    image: golang:latest
+    working_dir: /home/app/
+    volumes:
+      - ./graphql/gqlgen/:/home/app/
+    networks:
+      - network
+    environment:
+      - NGINX_HOST=nginx
+      - NGINX_PORT=3000
+    ports:
+      - "8004:8000"
+    command:
+      - /bin/sh
+      - -c
+      - |
+        sh run.sh
+  netflix_dgs:
+    image: gradle:latest
+    working_dir: /home/app/
+    volumes:
+      - ./graphql/netflix_dgs/:/home/app/
+    networks:
+      - network
+    environment:
+      - NGINX_HOST=nginx
+      - NGINX_PORT=3000
+    ports:
+      - "8005:8000"
+    command:
+      - /bin/sh
+      - -c
+      - |
+        sh run.sh
+  tailcall:
+    image: node:latest
+    working_dir: /home/app/
+    volumes:
+      - ./graphql/tailcall/benchmark.graphql:/home/app/benchmark.graphql
+    networks:
+      - network
+    environment:
+      - NGINX_HOST=nginx
+      - NGINX_PORT=3000
+    ports:
+      - "8006:8000"
+    command:
+      - /bin/sh
+      - -c
+      - |
+        npm i -g @tailcallhq/tailcall
+        tailcall start benchmark.graphql
+
+networks:
+  network:
+    driver: bridge

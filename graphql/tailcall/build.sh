@@ -1,2 +1,2 @@
-cd ../../../tailcall
-cargo build --release
+#cd ../../../tailcall
+#cargo build --release
