@@ -16,7 +16,7 @@ services:
         - /bin/sh
         - -c
         - |
-          sh run.sh
+          nginx -c /home/app/nginx.conf
           tail -F /dev/null
   apollo_server:
     image: "node:latest"
@@ -39,7 +39,8 @@ services:
       - /bin/sh
       - -c
       - |
-        sh run.sh
+        npm i
+        npm start
         tail -F /dev/null
   async_graphql:
     image: rust:latest
@@ -60,7 +61,7 @@ services:
         - /bin/sh
         - -c
         - |
-          sh run.sh
+          cargo run --release
   caliban:
     image: openjdk:latest
     working_dir: /home/app/
@@ -77,7 +78,7 @@ services:
       - /bin/sh
       - -c
       - |
-        sh run.sh
+        ./sbt run
   gqlgen:
     image: golang:latest
     working_dir: /home/app/
@@ -94,7 +95,7 @@ services:
       - /bin/sh
       - -c
       - |
-        sh run.sh
+        go run main.go
   netflix_dgs:
     image: gradle:latest
     working_dir: /home/app/
@@ -111,7 +112,7 @@ services:
       - /bin/sh
       - -c
       - |
-        sh run.sh
+        ./gradlew bootRun
   tailcall:
     image: node:latest
     working_dir: /home/app/
