@@ -78,8 +78,8 @@ EOF
 
 # Move PNGs to assets
 mkdir -p assets
-mv req_sec_histogram.png assets/
-mv latency_histogram.png assets/
+#mv req_sec_histogram.png assets/
+#mv latency_histogram.png assets/
 
 # Declare an associative array for server RPS
 declare -A serverRPS

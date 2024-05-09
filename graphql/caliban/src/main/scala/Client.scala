@@ -38,7 +38,7 @@ object Client {
         .succeed {
           HttpAsyncClients
             .custom()
-            .setProxy(new HttpHost("http", "127.0.0.1", 3000))
+            .setProxy(new HttpHost("http", sys.env.get("NGINX_HOST").getOrElse("127.0.0.1"), sys.env.get("NGINX_PORT").getOrElse("3000").toIntOption.getOrElse(3000)))
             .setConnectionManager({
               PoolingAsyncClientConnectionManagerBuilder
                 .create()

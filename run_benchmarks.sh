@@ -1,67 +1,41 @@
 #!/bin/bash
-
-# Start services and run benchmarks
-function killServerOnPort() {
-    local port="$1"
-    local pid=$(lsof -t -i:"$port")
-
-    if [ -n "$pid" ]; then
-        kill "$pid"
-        echo "Killed process running on port $port"
-    else
-        echo "No process found running on port $port"
-    fi
-}
+docker compose up -d
+sleep 10
 allResults=()
-killServerOnPort 3000
-sh nginx/run.sh
 
 function runBenchmark() {
-    killServerOnPort 8000
-    sleep 5
-    local serviceScript="$1"
+    local port="$2"
+    local serviceName="$1"
     local benchmarkScript="wrk/bench.sh"
-    
-    # Replace / with _
-    local sanitizedServiceScriptName=$(echo "$serviceScript" | tr '/' '_')
-    
-    local resultFiles=("result1_${sanitizedServiceScriptName}.txt" "result2_${sanitizedServiceScriptName}.txt" "result3_${sanitizedServiceScriptName}.txt")
 
-    bash "$serviceScript" &   # Run in daemon mode
-    sleep 15   # Give some time for the service to start up
+    local resultFiles=("result1_${serviceName}.txt" "result2_${serviceName}.txt" "result3_${serviceName}.txt")
 
-    bash "test_query.sh"
+    bash "test_query.sh" $port
 
     # Warmup run
-    bash "$benchmarkScript" > /dev/null
+    bash "$benchmarkScript" $port > /dev/null
     sleep 1   # Give some time for apps to finish in-flight requests from warmup
-    bash "$benchmarkScript" > /dev/null
+    bash "$benchmarkScript" $port > /dev/null
     sleep 1
-    bash "$benchmarkScript" > /dev/null
+    bash "$benchmarkScript" $port > /dev/null
     sleep 1
 
 
     # 3 benchmark runs
     for resultFile in "${resultFiles[@]}"; do
-        bash "$benchmarkScript" > "$resultFile"
+        bash "$benchmarkScript" $port > "$resultFile"
         allResults+=("$resultFile")
     done
 }
 
-runBenchmark "graphql/apollo_server/run.sh"
-cd graphql/apollo_server/
-npm stop
-cd ../../
+runBenchmark "apollo_server" 8001
+runBenchmark "async_graphql" 8002
+runBenchmark "caliban" 8003
+runBenchmark "gqlgen" 8004
+runBenchmark "netflix_dgs" 8005
+runBenchmark "tailcall" 8006
 
-runBenchmark "graphql/caliban/run.sh"
-
-runBenchmark "graphql/netflix_dgs/run.sh"
-
-runBenchmark "graphql/gqlgen/run.sh"
-
-runBenchmark "graphql/tailcall/run.sh"
-
-runBenchmark "graphql/async_graphql/run.sh"
+docker compose down
 
 # Now, analyze all results together
 bash analyze.sh "${allResults[@]}"
