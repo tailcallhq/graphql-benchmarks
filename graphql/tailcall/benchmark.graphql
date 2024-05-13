@@ -4,7 +4,6 @@ schema
     baseURL: "http://jsonplaceholder.typicode.com"
     poolMaxIdlePerHost: 200
     tcpKeepAlive: 60
-    batch: {delay: 0}
     proxy: { url: "http://127.0.0.1:3000" }
   ) {
   query: Query
