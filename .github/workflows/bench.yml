@@ -25,11 +25,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
 
-#      - name: Set up Git
-#        run: |
-#          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-#          git config --global user.name "github-actions[bot]"
-
       - name: Build devcontainer and run benchmarks
         uses: devcontainers/ci@v0.3
         with:
@@ -42,12 +37,18 @@ jobs:
       - name: Print benchmark results
         run: cat ./results.md
 
+      - name: "Upload Artifact"
+        uses: actions/upload-artifact@v4
+        with:
+          path: *.txt
+          retention-days: 120
+
       - name: Comment benchmark results on PR
         if: github.event_name == 'pull_request_target'
         uses: peter-evans/commit-comment@v3
         with:
-          sha : ${{ github.event.pull_request.head.sha }}
-          body-path: 'results.md'
+          sha: ${{ github.event.pull_request.head.sha }}
+          body-path: "results.md"
           reactions: eyes
 
       - name: Commit and push changes (on main branch)
