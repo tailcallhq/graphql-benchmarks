@@ -1,2 +1,4 @@
-cd ../../../tailcall
-cargo build --release
+#!/bin/bash
+pwd
+cd graphql/tailcall
+npm install
