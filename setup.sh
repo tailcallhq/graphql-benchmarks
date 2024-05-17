@@ -17,6 +17,7 @@ cd ../../
 # For tailcall:
 cd graphql/tailcall
 npm install
+cd ../../
 
 # For caliban
 cd graphql/caliban
