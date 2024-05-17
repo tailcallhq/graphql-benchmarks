@@ -4,9 +4,10 @@ import caliban.quick.*
 import zio.*
 
 object Main extends ZIOAppDefault {
-  private val api = graphQL(RootResolver(Query(Service.posts)))
-  override val bootstrap: ZLayer[ZIOAppArgs, Any, Any] = Runtime.removeDefaultLoggers
+  override val bootstrap: ZLayer[ZIOAppArgs, Any, Any] =
+    Runtime.removeDefaultLoggers ++ Runtime.disableFlags(RuntimeFlag.FiberRoots)
 
+  private val api = graphQL(RootResolver(Query(Service.posts)))
   def run =
     api
       .runServer(8000, apiPath = "/graphql")
