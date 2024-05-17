@@ -15,8 +15,8 @@ cd graphql/netflix_dgs
 cd ../../
 
 # For tailcall:
-curl -sSL https://raw.githubusercontent.com/tailcallhq/tailcall/main/install.sh | bash -s -- v0.82.19
-export PATH=$PATH:/root/.tailcall/bin
+cd graphql/tailcall
+npm install
 
 # For caliban
 cd graphql/caliban

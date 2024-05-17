@@ -1,0 +1,13 @@
+{
+  "name": "tailcall",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@tailcallhq/tailcall": "0.82.19"
+  }
+}
