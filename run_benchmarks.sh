@@ -20,6 +20,9 @@ function runBenchmark() {
     killServerOnPort 8000
     sleep 5
     local serviceScript="$1"
+
+    echo "$serviceScript"
+    
     local benchmarkScript="wrk/bench.sh"
     
     # Replace / with _
@@ -45,6 +48,8 @@ function runBenchmark() {
     for resultFile in "${resultFiles[@]}"; do
         bash "$benchmarkScript" > "$resultFile"
         allResults+=("$resultFile")
+        cat "$resultFile" >> "$logFile"
+        echo "--------------------------" >> "$logFile"
     done
 }
 

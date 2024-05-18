@@ -1,1 +1,1 @@
-wrk -d 10 -t 4 -c 100 -s $(pwd)/wrk/wrk.lua http://localhost:8000/graphql
+wrk -d 10 -t 4 -c 100 -s $(pwd)/wrk/wrk.lua http://127.0.0.1:8000/graphql

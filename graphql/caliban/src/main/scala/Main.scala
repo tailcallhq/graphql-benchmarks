@@ -10,5 +10,5 @@ object Main extends ZIOAppDefault {
   def run =
     api
       .runServer(8000, apiPath = "/graphql")
-      .provide(Service.layer, Client.live, ZLayer.scoped(Configurator.setQueryExecution(QueryExecution.Batched)))
+      .provide(Service.layer, Client.live, ZLayer.scoped(Configurator.setQueryExecution(QueryExecution.Parallel)))
 }

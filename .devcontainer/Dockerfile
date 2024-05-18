@@ -13,6 +13,9 @@ RUN apt-get update && apt-get install -y \
   wget \
   wrk \
   gnuplot \
+  linux-tools-common \
+  linux-tools-generic \
+  linux-tools-$(uname -r) \
   && rm -rf /var/lib/apt/lists/*
 
 # Install the latest LTS version of Node.js
@@ -22,6 +25,10 @@ RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
 # Install Go
 RUN wget https://dl.google.com/go/go1.21.1.linux-amd64.tar.gz -O- | tar xz -C /usr/local
 ENV PATH=$PATH:/usr/local/go/bin
+
+# Install FlameGraph
+RUN git clone https://github.com/brendangregg/FlameGraph.git /usr/local/src/FlameGraph && \
+    chmod +x /usr/local/src/FlameGraph/*.pl
 
 # Nginx configurations
 RUN mkdir -p /var/cache/nginx-cache \
