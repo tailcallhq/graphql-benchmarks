@@ -40,7 +40,7 @@ jobs:
       - name: "Upload Artifact"
         uses: actions/upload-artifact@v4
         with:
-          path: *.txt
+          path: "*.txt"
           retention-days: 120
 
       - name: Comment benchmark results on PR
