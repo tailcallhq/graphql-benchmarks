@@ -37,12 +37,6 @@ jobs:
       - name: Print benchmark results
         run: cat ./results.md
 
-      - name: "Upload Artifact"
-        uses: actions/upload-artifact@v4
-        with:
-          path: *.txt
-          retention-days: 120
-
       - name: Comment benchmark results on PR
         if: github.event_name == 'pull_request_target'
         uses: peter-evans/commit-comment@v3
