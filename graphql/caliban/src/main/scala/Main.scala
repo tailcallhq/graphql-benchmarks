@@ -27,10 +27,6 @@ object Main extends ZIOAppDefault {
         Client.live,
         Server.customized,
         ZLayer.succeed(Server.Config.default.port(8000)),
-        ZLayer.succeed(
-          NettyConfig.default
-            .maxThreads(java.lang.Runtime.getRuntime.availableProcessors())
-            .leakDetection(LeakDetectionLevel.DISABLED)
-        )
+        ZLayer.succeed(NettyConfig.default.leakDetection(LeakDetectionLevel.DISABLED))
       )
 }
