@@ -1,9 +1,9 @@
 import com.github.plokhotnyuk.jsoniter_scala.core.*
-import org.apache.hc.client5.http.async.methods.*
-import org.apache.hc.client5.http.impl.async.{CloseableHttpAsyncClient, HttpAsyncClients}
-import org.apache.hc.client5.http.impl.nio.PoolingAsyncClientConnectionManagerBuilder
-import org.apache.hc.core5.concurrent.FutureCallback
-import org.apache.hc.core5.http.HttpHost
+import org.apache.hc.client5.http.classic.methods.HttpGet
+import org.apache.hc.client5.http.impl.classic.{CloseableHttpClient, HttpClients}
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager
+import org.apache.hc.core5.http.io.HttpClientResponseHandler
+import org.apache.hc.core5.http.{ClassicHttpResponse, HttpHost}
 import zio.*
 
 import java.net.*
@@ -13,42 +13,34 @@ trait Client {
 }
 
 object Client {
-  private final class Live(client: CloseableHttpAsyncClient) extends Client {
+  private final class Live(client: CloseableHttpClient) extends Client {
 
-    private def mkCallback[A](cb: ZIO[Any, Throwable, A] => Unit)(using JsonValueCodec[A], Trace) =
-      new FutureCallback[SimpleHttpResponse] {
-        def completed(result: SimpleHttpResponse): Unit = cb(ZIO.attempt(readFromArray[A](result.getBodyBytes)))
-        def failed(ex: Exception): Unit                 = cb(ZIO.fail(ex))
-        def cancelled(): Unit                           = cb(ZIO.fail(new InterruptedException("cancelled")))
-      }
+    private final class ResponseDecoder[A](using JsonValueCodec[A]) extends HttpClientResponseHandler[A] {
+      override def handleResponse(response: ClassicHttpResponse): A = readFromStream(response.getEntity.getContent)
+    }
 
-    def get[A](uri: URI)(using JsonValueCodec[A]): Task[A] =
-      ZIO.async[Any, Throwable, A] { cb =>
-        client.execute(
-          SimpleRequestProducer.create(SimpleRequestBuilder.get().setUri(uri).build),
-          SimpleResponseConsumer.create(),
-          mkCallback(cb)
-        )
-      }
+    def get[A](uri: URI)(using JsonValueCodec[A]): Task[A] = {
+      val req     = HttpGet(uri)
+      val decoder = new ResponseDecoder[A]
+      ZIO.attempt(client.execute(req, decoder))
+    }
   }
 
-  private val httpClient: TaskLayer[CloseableHttpAsyncClient] = ZLayer.scoped(
+  private val httpClient: TaskLayer[CloseableHttpClient] = ZLayer.scoped(
     ZIO.fromAutoCloseable(
       ZIO
         .succeed {
-          HttpAsyncClients
+          HttpClients
             .custom()
             .setProxy(new HttpHost("http", "127.0.0.1", 3000))
             .setConnectionManager({
-              PoolingAsyncClientConnectionManagerBuilder
-                .create()
-                .setMaxConnTotal(2000)
-                .setMaxConnPerRoute(200)
-                .build()
+              val cm = new PoolingHttpClientConnectionManager()
+              cm.setMaxTotal(2000)
+              cm.setDefaultMaxPerRoute(200)
+              cm
             })
             .build()
         }
-        .tap(c => ZIO.succeed(c.start()))
     )
   )
 
