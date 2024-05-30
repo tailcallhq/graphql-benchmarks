@@ -13,8 +13,7 @@ lazy val root = (project in file("."))
       "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-core"   % "2.29.0",
       "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.29.0" % Provided,
       "org.apache.httpcomponents.client5"      % "httpclient5"           % "5.3.1",
-      "dev.zio"                               %% "zio"                   % "2.1.1",
-      "dev.zio"                               %% "zio-http"              % "3.0.0-RC6+23-5441a052-SNAPSHOT"
+      "dev.zio"                               %% "zio"                   % "2.1.1"
     )
   )
 
