@@ -2,11 +2,11 @@
 
 | Server | Requests/sec | Latency (ms) |
 |--------:|--------------:|--------------:|
-| [Caliban] | `9,094.36` | `11.35` |
-| [async-graphql] | `7,783.20` | `12.85` |
-| [Tailcall] | `7,446.34` | `13.42` |
-| [Gqlgen] | `2,195.45` | `47.09` |
-| [Apollo GraphQL] | `1,852.81` | `53.77` |
-| [Netflix DGS] | `1,347.08` | `77.80` |
+| [Caliban] | `8,817.18` | `11.73` |
+| [async-graphql] | `7,663.75` | `13.03` |
+| [Tailcall] | `7,196.93` | `13.87` |
+| [Gqlgen] | `2,139.77` | `48.14` |
+| [Apollo GraphQL] | `1,772.28` | `56.22` |
+| [Netflix DGS] | `1,323.11` | `79.17` |
 
 <!-- PERFORMANCE_RESULTS_END -->
