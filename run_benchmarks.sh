@@ -36,7 +36,7 @@ validate_date_change() {
     return 0 # Failure
   fi
 
-  sleep 1
+  sleep 2
   local second_date=$(fetch_date)
   echo "Second Date: $second_date"
   if [ "$first_date" = "$second_date" ]; then
