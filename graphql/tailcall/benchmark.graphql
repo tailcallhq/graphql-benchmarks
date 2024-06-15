@@ -5,6 +5,7 @@ schema
     poolMaxIdlePerHost: 200
     tcpKeepAlive: 60
     proxy: { url: "http://127.0.0.1:3000" }
+    dedupe: true
   ) {
   query: Query
 }
