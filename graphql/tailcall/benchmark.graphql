@@ -1,11 +1,10 @@
 schema
-  @server(port: 8000)
+  @server(port: 8000, dedupe: true)
   @upstream(
     baseURL: "http://jsonplaceholder.typicode.com"
     poolMaxIdlePerHost: 200
     tcpKeepAlive: 60
-    proxy: { url: "http://127.0.0.1:3000" }
-    dedupe: true
+    proxy: { url: "http://127.0.0.1:3000" }    
   ) {
   query: Query
 }
