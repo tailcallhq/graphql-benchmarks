@@ -15,6 +15,7 @@ type Post {
   id: Int!
   title: String!
   body: String!
+  user: User
 }
 
 type Query {
