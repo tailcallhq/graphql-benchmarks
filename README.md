@@ -74,7 +74,14 @@ A client (`wrk`) sends requests to a GraphQL server to fetch post titles. The Gr
 ```graphql
 {
   posts {
+    id
+    userId
     title
+    user {
+      id
+      name
+      email
+    }
   }
 }
 ```
@@ -113,6 +120,7 @@ type Post {
   userId: Int!
   title: String!
   body: String!
+  user: User
 }
 ```
 
