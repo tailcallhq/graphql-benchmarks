@@ -4,7 +4,7 @@
 DB_NAME="db"
 DB_USER="user"
 DB_PASSWORD="password"
-DB_HOST="127.0.0.1"
+DB_HOST="0.0.0.0"
 DB_PORT="5432"
 
 # Create a Docker network
