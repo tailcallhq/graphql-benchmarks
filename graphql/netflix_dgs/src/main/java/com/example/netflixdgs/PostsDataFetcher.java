@@ -38,6 +38,10 @@ public class PostsDataFetcher {
 
     List<Post> posts = responseEntity.getBody();
 
+    if (!dfe.getSelectionSet().contains("user")) {
+      return CompletableFuture.completedFuture(posts);
+    }
+
     DataLoader<Integer, User> userDataLoader = dfe.getDataLoader("users");
 
     List<CompletableFuture<Void>> futures = posts.stream()

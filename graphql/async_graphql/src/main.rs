@@ -76,13 +76,16 @@ impl Loader<u32> for UserLoader {
 impl QueryRoot {
     pub async fn posts(&self, ctx: &Context<'_>) -> anyhow::Result<Vec<Post>> {
         let client = ctx.data_unchecked::<reqwest::Client>();
-
         let posts = client
             .get(BASE_URL_POSTS)
             .send()
             .await?
             .json::<Vec<Post>>()
             .await?;
+
+        if !ctx.look_ahead().field("user").exists() {
+            return Ok(posts);
+        }
 
         let user_loader = ctx.data_unchecked::<DataLoader<UserLoader>>();
         let mut post_user_futures = Vec::new();

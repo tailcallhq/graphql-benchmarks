@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"example.com/gqlgen-users/graph/model"
+	"github.com/99designs/gqlgen/graphql"
 	"github.com/graph-gophers/dataloader"
 )
 
@@ -73,19 +74,26 @@ func (r *queryResolver) Posts(ctx context.Context) ([]*model.Post, error) {
 		return nil, err
 	}
 
-	var wg sync.WaitGroup
-	wg.Add(len(posts))
-	for _, post := range posts {
-		go func(post *model.Post) {
-			defer wg.Done()
-			user, err := userLoader.Load(ctx, dataloader.StringKey(fmt.Sprintf("%d", post.UserID)))()
-			if err != nil {
-				return
+	fields := graphql.CollectAllFields(ctx)
+
+	for _, field := range fields {
+		if field == "user" {
+			var wg sync.WaitGroup
+			wg.Add(len(posts))
+			for _, post := range posts {
+				go func(post *model.Post) {
+					defer wg.Done()
+					user, err := userLoader.Load(ctx, dataloader.StringKey(fmt.Sprintf("%d", post.UserID)))()
+					if err != nil {
+						return
+					}
+					post.User = user.(*model.User)
+				}(post)
 			}
-			post.User = user.(*model.User)
-		}(post)
+			wg.Wait()
+			break
+		}
 	}
-	wg.Wait()
 
 	return posts, nil
 }
