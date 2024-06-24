@@ -1,0 +1,8 @@
+version: 3
+endpoint: http://localhost:8080
+admin_secret: your_admin_secret # Add this line if you have set an admin secret
+metadata_directory: metadata
+migrations_directory: migrations
+seeds_directory: seeds
+actions:
+  kind: synchronous
