@@ -23,10 +23,6 @@ RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
 RUN wget https://dl.google.com/go/go1.21.1.linux-amd64.tar.gz -O- | tar xz -C /usr/local
 ENV PATH=$PATH:/usr/local/go/bin
 
-# Install Docker
-RUN curl -fsSL https://get.docker.com | sh
-RUN sudo chmod 777 /var/run/docker.sock
-
 # Nginx configurations
 RUN mkdir -p /var/cache/nginx-cache \
   /var/lib/nginx/body \

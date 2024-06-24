@@ -1,5 +1,11 @@
 {
   "name": "tc-benchmarks Codespace",
+  "features": {
+    "docker-from-docker": {
+      "version": "latest",
+      "moby": true
+    }
+  },
   "build": {
     "dockerfile": "Dockerfile",
     "context": ".."
