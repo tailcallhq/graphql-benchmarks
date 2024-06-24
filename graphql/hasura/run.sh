@@ -4,7 +4,7 @@
 DB_NAME="db"
 DB_USER="user"
 DB_PASSWORD="password"
-DB_HOST="localhost"
+DB_HOST="127.0.0.1"
 DB_PORT="5432"
 
 # Create a Docker network
@@ -21,7 +21,7 @@ docker run -d --name postgres \
 
 # Wait for PostgreSQL to be ready
 echo "Waiting for PostgreSQL to be ready..."
-until docker exec postgres pg_isready -U $DB_USER -d $DB_NAME -h localhost; do
+until docker exec postgres pg_isready -U $DB_USER -d $DB_NAME -h $DB_HOST; do
 	sleep 1
 done
 echo "PostgreSQL is ready!"
@@ -40,7 +40,7 @@ echo "Waiting for Hasura GraphQL Engine to be ready..."
 sleep 10
 
 # Create and insert data into PostgreSQL
-psql "postgresql://$DB_USER:$DB_PASSWORD@localhost:$DB_PORT/$DB_NAME" <<EOF
+psql "postgresql://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME" <<EOF
 CREATE SCHEMA IF NOT EXISTS public;
 
 DROP TABLE IF EXISTS public.posts;
