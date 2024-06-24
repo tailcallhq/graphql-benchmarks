@@ -25,6 +25,7 @@ ENV PATH=$PATH:/usr/local/go/bin
 
 # Install Docker
 RUN curl -fsSL https://get.docker.com | sh
+RUN sudo chmod 777 /var/run/docker.sock
 
 # Nginx configurations
 RUN mkdir -p /var/cache/nginx-cache \
