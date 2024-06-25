@@ -128,7 +128,7 @@ var proxyURL = &url.URL{
 }
 var client = &http.Client{
 	Transport: &http.Transport{
-		Proxy: http.ProxyURL(proxyURL),
+		Proxy:               http.ProxyURL(proxyURL),
 		MaxIdleConns:        1000, // Set the total max idle connections
 		MaxIdleConnsPerHost: 200,  // Set the max idle connections per host
 		IdleConnTimeout:     30 * time.Second,
@@ -137,7 +137,7 @@ var client = &http.Client{
 
 func fetchFromJSONPlaceholder(endpoint string) (*http.Response, error) {
 	req, err := http.NewRequest("GET", "http://jsonplaceholder.typicode.com"+endpoint, nil)
-	if err != nil{
+	if err != nil {
 		return nil, err
 	}
 	return client.Do(req)
