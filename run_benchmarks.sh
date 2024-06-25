@@ -22,6 +22,10 @@ function runBenchmark() {
     sleep 5
     local serviceScript="$1"
     local benchmarks=(1 2)
+
+    bash "$serviceScript" &   # Run in daemon mode
+    sleep 15   # Give some time for the service to start up
+
     for bench in "${benchmarks[@]}"; do
         local benchmarkScript="wrk/bench${bench}.sh"
         
@@ -29,9 +33,6 @@ function runBenchmark() {
         local sanitizedServiceScriptName=$(echo "$serviceScript" | tr '/' '_')
         
         local resultFiles=("result1_${sanitizedServiceScriptName}.txt" "result2_${sanitizedServiceScriptName}.txt" "result3_${sanitizedServiceScriptName}.txt")
-
-        bash "$serviceScript" &   # Run in daemon mode
-        sleep 15   # Give some time for the service to start up
 
         bash "test_query${bench}.sh"
 
