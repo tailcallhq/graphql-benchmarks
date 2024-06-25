@@ -60,13 +60,14 @@ function runBenchmark() {
 
 rm "results.md"
 
-    for service in "apollo_server" "caliban" "netflix_dgs" "gqlgen" "tailcall" "async_graphql"; do
-        runBenchmark "graphql/${service}/run.sh"
-        if [ "$service" == "apollo_server" ]; then
-            cd graphql/apollo_server/
-            npm stop
-            cd ../../
-        fi
+for service in "apollo_server" "caliban" "netflix_dgs" "gqlgen" "tailcall" "async_graphql"; do
+    runBenchmark "graphql/${service}/run.sh"
+    if [ "$service" == "apollo_server" ]; then
+        cd graphql/apollo_server/
+        npm stop
+        cd ../../
+    fi
 done
-            bash analyze.sh "${bench1Results[@]}"
-            bash analyze.sh "${bench2Results[@]}"
+
+bash analyze.sh "${bench1Results[@]}"
+bash analyze.sh "${bench2Results[@]}"
