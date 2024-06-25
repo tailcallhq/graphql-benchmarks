@@ -54,6 +54,9 @@ function runBenchmark() {
     done
 }
 
+runBenchmark "graphql/hasura/run.sh" false
+bash "graphql/hasura/kill.sh"
+
 runBenchmark "graphql/apollo_server/run.sh"
 cd graphql/apollo_server/
 npm stop
@@ -68,9 +71,6 @@ runBenchmark "graphql/gqlgen/run.sh"
 runBenchmark "graphql/tailcall/run.sh"
 
 runBenchmark "graphql/async_graphql/run.sh"
-
-runBenchmark "graphql/hasura/run.sh" false
-bash "graphql/hasura/kill.sh"
 
 # Now, analyze all results together
 bash analyze.sh "${allResults[@]}"
