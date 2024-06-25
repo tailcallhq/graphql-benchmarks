@@ -44,32 +44,36 @@ Get started with the benchmarks:
 
 ## Benchmark Results
 
-<!-- PERFORMANCE_RESULTS_START -->
+```graphql
+{
+  posts {
+    title
+  }
+}
+```
+
+<!-- PERFORMANCE_RESULTS_START_1 -->
 
 | Server | Requests/sec | Latency (ms) |
 |--------:|--------------:|--------------:|
-| [Caliban] | `9,309.73` | `11.04` |
-| [async-graphql] | `7,949.23` | `12.58` |
-| [Tailcall] | `7,630.73` | `13.08` |
-| [Gqlgen] | `2,201.04` | `47.01` |
-| [Apollo GraphQL] | `1,789.52` | `55.77` |
-| [Netflix DGS] | `1,652.12` | `64.67` |
+| [Tailcall] | `56,655.60` | `1.75` |
+| [Caliban] | `8,833.37` | `11.79` |
+| [async-graphql] | `7,027.24` | `14.34` |
+| [Gqlgen] | `1,969.06` | `51.76` |
+| [Apollo GraphQL] | `1,724.77` | `57.78` |
+| [Netflix DGS] | `1,507.36` | `70.39` |
 
-<!-- PERFORMANCE_RESULTS_END -->
+<!-- PERFORMANCE_RESULTS_END_1 -->
 
 ### Throughput (Higher is better)
 
-![Throughput Histogram](assets/req_sec_histogram.png)
+![Throughput Histogram](assets/req_sec_histogram1.png)
 
 ### Latency (Lower is better)
 
-![Latency Histogram](assets/latency_histogram.png)
+![Latency Histogram](assets/latency_histogram1.png)
 
-## Architecture
-
-![Architecture Diagram](assets/architecture.png)
-
-A client (`wrk`) sends requests to a GraphQL server to fetch post titles. The GraphQL server, in turn, retrieves data from an external source, `jsonplaceholder.typicode.com`, routed through the `nginx` reverse proxy. Here is the complete GraphQL query:
+---
 
 ```graphql
 {
@@ -85,6 +89,33 @@ A client (`wrk`) sends requests to a GraphQL server to fetch post titles. The Gr
   }
 }
 ```
+
+<!-- PERFORMANCE_RESULTS_START_2 -->
+
+| Server | Requests/sec | Latency (ms) |
+|--------:|--------------:|--------------:|
+| [Tailcall] | `28,389.70` | `3.52` |
+| [async-graphql] | `2,411.80` | `41.48` |
+| [Caliban] | `1,416.62` | `70.59` |
+| [Gqlgen] | `1,343.30` | `77.00` |
+| [Apollo GraphQL] | `791.84` | `126.09` |
+| [Netflix DGS] | `340.42` | `219.50` |
+
+<!-- PERFORMANCE_RESULTS_END_2 -->
+
+### Throughput (Higher is better)
+
+![Throughput Histogram](assets/req_sec_histogram2.png)
+
+### Latency (Lower is better)
+
+![Latency Histogram](assets/latency_histogram2.png)
+
+## Architecture
+
+![Architecture Diagram](assets/architecture.png)
+
+A client (`wrk`) sends requests to a GraphQL server to fetch post titles. The GraphQL server, in turn, retrieves data from an external source, `jsonplaceholder.typicode.com`, routed through the `nginx` reverse proxy.
 
 ### WRK
 
