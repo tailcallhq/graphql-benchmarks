@@ -2,11 +2,6 @@
   "name": "hasura",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {
-    "hasura:start": "hasura serve --admin-secret your_admin_secret",
-    "hasura:console": "hasura console --admin-secret your_admin_secret --endpoint http://localhost:8080",
-    "mesh:dev": "cd graphql-mesh && mesh dev"
-  },
   "dependencies": {
     "hasura-cli": "2.36.1"
   }
