@@ -73,7 +73,7 @@ runBenchmark "graphql/tailcall/run.sh"
 
 runBenchmark "graphql/async_graphql/run.sh"
 
-runBenchmark "graphql/hasura/run.sh"
+runBenchmark "graphql/hasura/run.sh" false
 bash "graphql/hasura/kill.sh"
 
 # Now, analyze all results together
