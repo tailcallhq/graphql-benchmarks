@@ -31,6 +31,8 @@ docker run -d --name graphql-engine \
 	-p 8080:8080 \
 	hasura/graphql-engine:v2.40.0
 
+HASURA_URL=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' graphql-engine)
+
 # Create and insert data into PostgreSQL
 psql "postgresql://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME" <<EOF
 CREATE SCHEMA IF NOT EXISTS public;
@@ -91,5 +93,5 @@ rm users.json posts.json
 
 # Apply Hasura metadata
 cd ./graphql/hasura
-npx hasura metadata apply
+npx hasura metadata apply --endpoint http://$HASURA_URL:8080
 cd ../..
