@@ -60,8 +60,6 @@ func batchUsers(ctx context.Context, keys dataloader.Keys) []*dataloader.Result 
 	return results
 }
 
-var userLoader = dataloader.NewBatchedLoader(batchUsers)
-
 func (r *queryResolver) Posts(ctx context.Context) ([]*model.Post, error) {
 	resp, err := fetchFromJSONPlaceholder("/posts")
 	if err != nil {
@@ -80,6 +78,7 @@ func (r *queryResolver) Posts(ctx context.Context) ([]*model.Post, error) {
 		if field == "user" {
 			var wg sync.WaitGroup
 			wg.Add(len(posts))
+			var userLoader = dataloader.NewBatchedLoader(batchUsers)
 			for _, post := range posts {
 				go func(post *model.Post) {
 					defer wg.Done()

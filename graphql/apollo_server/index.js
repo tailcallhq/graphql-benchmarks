@@ -51,8 +51,6 @@ async function batchUsers(usersIds) {
   return await Promise.all(requests);
 }
 
-const userLoader = new DataLoader(batchUsers);
-
 const resolvers = {
   Query: {
     posts: async () => {
@@ -74,15 +72,23 @@ const resolvers = {
     },
   },
   Post: {
-    user: async (post) => {
+    user: async (post, _, { userLoader }) => {
       return userLoader.load(post.userId);
     },
   },
 };
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+});
 
 const { url } = await startStandaloneServer(server, {
+  context: async () => {
+    return {
+      userLoader: new DataLoader(batchUsers),
+    };
+  },
   listen: { port: 8000 },
 });
 
