@@ -16,7 +16,7 @@ import (
 
 	"example.com/gqlgen-users/graph/model"
 	"github.com/99designs/gqlgen/graphql"
-	"github.com/graph-gophers/dataloader"
+	"github.com/vikstrous/dataloadgen"
 )
 
 func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
@@ -34,30 +34,29 @@ func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
 	return users, nil
 }
 
-func batchUsers(ctx context.Context, keys dataloader.Keys) []*dataloader.Result {
-	var results []*dataloader.Result
+func batchUsers(ctx context.Context, keys []string) (results []*model.User, errors []error) {
 	var wg sync.WaitGroup
 	wg.Add(len(keys))
 
 	for _, key := range keys {
-		go func(key dataloader.Key) {
+		go func(key string) {
 			defer wg.Done()
-			resp, err := fetchFromJSONPlaceholder(fmt.Sprintf("/users/%s", key.String()))
+			resp, err := fetchFromJSONPlaceholder(fmt.Sprintf("/users/%s", key))
 			if err != nil {
-				results = append(results, &dataloader.Result{Error: err})
+				errors = append(errors, err)
 			}
 			defer resp.Body.Close()
 
 			var user model.User
 			if err := decodeResponse(resp, &user); err != nil {
-				results = append(results, &dataloader.Result{Error: err})
+				errors = append(errors, err)
 			}
 
-			results = append(results, &dataloader.Result{Data: &user})
+			results = append(results, &user)
 		}(key)
 	}
 	wg.Wait()
-	return results
+	return results, errors
 }
 
 func (r *queryResolver) Posts(ctx context.Context) ([]*model.Post, error) {
@@ -78,15 +77,15 @@ func (r *queryResolver) Posts(ctx context.Context) ([]*model.Post, error) {
 		if field == "user" {
 			var wg sync.WaitGroup
 			wg.Add(len(posts))
-			var userLoader = dataloader.NewBatchedLoader(batchUsers)
+			var userLoader = dataloadgen.NewLoader(batchUsers, dataloadgen.WithWait(time.Millisecond))
 			for _, post := range posts {
 				go func(post *model.Post) {
 					defer wg.Done()
-					user, err := userLoader.Load(ctx, dataloader.StringKey(fmt.Sprintf("%d", post.UserID)))()
+					user, err := userLoader.Load(ctx, fmt.Sprintf("%d", post.UserID))
 					if err != nil {
 						return
 					}
-					post.User = user.(*model.User)
+					post.User = user
 				}(post)
 			}
 			wg.Wait()

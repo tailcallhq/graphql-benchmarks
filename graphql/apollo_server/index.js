@@ -86,7 +86,9 @@ const server = new ApolloServer({
 const { url } = await startStandaloneServer(server, {
   context: async () => {
     return {
-      userLoader: new DataLoader(batchUsers),
+      userLoader: new DataLoader(batchUsers, {
+        batchScheduleFn: callback => setTimeout(callback, 1),
+      })
     };
   },
   listen: { port: 8000 },
