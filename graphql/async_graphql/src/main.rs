@@ -1,8 +1,9 @@
-use std::{collections::HashMap, time::Duration};
+use std::{collections::HashMap, sync::Arc, time::Duration};
 
 use async_graphql::{
     dataloader::{DataLoader, Loader},
-    http::GraphiQLSource, Context, EmptyMutation, EmptySubscription, Object, Schema, SimpleObject,
+    http::GraphiQLSource,
+    Context, EmptyMutation, EmptySubscription, Object, Schema, SimpleObject,
 };
 use async_graphql_axum::GraphQL;
 use axum::{
@@ -50,7 +51,7 @@ pub struct UserLoader {
 
 impl Loader<u32> for UserLoader {
     type Value = User;
-    type Error = ();
+    type Error = Arc<reqwest::Error>;
 
     async fn load(&self, keys: &[u32]) -> Result<HashMap<u32, Self::Value>, Self::Error> {
         let mut results = HashMap::new();
@@ -60,17 +61,14 @@ impl Loader<u32> for UserLoader {
                 .client
                 .get(&user_url)
                 .send()
-                .await
-                .unwrap()
+                .await?
                 .json::<User>()
-                .await
-                .unwrap();
+                .await?;
             results.insert(key, user);
         }
         Ok(results)
     }
 }
-
 
 #[Object]
 impl QueryRoot {
@@ -87,9 +85,16 @@ impl QueryRoot {
             return Ok(posts);
         }
 
-        let user_loader = ctx.data_unchecked::<DataLoader<UserLoader>>();
+        let user_loader = Arc::new(DataLoader::new(
+            UserLoader {
+                client: client.clone(),
+            },
+            tokio::spawn,
+        ));
+
         let mut post_user_futures = Vec::new();
         for post in posts {
+            let user_loader = user_loader.clone();
             post_user_futures.push(async move {
                 match user_loader.load_one(post.user_id).await {
                     Ok(Some(user)) => Ok(Post {
@@ -102,7 +107,7 @@ impl QueryRoot {
             });
         }
 
-        let posts_with_users: Vec<Post> = try_join_all(post_user_futures).await.unwrap();
+        let posts_with_users: Vec<Post> = try_join_all(post_user_futures).await?;
 
         Ok(posts_with_users)
     }
@@ -120,11 +125,8 @@ async fn main() {
         .build()
         .unwrap();
 
-    let user_loader = UserLoader { client: client.clone() };
-
     let schema = Schema::build(QueryRoot, EmptyMutation, EmptySubscription)
         .data(client)
-        .data(DataLoader::new(user_loader, tokio::spawn))
         .finish();
 
     let app = Router::new().route("/graphql", get(graphiql).post_service(GraphQL::new(schema)));
