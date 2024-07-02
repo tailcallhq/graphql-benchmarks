@@ -132,7 +132,7 @@ resultsFile="results.md"
 echo -e "## Benchmark $whichBench results\n" >> $resultsFile
 echo -e $resultsTable >> $resultsFile
 
-    # Print the results as a table in the terminal
+# Print the results as a table in the terminal
 echo -e $resultsTable | sed "s/<!-- PERFORMANCE_RESULTS_START_${whichBench}-->//;s/<!-- PERFORMANCE_RESULTS_END_${whichBench}-->//"
 
 # Move the generated images to the assets folder
