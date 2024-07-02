@@ -7,6 +7,10 @@ type Post struct {
 	ID     int    `json:"id"`
 	Title  string `json:"title"`
 	Body   string `json:"body"`
+	User   *User  `json:"user,omitempty"`
+}
+
+type Query struct {
 }
 
 type User struct {
