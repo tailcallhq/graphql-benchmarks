@@ -27,3 +27,5 @@ cd ../../
 # For async-graphql
 ./graphql/async_graphql/build.sh
 cd ../../
+
+cargo install oha
