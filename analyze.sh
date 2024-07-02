@@ -107,9 +107,9 @@ lastServerReqSecs=${avgReqSecs[$lastServer]}
 
 # Start building the resultsTable
 if [[ $whichBench == 1 ]]; then
-    resultsTable="<!-- PERFORMANCE_RESULTS_START -->\n\n| Query | Server | Requests/sec | Latency (ms) | Relative |\n|-------:|--------:|--------------:|--------------:|---------:|\n| $whichBench | \`{posts {title body user {name}}}\` |"
+    resultsTable="<!-- PERFORMANCE_RESULTS_START -->\n\n| Query | Server | Requests/sec | Latency (ms) | Relative |\n|-------:|--------:|--------------:|--------------:|---------:|\n| $whichBench | \`{ posts { id userId title user { id name email }}}\` |"
 else 
-    resultsTable="| $whichBench | \`{posts {title body}}\` |"
+    resultsTable="| $whichBench | \`{ posts { title }}\` |"
 fi
 
 # Build the resultsTable with sorted servers and formatted numbers
