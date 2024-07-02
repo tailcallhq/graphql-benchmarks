@@ -23,10 +23,9 @@ RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
 RUN wget https://dl.google.com/go/go1.21.1.linux-amd64.tar.gz -O- | tar xz -C /usr/local
 ENV PATH=$PATH:/usr/local/go/bin
 
-# Install Rust
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-ENV PATH="/root/.cargo/bin:${PATH}"
-RUN echo 'source $HOME/.cargo/env' >> $HOME/.bashrc
+# Install oha
+RUN wget https://github.com/hatoo/oha/releases/download/v1.4.5/oha-linux-amd64 -O /usr/local/bin/oha && \
+    chmod +x /usr/local/bin/oha
 
 # Nginx configurations
 RUN mkdir -p /var/cache/nginx-cache \
