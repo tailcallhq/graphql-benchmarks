@@ -96,6 +96,10 @@ func (r *queryResolver) Posts(ctx context.Context) ([]*model.Post, error) {
 	return posts, nil
 }
 
+func (r *queryResolver) Greet(ctx context.Context) (string, error) {
+	return "Hello World!", nil
+}
+
 func (r *userResolver) Posts(ctx context.Context, obj *model.User) ([]*model.Post, error) {
 	resp, err := fetchFromJSONPlaceholder(fmt.Sprintf("/users/%d/posts", obj.ID))
 	if err != nil {

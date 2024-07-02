@@ -8,7 +8,8 @@ import zio.query.RQuery
 object ServiceSchema extends SchemaDerivation[Service]
 
 case class Query(
-    posts: RIO[Service, List[Post]]
+    posts: RIO[Service, List[Post]],
+    greet: UIO[String] = ZIO.succeed("Hello World!")
 ) derives ServiceSchema.SemiAuto
 
 case class User(

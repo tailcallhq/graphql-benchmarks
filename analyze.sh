@@ -56,6 +56,8 @@ done
 whichBench=1
 if [[ $1 == bench2* ]]; then
     whichBench=2
+elif [[ $1 == bench3* ]]; then
+    whichBench=3
 fi
 
 reqSecHistogramFile="req_sec_histogram${whichBench}.png"
@@ -130,7 +132,7 @@ resultsFile="results.md"
 echo -e "## Benchmark $whichBench results\n" >> $resultsFile
 echo -e $resultsTable >> $resultsFile
 
-# Print the results as a table in the terminal
+    # Print the results as a table in the terminal
 echo -e $resultsTable | sed "s/<!-- PERFORMANCE_RESULTS_START_${whichBench}-->//;s/<!-- PERFORMANCE_RESULTS_END_${whichBench}-->//"
 
 # Move the generated images to the assets folder

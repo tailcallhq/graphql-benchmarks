@@ -13,24 +13,25 @@ const axiosInstance = axios.create({
 const typeDefs = `#graphql
   
   type User {
-		id: Int!
-		name: String!
-		username: String!
-		email: String!
-		phone: String
-		website: String
-	}
+    id: Int!
+    name: String!
+    username: String!
+    email: String!
+    phone: String
+    website: String
+  }
 
-	type Post {
-		id: Int!
-		userId: Int!
-		title: String!
-		body: String!
-		user: User
-	}
+  type Post {
+    id: Int!
+    userId: Int!
+    title: String!
+    body: String!
+    user: User
+  }
 
   type Query {
-		posts: [Post]
+    posts: [Post]
+    greet: String!
   }
 `;
 
@@ -70,6 +71,9 @@ const resolvers = {
         throw new Error("Failed to fetch posts");
       }
     },
+    greet: () => {
+      return "Hello World!";
+    }
   },
   Post: {
     user: async (post, _, { userLoader }) => {
