@@ -68,7 +68,7 @@ Get started with the benchmarks:
 
 ### Throughput (Higher is better)
 
-![Throughput Histogram](assets/requestsPerSec_histogram1.png)
+![Throughput Histogram](assets/req_sec_histogram1.png)
 
 ### Latency (Lower is better)
 
@@ -107,7 +107,7 @@ Get started with the benchmarks:
 
 ### Throughput (Higher is better)
 
-![Throughput Histogram](assets/requestsPerSec_histogram2.png)
+![Throughput Histogram](assets/req_sec_histogram2.png)
 
 ### Latency (Lower is better)
 
