@@ -27,12 +27,12 @@ function runBenchmark() {
     sleep 15   # Give some time for the service to start up
 
     for bench in "${benchmarks[@]}"; do
-        local benchmarkScript="wrk/bench${bench}.sh"
+        local benchmarkScript="oha/bench${bench}.sh"
         
         # Replace / with _
         local sanitizedServiceScriptName=$(echo "$serviceScript" | tr '/' '_')
         
-        local resultFiles=("result1_${sanitizedServiceScriptName}.txt" "result2_${sanitizedServiceScriptName}.txt" "result3_${sanitizedServiceScriptName}.txt")
+        local resultFiles=("result1_${sanitizedServiceScriptName}.json" "result2_${sanitizedServiceScriptName}.json" "result3_${sanitizedServiceScriptName}.json")
 
         bash "test_query${bench}.sh"
 
@@ -69,5 +69,5 @@ for service in "apollo_server" "caliban" "netflix_dgs" "gqlgen" "tailcall" "asyn
     fi
 done
 
-bash analyze.sh "${bench1Results[@]}"
-bash analyze.sh "${bench2Results[@]}"
+node analyze.js "${bench1Results[@]}"
+node analyze.js "${bench2Results[@]}"
