@@ -26,4 +26,8 @@ cd ../../
 
 # For async-graphql
 ./graphql/async_graphql/build.sh
+
+# For hasura
+cd graphql/hasura
+npm install
 cd ../../
