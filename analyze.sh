@@ -53,10 +53,18 @@ for server in "${servers[@]}"; do
     echo "$server ${avgLatencies[$server]}" >> "$latencyData"
 done
 
+whichBench=1
+if [[ $1 == bench2* ]]; then
+    whichBench=2
+fi
+
+reqSecHistogramFile="req_sec_histogram${whichBench}.png"
+latencyHistogramFile="latency_histogram${whichBench}.png"
+
 # Plotting using gnuplot
 gnuplot <<- EOF
     set term pngcairo size 1280,720 enhanced font "Courier,12"
-    set output "req_sec_histogram.png"
+    set output "$reqSecHistogramFile"
     set style data histograms
     set style histogram cluster gap 1
     set style fill solid border -1
@@ -68,7 +76,7 @@ gnuplot <<- EOF
     set key outside right top
     plot "$reqSecData" using 2:xtic(1) title "Req/Sec"
 
-    set output "latency_histogram.png"
+    set output "$latencyHistogramFile"
     set title "Latency (in ms)"
     stats "$latencyData" using 2 nooutput
     set yrange [0:STATS_max*1.2]
@@ -78,8 +86,8 @@ EOF
 
 # Move PNGs to assets
 mkdir -p assets
-mv req_sec_histogram.png assets/
-mv latency_histogram.png assets/
+mv $reqSecHistogramFile assets/
+mv $latencyHistogramFile assets/
 
 # Declare an associative array for server RPS
 declare -A serverRPS
@@ -95,7 +103,7 @@ IFS=$'\n' sortedServers=($(for server in "${!serverRPS[@]}"; do echo "$server ${
 
 echo "Sorted servers: ${sortedServers[@]}"
 # Start building the resultsTable
-resultsTable="<!-- PERFORMANCE_RESULTS_START -->\n\n| Server | Requests/sec | Latency (ms) |\n|--------:|--------------:|--------------:|"
+resultsTable="<!-- PERFORMANCE_RESULTS_START_${whichBench} -->\n\n| Server | Requests/sec | Latency (ms) |\n|--------:|--------------:|--------------:|"
 
 # Build the resultsTable with sorted servers and formatted numbers
 for server in "${sortedServers[@]}"; do
@@ -104,28 +112,30 @@ for server in "${sortedServers[@]}"; do
     resultsTable+="\n| [${formattedServerNames[$server]}] | \`${formattedReqSecs}\` | \`${formattedLatencies}\` |"
 done
 
-resultsTable+="\n\n<!-- PERFORMANCE_RESULTS_END -->"
+resultsTable+="\n\n<!-- PERFORMANCE_RESULTS_END_${whichBench} -->"
 
 echo -e $resultsTable
 
 # Check if the markers are present
-if grep -q "PERFORMANCE_RESULTS_START" README.md; then
+if grep -q "PERFORMANCE_RESULTS_START_${whichBench}" README.md; then
     # Replace the old results with the new results
-    sed -i "/PERFORMANCE_RESULTS_START/,/PERFORMANCE_RESULTS_END/c\\$resultsTable" README.md
+    sed -i "/PERFORMANCE_RESULTS_START_${whichBench}/,/PERFORMANCE_RESULTS_END_${whichBench}/c\\$resultsTable" README.md
 else
     # Append the results at the end of the README.md file
     echo -e "\n$resultsTable" >> README.md
 fi
 
 # Print the results table in a new file
-echo -e $resultsTable > results.md
+resultsFile="results.md"
+echo -e "## Benchmark $whichBench results\n" >> $resultsFile
+echo -e $resultsTable >> $resultsFile
 
 # Print the results as a table in the terminal
-echo -e $resultsTable | sed "s/<!-- PERFORMANCE_RESULTS_START -->//;s/<!-- PERFORMANCE_RESULTS_END -->//"
+echo -e $resultsTable | sed "s/<!-- PERFORMANCE_RESULTS_START_${whichBench}-->//;s/<!-- PERFORMANCE_RESULTS_END_${whichBench}-->//"
 
 # Move the generated images to the assets folder
-mv req_sec_histogram.png assets/
-mv latency_histogram.png assets/
+mv $reqSecHistogramFile assets/
+mv $latencyHistogramFile assets/
 
 # Delete the result TXT files
 for file in "${resultFiles[@]}"; do

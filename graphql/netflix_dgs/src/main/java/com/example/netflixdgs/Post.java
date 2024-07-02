@@ -26,6 +26,10 @@ public class Post {
 		return title;
 	}
 
+	public void setUser(User user) {
+		this.user = user;
+	}
+
 	public Post() {
 		super();
 	}
