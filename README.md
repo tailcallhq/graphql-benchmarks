@@ -44,8 +44,8 @@ Get started with the benchmarks:
 <!-- PERFORMANCE_RESULTS_START -->
 | Server | Requests/sec | Latency (ms) |
 |--------|--------------|--------------|
-| apollo | 6539.554307143364 | 15.292914015494107 |
-| tailcall | 115357.753852638 | 0.8600929656600531 |
+| apollo | 7035.942102917875 | 14.21787901160235 |
+| tailcall | 112556.64979546318 | 0.8808227626467039 |
 <!-- PERFORMANCE_RESULTS_END -->
 
 ### Throughput (Higher is better)
