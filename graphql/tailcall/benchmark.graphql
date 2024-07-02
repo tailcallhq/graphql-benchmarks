@@ -1,16 +1,11 @@
 schema
-  @server(
-    port: 8083
-    baseURL: "http://jsonplaceholder.typicode.com"
-    enableHttpCache: false
-    enableGraphiql: "/graphiql"
-    proxy: {url: "http://localhost:3000"}
-  ) {
+  @server(port: 8083)
+  @upstream(baseURL: "http://jsonplaceholder.typicode.com") {
   query: Query
 }
 
 type Query {
-  posts: [Post] @http(path: "/posts")
+  users: [User] @http(path: "/users")
 }
 
 type User {
@@ -18,14 +13,11 @@ type User {
   name: String!
   username: String!
   email: String!
-  phone: String
-  website: String
+  posts: [Post] @http(path: "/users/{{.value.id}}/posts")
 }
 
 type Post {
   id: Int!
-  userId: Int!
   title: String!
   body: String!
-  user: User @http(path: "/users/{{value.userId}}")
 }
