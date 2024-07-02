@@ -56,6 +56,8 @@ done
 whichBench=1
 if [[ $1 == bench2* ]]; then
     whichBench=2
+elif [[ $1 == bench3* ]]; then
+    whichBench=3
 fi
 
 reqSecHistogramFile="req_sec_histogram${whichBench}.png"

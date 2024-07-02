@@ -17,4 +17,5 @@ type Post {
 
 type Query {
 	posts: [Post]
+	greet: String!
 }
