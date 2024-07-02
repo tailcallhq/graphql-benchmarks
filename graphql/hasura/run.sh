@@ -8,28 +8,28 @@ DB_PORT="5432"
 
 # Start PostgreSQL container
 docker run -d --name postgres \
-	-e POSTGRES_USER=$DB_USER \
-	-e POSTGRES_PASSWORD=$DB_PASSWORD \
-	-e POSTGRES_DB=$DB_NAME \
-	-p $DB_PORT:5432 \
-	postgres:13
+  -e POSTGRES_USER=$DB_USER \
+  -e POSTGRES_PASSWORD=$DB_PASSWORD \
+  -e POSTGRES_DB=$DB_NAME \
+  -p $DB_PORT:5432 \
+  postgres:13
 
 DB_HOST=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' postgres)
 
 # Wait for PostgreSQL to be ready
 echo "Waiting for PostgreSQL to be ready..."
 until docker exec postgres pg_isready -U $DB_USER -d $DB_NAME -h $DB_HOST; do
-	sleep 1
+  sleep 1
 done
 echo "PostgreSQL is ready!"
 
 # Start Hasura GraphQL Engine container
 docker run -d --name graphql-engine \
-	-e HASURA_GRAPHQL_DATABASE_URL=postgres://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME \
-	-e HASURA_GRAPHQL_ENABLE_CONSOLE=false \
-	-e HASURA_GRAPHQL_ENABLED_LOG_TYPES=startup,http-log,webhook-log,websocket-log,query-log \
-	-p 8080:8080 \
-	hasura/graphql-engine:v2.40.0
+  -e HASURA_GRAPHQL_DATABASE_URL=postgres://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME \
+  -e HASURA_GRAPHQL_ENABLE_CONSOLE=false \
+  -e HASURA_GRAPHQL_ENABLED_LOG_TYPES=startup,http-log,webhook-log,websocket-log,query-log \
+  -p 8080:8080 \
+  hasura/graphql-engine:v2.40.0
 
 HASURA_URL=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' graphql-engine)
 
@@ -68,24 +68,24 @@ echo "$POSTS_DATA" >posts.json
 
 # Insert users into the database
 jq -c '.[]' users.json | while read -r user; do
-	id=$(echo "$user" | jq '.id')
-	name=$(echo "$user" | jq -r '.name' | sed "s/'/''/g")
-	username=$(echo "$user" | jq -r '.username' | sed "s/'/''/g")
-	email=$(echo "$user" | jq -r '.email' | sed "s/'/''/g")
-	phone=$(echo "$user" | jq -r '.phone' | sed "s/'/''/g")
-	website=$(echo "$user" | jq -r '.website' | sed "s/'/''/g")
+  id=$(echo "$user" | jq '.id')
+  name=$(echo "$user" | jq -r '.name' | sed "s/'/''/g")
+  username=$(echo "$user" | jq -r '.username' | sed "s/'/''/g")
+  email=$(echo "$user" | jq -r '.email' | sed "s/'/''/g")
+  phone=$(echo "$user" | jq -r '.phone' | sed "s/'/''/g")
+  website=$(echo "$user" | jq -r '.website' | sed "s/'/''/g")
 
-	psql "postgresql://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME" -c "INSERT INTO public.users (id, name, username, email, phone, website) VALUES ($id, '$name', '$username', '$email', '$phone', '$website') ON CONFLICT (id) DO NOTHING;"
+  psql "postgresql://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME" -c "INSERT INTO public.users (id, name, username, email, phone, website) VALUES ($id, '$name', '$username', '$email', '$phone', '$website') ON CONFLICT (id) DO NOTHING;"
 done
 
 # Insert posts into the database
 jq -c '.[]' posts.json | while read -r post; do
-	id=$(echo "$post" | jq '.id')
-	user_id=$(echo "$post" | jq '.userId')
-	title=$(echo "$post" | jq -r '.title' | sed "s/'/''/g")
-	body=$(echo "$post" | jq -r '.body' | sed "s/'/''/g")
+  id=$(echo "$post" | jq '.id')
+  user_id=$(echo "$post" | jq '.userId')
+  title=$(echo "$post" | jq -r '.title' | sed "s/'/''/g")
+  body=$(echo "$post" | jq -r '.body' | sed "s/'/''/g")
 
-	psql "postgresql://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME" -c "INSERT INTO public.posts (id, user_id, title, body) VALUES ($id, $user_id, '$title', '$body') ON CONFLICT (id) DO NOTHING;"
+  psql "postgresql://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME" -c "INSERT INTO public.posts (id, user_id, title, body) VALUES ($id, $user_id, '$title', '$body') ON CONFLICT (id) DO NOTHING;"
 done
 
 # Clean up temporary files
