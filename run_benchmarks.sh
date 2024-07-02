@@ -69,6 +69,6 @@ for service in "apollo_server" "caliban" "netflix_dgs" "gqlgen" "tailcall" "asyn
     fi
 done
 
-node analyse.js "${bench1Results[@]}"
-node analyse.js "${bench2Results[@]}"
+node analyze.js "${bench1Results[@]}"
+node analyze.js "${bench2Results[@]}"
 
