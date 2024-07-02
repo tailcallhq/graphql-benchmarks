@@ -71,3 +71,7 @@ done
 
 bash analyze.sh "${bench1Results[@]}"
 bash analyze.sh "${bench2Results[@]}"
+
+# Run the new analyze.js script
+node wrk/analyze.js "${bench1Results[@]}"
+node wrk/analyze.js "${bench2Results[@]}"
