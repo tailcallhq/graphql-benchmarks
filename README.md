@@ -44,6 +44,7 @@ Get started with the benchmarks:
 
 ## Benchmark Results
 
+### Test Query
 ```graphql
 {
   posts {
@@ -75,6 +76,7 @@ Get started with the benchmarks:
 
 ---
 
+### Test Query
 ```graphql
 {
   posts {
@@ -152,6 +154,15 @@ type Post {
   title: String!
   body: String!
   user: User
+}
+
+type User {
+  id: Int!
+  name: String!
+  username: String!
+  email: String!
+  phone: String
+  website: String
 }
 ```
 
