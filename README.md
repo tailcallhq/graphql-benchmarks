@@ -44,72 +44,44 @@ Get started with the benchmarks:
 
 ## Benchmark Results
 
-### Test Query
-```graphql
-{
-  posts {
-    title
-  }
-}
-```
+<!-- PERFORMANCE_RESULTS_START -->
 
-<!-- PERFORMANCE_RESULTS_START_1 -->
+| Query | Server | Requests/sec | Latency (ms) | Relative |
+|-------:|--------:|--------------:|--------------:|---------:|
+| 1 | `{posts {title body user {name}}}` |
+|| [Tailcall] | `20,459.40` | `4.82` | `38.67x` |
+|| [async-graphql] | `2,416.38` | `42.11` | `4.57x` |
+|| [Caliban] | `2,112.29` | `51.58` | `3.99x` |
+|| [Apollo GraphQL] | `2,013.53` | `49.98` | `3.81x` |
+|| [Gqlgen] | `1,427.79` | `76.83` | `2.70x` |
+|| [Netflix DGS] | `529.12` | `131.33` | `1.00x` |
+| 2 | `{posts {title body}}` |
+|| [Tailcall] | `49,734.70` | `2.04` | `18.15x` |
+|| [Caliban] | `13,721.40` | `11.63` | `5.01x` |
+|| [async-graphql] | `9,333.76` | `11.00` | `3.41x` |
+|| [Apollo GraphQL] | `4,299.68` | `25.27` | `1.57x` |
+|| [Netflix DGS] | `2,778.82` | `70.96` | `1.01x` |
+|| [Gqlgen] | `2,739.60` | `39.57` | `1.00x` |
 
-| Server | Requests/sec | Latency (ms) |
-|--------:|--------------:|--------------:|
-| [Tailcall] | `55,469.90` | `1.80` |
-| [Caliban] | `8,349.24` | `12.45` |
-| [async-graphql] | `6,853.95` | `14.64` |
-| [Gqlgen] | `2,048.97` | `50.17` |
-| [Apollo GraphQL] | `1,615.60` | `61.75` |
-| [Netflix DGS] | `1,462.41` | `72.08` |
+<!-- PERFORMANCE_RESULTS_END -->
 
-<!-- PERFORMANCE_RESULTS_END_1 -->
 
-### Throughput (Higher is better)
+
+### 1. `{posts {title body user {name}}}`
+#### Throughput (Higher is better)
 
 ![Throughput Histogram](assets/req_sec_histogram1.png)
 
-### Latency (Lower is better)
+#### Latency (Lower is better)
 
 ![Latency Histogram](assets/latency_histogram1.png)
 
----
-
-### Test Query
-```graphql
-{
-  posts {
-    id
-    userId
-    title
-    user {
-      id
-      name
-      email
-    }
-  }
-}
-```
-
-<!-- PERFORMANCE_RESULTS_START_2 -->
-
-| Server | Requests/sec | Latency (ms) |
-|--------:|--------------:|--------------:|
-| [Tailcall] | `27,214.00` | `3.66` |
-| [Caliban] | `1,446.21` | `69.05` |
-| [async-graphql] | `1,356.93` | `73.57` |
-| [Gqlgen] | `595.02` | `169.20` |
-| [Netflix DGS] | `352.52` | `213.35` |
-| [Apollo GraphQL] | `269.38` | `369.01` |
-
-<!-- PERFORMANCE_RESULTS_END_2 -->
-
-### Throughput (Higher is better)
+### 2. `{posts {title body}}`
+#### Throughput (Higher is better)
 
 ![Throughput Histogram](assets/req_sec_histogram2.png)
 
-### Latency (Lower is better)
+#### Latency (Lower is better)
 
 ![Latency Histogram](assets/latency_histogram2.png)
 
