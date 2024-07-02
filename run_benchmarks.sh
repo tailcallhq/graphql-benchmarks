@@ -18,42 +18,42 @@ sh nginx/run.sh
 
 function runBenchmark() {
     local serviceScript="$1"
-    local benchmarkScript="$2"
+    local port="$2"
     
     # Replace / with _
     local sanitizedServiceScriptName=$(echo "$serviceScript" | tr '/' '_')
     
-    local resultFiles=("result1_${sanitizedServiceScriptName}.txt" "result2_${sanitizedServiceScriptName}.txt" "result3_${sanitizedServiceScriptName}.txt")
+    local resultFiles=("result1_${sanitizedServiceScriptName}.json" "result2_${sanitizedServiceScriptName}.json" "result3_${sanitizedServiceScriptName}.json")
 
     bash "$serviceScript" &   # Run in daemon mode
     sleep 15   # Give some time for the service to start up
 
     # Warmup run
-    bash "$benchmarkScript" > /dev/null
+    bash "./generate_load.sh" "$port" > /dev/null
 
     # 3 benchmark runs
     for resultFile in "${resultFiles[@]}"; do
-        bash "$benchmarkScript" > "$resultFile"
+        bash "./generate_load.sh" "$port" > "$resultFile"
         allResults+=("$resultFile")
     done
 }
 
-runBenchmark "graphql/apollo_server/run.sh" "wrk/apollo_bench.sh"
+runBenchmark "graphql/apollo_server/run.sh" 8080
 cd graphql/apollo_server/
 npm stop
 cd ../../
 
-killServerOnPort 8082
-runBenchmark "graphql/netflix_dgs/run.sh" "wrk/dgs_bench.sh"
-killServerOnPort 8082
+# killServerOnPort 8082
+# runBenchmark "graphql/netflix_dgs/run.sh" 8082
+# killServerOnPort 8082
 
-killServerOnPort 8081
-runBenchmark "graphql/gqlgen/run.sh" "wrk/gqlgen_bench.sh"
-killServerOnPort 8081
+# killServerOnPort 8081
+# runBenchmark "graphql/gqlgen/run.sh" 8081
+# killServerOnPort 8081
 
 killServerOnPort 8083
-runBenchmark "graphql/tailcall/run.sh" "wrk/tc_bench.sh"
+runBenchmark "graphql/tailcall/run.sh" 8083
 killServerOnPort 8083
 
 # Now, analyze all results together
-bash analyze.sh "${allResults[@]}"
+node analyze.js "${allResults[@]}"
