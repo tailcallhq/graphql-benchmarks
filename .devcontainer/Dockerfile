@@ -26,6 +26,7 @@ ENV PATH=$PATH:/usr/local/go/bin
 # Install Rust
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 ENV PATH=$PATH:/root/.cargo/bin
+RUN echo 'source $HOME/.cargo/env' >> $HOME/.bashrc
 
 # Nginx configurations
 RUN mkdir -p /var/cache/nginx-cache \
