@@ -13,25 +13,25 @@ const axiosInstance = axios.create({
 const typeDefs = `#graphql
   
   type User {
-    id: Int!
-    name: String!
-    username: String!
-    email: String!
-    phone: String
-    website: String
-  }
+		id: Int!
+		name: String!
+		username: String!
+		email: String!
+		phone: String
+		website: String
+	}
 
-  type Post {
-    id: Int!
-    userId: Int!
-    title: String!
-    body: String!
-    user: User
-  }
+	type Post {
+		id: Int!
+		userId: Int!
+		title: String!
+		body: String!
+		user: User
+	}
 
   type Query {
-    posts: [Post]
-    greet: String!
+		posts: [Post]
+		greet: String!
   }
 `;
 
@@ -45,7 +45,7 @@ async function batchUsers(usersIds) {
           host: "127.0.0.1",
           port: 3000,
         },
-      }
+      },
     );
     return response.data;
   });
@@ -64,7 +64,7 @@ const resolvers = {
               host: "127.0.0.1",
               port: 3000,
             },
-          }
+          },
         );
         return response.data;
       } catch (error) {
@@ -73,7 +73,7 @@ const resolvers = {
     },
     greet: () => {
       return "Hello World!";
-    }
+    },
   },
   Post: {
     user: async (post, _, { userLoader }) => {
@@ -91,8 +91,8 @@ const { url } = await startStandaloneServer(server, {
   context: async () => {
     return {
       userLoader: new DataLoader(batchUsers, {
-        batchScheduleFn: callback => setTimeout(callback, 1),
-      })
+        batchScheduleFn: (callback) => setTimeout(callback, 1),
+      }),
     };
   },
   listen: { port: 8000 },
