@@ -3,6 +3,7 @@ const path = require('path');
 const exec = require('child_process').execSync;
 
 const extractMetric = (file, metric) => {
+    console.log(`Reading file: ${file}`);
     const content = fs.readFileSync(file, 'utf-8');
     const match = content.match(new RegExp(`${metric}: (\\d+\\.?\\d*)`));
     return match ? parseFloat(match[1]) : null;
@@ -32,6 +33,7 @@ servers.forEach((server, idx) => {
     const latencyVals = [];
     for (let j = 0; j < 3; j++) {
         const fileIdx = idx * 3 + j;
+        console.log(`Processing server: ${server}, file index: ${fileIdx}, file path: ${resultFiles[fileIdx]}`);
         reqSecVals.push(extractMetric(resultFiles[fileIdx], 'Requests/sec'));
         latencyVals.push(extractMetric(resultFiles[fileIdx], 'Latency'));
     }
@@ -69,7 +71,6 @@ stats "${reqSecData}" using 2 nooutput
 set yrange [0:STATS_max*1.2]
 set key outside right top
 plot "${reqSecData}" using 2:xtic(1) title "Req/Sec"
-
 set output "${latencyHistogramFile}"
 set title "Latency (in ms)"
 stats "${latencyData}" using 2 nooutput
