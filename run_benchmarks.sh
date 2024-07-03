@@ -69,9 +69,6 @@ for service in "apollo_server" "caliban" "netflix_dgs" "gqlgen" "tailcall" "asyn
     fi
 done
 
-bash analyze.sh "${bench1Results[@]}"
-bash analyze.sh "${bench2Results[@]}"
-
 # Run the new analyze.js script
 node analyze.js "${bench1Results[@]}"
 node analyze.js "${bench2Results[@]}"
