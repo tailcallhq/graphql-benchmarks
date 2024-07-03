@@ -25,14 +25,19 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
 
-      - name: Build devcontainer and run benchmarks
+      - name: Build devcontainer
         uses: devcontainers/ci@v0.3
         with:
           imageName: graphql-benchmarks
           push: never
-          runCmd: |
-            bash ./setup.sh
-            bash ./run_benchmarks.sh
+
+      - name: Setup k6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Run benchmarks
+        run: |
+          bash ./setup.sh
+          bash ./run_benchmarks.sh
 
       - name: Print benchmark results
         run: cat ./results.md
