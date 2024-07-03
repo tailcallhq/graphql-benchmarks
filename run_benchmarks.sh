@@ -28,8 +28,8 @@ function runBenchmark() {
     sleep 15   # Give some time for the service to start up
 
     for bench in "${benchmarks[@]}"; do
-        local benchmarkScript="tests/test.sh"
-        local warmupScript="tests/warmup.sh"
+        local benchmarkScript="k6/bench.sh"
+        local warmupScript="k6/warmup.sh"
 
         # Replace / with _
         local sanitizedServiceScriptName=$(echo "$serviceScript" | tr '/' '_')
