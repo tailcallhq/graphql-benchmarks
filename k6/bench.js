@@ -40,13 +40,12 @@ export default function() {
 }
 
 export function handleSummary(data) {
-  const med_request_count = data.metrics.http_reqs.values.count;
-  const avg_latency = data.metrics.http_req_duration.values.avg;
-  const trimmed_avg_latency = Math.round(avg_latency * 100) / 100;
-  const request_count_message = `Requests/sec: ${med_request_count}\n`;
-  const latency_message = `Latency: ${trimmed_avg_latency} ms\n`;
+  const requestCount = data.metrics.http_reqs.values.count;
+  const avgLatency = Math.round(data.metrics.http_req_duration.values.avg * 100) / 100;
+  const requestCountMessage = `Requests/sec: ${requestCount}\n`;
+  const latencyMessage = `Latency: ${avgLatency} ms\n`;
 
   return {
-    stdout: request_count_message + latency_message,
+    stdout: requestCountMessage + latencyMessage,
   };
 }
