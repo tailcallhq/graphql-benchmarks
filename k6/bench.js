@@ -2,18 +2,19 @@ import http from 'k6/http';
 import { check } from 'k6';
 
 const whichBenchmark = Number(__ENV.BENCHMARK);
+const benchmarkName = whichBenchmark === 1 ? 'posts' : 'posts+users';
 
 export const options = {
   scenarios: {
     posts: {
       executor: 'constant-vus',
-      duration: whichBenchmark === 2 ? '30s' : '10s',
+      duration: whichBenchmark === 1 ? '10s' : '30s',
       gracefulStop: '0s',
       vus: 100,
     }
   },
   cloud: {
-    name: __ENV.TEST_NAME + '-' + whichBenchmark,
+    name: __ENV.TEST_NAME + '-' + benchmarkName,
   },
 };
 
@@ -30,7 +31,7 @@ export default function() {
   const payload = JSON.stringify({
     operationName: null,
     variables: {},
-    query: whichBenchmark === 2 ? '{posts{id,userId,title,user{id,name,email}}}' : '{posts{title}}',
+    query: whichBenchmark === 1 ? '{posts{title}}' : '{posts{id,userId,title,user{id,name,email}}}',
   });
 
   const res = http.post(url, payload, params);
