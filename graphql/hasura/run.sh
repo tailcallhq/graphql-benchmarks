@@ -28,6 +28,8 @@ docker run -d --name graphql-engine \
   -e HASURA_GRAPHQL_DATABASE_URL=postgres://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME \
   -e HASURA_GRAPHQL_ENABLE_CONSOLE=false \
   -e HASURA_GRAPHQL_ENABLED_LOG_TYPES=startup,http-log,webhook-log,websocket-log,query-log \
+  -e HASURA_GRAPHQL_EXPERIMENTAL_FEATURES=naming_convention \
+  -e HASURA_GRAPHQL_DEFAULT_NAMING_CONVENTION=graphql-default \
   -p 8080:8080 \
   hasura/graphql-engine:v2.40.0
 
@@ -42,6 +44,7 @@ DROP TABLE IF EXISTS public.users;
 
 CREATE TABLE public.users (
   id SERIAL PRIMARY KEY,
+  user_id INTEGER,
   name TEXT,
   username TEXT,
   email TEXT,
@@ -69,13 +72,14 @@ echo "$POSTS_DATA" >posts.json
 # Insert users into the database
 jq -c '.[]' users.json | while read -r user; do
   id=$(echo "$user" | jq '.id')
+  userId=$(echo "$user" | jq '.userId')
   name=$(echo "$user" | jq -r '.name' | sed "s/'/''/g")
   username=$(echo "$user" | jq -r '.username' | sed "s/'/''/g")
   email=$(echo "$user" | jq -r '.email' | sed "s/'/''/g")
   phone=$(echo "$user" | jq -r '.phone' | sed "s/'/''/g")
   website=$(echo "$user" | jq -r '.website' | sed "s/'/''/g")
 
-  psql "postgresql://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME" -c "INSERT INTO public.users (id, name, username, email, phone, website) VALUES ($id, '$name', '$username', '$email', '$phone', '$website') ON CONFLICT (id) DO NOTHING;"
+  psql "postgresql://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME" -c "INSERT INTO public.users (id, user_id, name, username, email, phone, website) VALUES ($id, $userId, '$name', '$username', '$email', '$phone', '$website') ON CONFLICT (id) DO NOTHING;"
 done
 
 # Insert posts into the database
