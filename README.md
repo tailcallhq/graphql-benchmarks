@@ -44,7 +44,6 @@ Get started with the benchmarks:
 
 ## Benchmark Results
 
-### Test Query
 ```graphql
 {
   posts {
