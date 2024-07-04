@@ -56,12 +56,13 @@ Get started with the benchmarks:
 
 | Server | Requests/sec | Latency (ms) |
 |--------:|--------------:|--------------:|
-| [Tailcall] | `62,000.10` | `1.60` |
-| [Caliban] | `9,493.92` | `10.90` |
-| [async-graphql] | `7,465.30` | `13.40` |
-| [Gqlgen] | `2,189.38` | `47.17` |
-| [Apollo GraphQL] | `1,792.22` | `55.62` |
-| [Netflix DGS] | `1,594.73` | `65.74` |
+| [Tailcall] | `59,446.30` | `1.67` |
+| [Caliban] | `9,322.02` | `11.04` |
+| [async-graphql] | `7,271.63` | `13.75` |
+| [Hasura] | `2,377.29` | `41.97` |
+| [Gqlgen] | `2,089.38` | `49.36` |
+| [Apollo GraphQL] | `1,727.46` | `57.71` |
+| [Netflix DGS] | `1,599.55` | `65.91` |
 
 <!-- PERFORMANCE_RESULTS_END_1 -->
 
@@ -95,12 +96,13 @@ Get started with the benchmarks:
 
 | Server | Requests/sec | Latency (ms) |
 |--------:|--------------:|--------------:|
-| [Tailcall] | `30,032.70` | `3.32` |
-| [Caliban] | `1,586.34` | `62.97` |
-| [async-graphql] | `1,500.31` | `66.55` |
-| [Gqlgen] | `628.31` | `153.03` |
-| [Netflix DGS] | `358.42` | `209.07` |
-| [Apollo GraphQL] | `290.60` | `341.88` |
+| [Tailcall] | `27,772.00` | `3.59` |
+| [Hasura] | `4,227.10` | `23.67` |
+| [Caliban] | `1,517.39` | `65.86` |
+| [async-graphql] | `1,429.70` | `69.83` |
+| [Gqlgen] | `633.51` | `158.42` |
+| [Netflix DGS] | `354.80` | `218.91` |
+| [Apollo GraphQL] | `278.74` | `356.12` |
 
 <!-- PERFORMANCE_RESULTS_END_2 -->
 
