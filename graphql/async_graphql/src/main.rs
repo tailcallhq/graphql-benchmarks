@@ -113,29 +113,53 @@ impl QueryRoot {
     }
 }
 
-#[tokio::main]
-async fn main() {
-    let client = reqwest::ClientBuilder::new()
-        .proxy(Proxy::all("http://127.0.0.1:3000").unwrap())
-        .tcp_keepalive(Some(Duration::from_secs(60)))
-        .tcp_nodelay(true)
-        .no_gzip()
-        .http2_keep_alive_timeout(Duration::from_secs(60))
-        .pool_max_idle_per_host(200)
-        .build()
-        .unwrap();
-
-    let schema = Schema::build(QueryRoot, EmptyMutation, EmptySubscription)
-        .data(client)
-        .finish();
-
-    let app = Router::new().route("/graphql", get(graphiql).post_service(GraphQL::new(schema)));
-
-    println!("GraphiQL IDE: http://localhost:8000");
-
+fn main() {
+    let cpus: usize = std::thread::available_parallelism().unwrap().into();
     let listener = std::net::TcpListener::bind("127.0.0.1:8000").unwrap();
-    listener.set_nonblocking(true).unwrap();
-    axum::serve(TcpListener::from_std(listener).unwrap(), app)
-        .await
-        .unwrap();
+
+    let mut threads = vec![];
+
+    for _ in 0..cpus {
+        let listener = listener.try_clone().unwrap();
+
+        let handle = std::thread::spawn(move || {
+            let _ = tokio::runtime::Builder::new_current_thread()
+                .worker_threads(8)
+                .enable_all()
+                .build()
+                .unwrap()
+                .block_on(async move {
+                    let client = reqwest::ClientBuilder::new()
+                        .proxy(Proxy::all("http://127.0.0.1:3000").unwrap())
+                        .tcp_keepalive(Some(Duration::from_secs(60)))
+                        .tcp_nodelay(true)
+                        .no_gzip()
+                        .http2_keep_alive_timeout(Duration::from_secs(60))
+                        .pool_max_idle_per_host(200)
+                        .build()
+                        .unwrap();
+
+                    let schema = Schema::build(QueryRoot, EmptyMutation, EmptySubscription)
+                        .data(client)
+                        .finish();
+
+                    let app = Router::new()
+                        .route("/graphql", get(graphiql).post_service(GraphQL::new(schema)));
+
+                    println!("GraphiQL IDE: http://localhost:8000");
+                    // For each thread
+                    listener.set_nonblocking(true).unwrap();
+
+                    axum::serve(TcpListener::from_std(listener).unwrap(), app)
+                        .await
+                        .unwrap();
+                });
+        });
+
+        threads.push(handle);
+    }
+
+    for handle in threads {
+        handle.join().unwrap();
+    }
 }
