@@ -23,6 +23,7 @@ Explore and compare the performance of the fastest GraphQL frameworks through ou
 [Netflix DGS]: https://netflix.github.io/dgs/
 [Caliban]: https://ghostdogpr.github.io/caliban/
 [async-graphql]: https://github.com/async-graphql/async-graphql
+[Hasura]: https://github.com/hasura/graphql-engine
 
 ## Introduction
 
