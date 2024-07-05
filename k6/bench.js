@@ -18,7 +18,7 @@ export const options = {
   },
 };
 
-const url = 'http://localhost:8000/graphql';
+const url = __ENV.GRAPHQL_ENDPOINT || 'http://localhost:8000/graphql';
 const params = {
   headers: {
     'Connection': 'keep-alive',
