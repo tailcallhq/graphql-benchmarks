@@ -24,7 +24,7 @@ function runBenchmark() {
     local serviceScript="graphql/${service}/run.sh"
     local benchmarks=(1 2)
 
-  if [[ "$service" == *"hasura"* ]]; then
+  if [[ "$service" == "hasura" ]]; then
     bash "$serviceScript" # Run synchronously without background process
   else
     bash "$serviceScript" & # Run in daemon mode
@@ -44,15 +44,15 @@ function runBenchmark() {
         
         local resultFiles=("result1_${sanitizedServiceScriptName}.txt" "result2_${sanitizedServiceScriptName}.txt" "result3_${sanitizedServiceScriptName}.txt")
 
-    bash "test_query${bench}.sh" "$graphqlEndpoint"
+        bash "test_query${bench}.sh" "$graphqlEndpoint"
 
-    # Warmup run
-    bash "$benchmarkScript" "$graphqlEndpoint" >/dev/null
-    sleep 1 # Give some time for apps to finish in-flight requests from warmup
-    bash "$benchmarkScript" "$graphqlEndpoint" >/dev/null
-    sleep 1
-    bash "$benchmarkScript" "$graphqlEndpoint" >/dev/null
-    sleep 1
+        # Warmup run
+        bash "$benchmarkScript" "$graphqlEndpoint" >/dev/null
+        sleep 1 # Give some time for apps to finish in-flight requests from warmup
+        bash "$benchmarkScript" "$graphqlEndpoint" >/dev/null
+        sleep 1
+        bash "$benchmarkScript" "$graphqlEndpoint" >/dev/null
+        sleep 1
 
         # 3 benchmark runs
         for resultFile in "${resultFiles[@]}"; do
@@ -69,7 +69,7 @@ function runBenchmark() {
 
 rm "results.md"
 
-for service in "apollo_server" "caliban" "netflix_dgs" "gqlgen" "tailcall" "async_graphql"; do
+for service in "apollo_server" "caliban" "netflix_dgs" "gqlgen" "tailcall" "async_graphql" "hasura"; do
     runBenchmark "$service"
     if [ "$service" == "apollo_server" ]; then
         cd graphql/apollo_server/
