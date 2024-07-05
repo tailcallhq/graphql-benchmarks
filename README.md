@@ -10,7 +10,7 @@ Explore and compare the performance of the fastest GraphQL frameworks through ou
   - [Throughput (Higher is better)](#throughput-higher-is-better)
   - [Latency (Lower is better)](#latency-lower-is-better)
 - [Architecture](#architecture)
-  - [WRK](#wrk)
+  - [K6](#k6)
   - [GraphQL](#graphql)
   - [Nginx](#nginx)
   - [Jsonplaceholder](#jsonplaceholder)
@@ -117,11 +117,11 @@ Get started with the benchmarks:
 
 ![Architecture Diagram](assets/architecture.png)
 
-A client (`wrk`) sends requests to a GraphQL server to fetch post titles. The GraphQL server, in turn, retrieves data from an external source, `jsonplaceholder.typicode.com`, routed through the `nginx` reverse proxy.
+A client (`k6`) sends requests to a GraphQL server to fetch post titles. The GraphQL server, in turn, retrieves data from an external source, `jsonplaceholder.typicode.com`, routed through the `nginx` reverse proxy.
 
-### WRK
+### K6
 
-`wrk` serves as our test client, sending GraphQL requests at a high rate.
+`k6` serves as our test client, sending GraphQL requests at a high rate.
 
 ### GraphQL
 
