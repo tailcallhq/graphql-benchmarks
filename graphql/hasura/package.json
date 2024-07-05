@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "main": "index.js",
   "dependencies": {
-    "hasura-cli": "2.38.0"
+    "hasura-cli": "2.36.1"
   }
 }
