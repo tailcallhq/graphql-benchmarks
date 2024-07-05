@@ -17,11 +17,11 @@ Explore and compare the performance of the fastest GraphQL frameworks through ou
 - [GraphQL Schema](#graphql-schema)
 - [Contribute](#contribute)
 
-[Tailcall]: https://tailcall.run/
-[Gqlgen]: https://gqlgen.com/
-[Apollo GraphQL]: https://new.apollographql.com/
-[Netflix DGS]: https://netflix.github.io/dgs/
-[Caliban]: https://ghostdogpr.github.io/caliban/
+[Tailcall]: https://github.com/tailcallhq/tailcall
+[Gqlgen]: https://github.com/99designs/gqlgen
+[Apollo GraphQL]: https://github.com/apollographql/apollo-server
+[Netflix DGS]: https://github.com/netflix/dgs-framework
+[Caliban]: https://github.com/ghostdogpr/caliban
 [async-graphql]: https://github.com/async-graphql/async-graphql
 
 ## Introduction
