@@ -38,7 +38,7 @@ function runBenchmark() {
   fi
 
   for bench in "${benchmarks[@]}"; do
-    local benchmarkScript="wrk/bench${bench}.sh"
+    local benchmarkScript="wrk/bench.sh"
 
     # Replace / with _
     local sanitizedServiceScriptName=$(echo "$serviceScript" | tr '/' '_')
@@ -48,17 +48,17 @@ function runBenchmark() {
     bash "test_query${bench}.sh" "$graphqlEndpoint"
 
     # Warmup run
-    bash "$benchmarkScript" "$graphqlEndpoint" >/dev/null
+    bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >/dev/null
     sleep 1 # Give some time for apps to finish in-flight requests from warmup
-    bash "$benchmarkScript" "$graphqlEndpoint" >/dev/null
+    bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >/dev/null
     sleep 1
-    bash "$benchmarkScript" "$graphqlEndpoint" >/dev/null
+    bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >/dev/null
     sleep 1
 
         # 3 benchmark runs
         for resultFile in "${resultFiles[@]}"; do
             echo "Running benchmark $bench for $serviceScript"
-            bash "$benchmarkScript" "$graphqlEndpoint" >"bench${bench}_${resultFile}"
+            bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >"bench${bench}_${resultFile}"
             if [ "$bench" == "1" ]; then
                 bench1Results+=("bench1_${resultFile}")
             elif [ "$bench" == "2" ]; then

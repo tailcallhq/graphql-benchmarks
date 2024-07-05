@@ -88,33 +88,12 @@ Get started with the benchmarks:
 
 ![Latency Histogram](assets/latency_histogram2.png)
 
----
-
-### Test Query
-```graphql
-{
-  greet
-}
-```
-
-<!-- PERFORMANCE_RESULTS_START_3 -->
-
-| Server | Requests/sec | Latency (ms) |
-|--------:|--------------:|--------------:|
-| [Tailcall] | `56,534.50` | `1.81` |
-| [Caliban] | `49,900.30` | `2.16` |
-| [async-graphql] | `43,681.60` | `2.34` |
-| [Gqlgen] | `43,120.20` | `4.82` |
-| [Apollo GraphQL] | `8,648.76` | `12.00` |
-| [Netflix DGS] | `7,230.38` | `16.64` |
-
-<!-- PERFORMANCE_RESULTS_END_3 -->
-
-### Throughput (Higher is better)
+### 3. `{greet}`
+#### Throughput (Higher is better)
 
 ![Throughput Histogram](assets/req_sec_histogram3.png)
 
-### Latency (Lower is better)
+#### Latency (Lower is better)
 
 ![Latency Histogram](assets/latency_histogram3.png)
 
