@@ -23,6 +23,7 @@ Explore and compare the performance of the fastest GraphQL frameworks through ou
 [Netflix DGS]: https://netflix.github.io/dgs/
 [Caliban]: https://ghostdogpr.github.io/caliban/
 [async-graphql]: https://github.com/async-graphql/async-graphql
+[Hasura]: https://github.com/hasura/graphql-engine
 
 ## Introduction
 
@@ -44,72 +45,46 @@ Get started with the benchmarks:
 
 ## Benchmark Results
 
-### Test Query
-```graphql
-{
-  posts {
-    title
-  }
-}
-```
+<!-- PERFORMANCE_RESULTS_START -->
 
-<!-- PERFORMANCE_RESULTS_START_1 -->
+| Query | Server | Requests/sec | Latency (ms) | Relative |
+|-------:|--------:|--------------:|--------------:|---------:|
+| 1 | `{ posts { id userId title user { id name email }}}` |
+|| [Tailcall] | `29,534.90` | `3.37` | `102.64x` |
+|| [Hasura] | `4,601.66` | `21.71` | `15.99x` |
+|| [Caliban] | `1,574.63` | `63.42` | `5.47x` |
+|| [async-graphql] | `1,457.27` | `68.51` | `5.06x` |
+|| [Gqlgen] | `641.88` | `156.54` | `2.23x` |
+|| [Netflix DGS] | `362.21` | `150.25` | `1.26x` |
+|| [Apollo GraphQL] | `287.75` | `345.31` | `1.00x` |
+| 2 | `{ posts { title }}` |
+|| [Tailcall] | `61,457.60` | `1.62` | `38.92x` |
+|| [Caliban] | `9,243.21` | `11.19` | `5.85x` |
+|| [async-graphql] | `7,321.85` | `13.66` | `4.64x` |
+|| [Hasura] | `5,648.75` | `17.70` | `3.58x` |
+|| [Gqlgen] | `2,196.22` | `46.47` | `1.39x` |
+|| [Apollo GraphQL] | `1,735.65` | `57.40` | `1.10x` |
+|| [Netflix DGS] | `1,579.14` | `69.21` | `1.00x` |
 
-| Server | Requests/sec | Latency (ms) |
-|--------:|--------------:|--------------:|
-| [Tailcall] | `62,745.40` | `1.59` |
-| [Caliban] | `9,345.30` | `11.06` |
-| [async-graphql] | `7,574.73` | `13.21` |
-| [Gqlgen] | `2,210.34` | `46.79` |
-| [Apollo GraphQL] | `1,832.87` | `54.34` |
-| [Netflix DGS] | `1,620.15` | `65.73` |
+<!-- PERFORMANCE_RESULTS_END -->
 
-<!-- PERFORMANCE_RESULTS_END_1 -->
 
-### Throughput (Higher is better)
+
+### 1. `{posts {title body user {name}}}`
+#### Throughput (Higher is better)
 
 ![Throughput Histogram](assets/req_sec_histogram1.png)
 
-### Latency (Lower is better)
+#### Latency (Lower is better)
 
 ![Latency Histogram](assets/latency_histogram1.png)
 
----
-
-### Test Query
-```graphql
-{
-  posts {
-    id
-    userId
-    title
-    user {
-      id
-      name
-      email
-    }
-  }
-}
-```
-
-<!-- PERFORMANCE_RESULTS_START_2 -->
-
-| Server | Requests/sec | Latency (ms) |
-|--------:|--------------:|--------------:|
-| [Tailcall] | `30,574.00` | `3.26` |
-| [Caliban] | `1,609.47` | `62.02` |
-| [async-graphql] | `1,553.31` | `64.28` |
-| [Gqlgen] | `662.59` | `151.58` |
-| [Netflix DGS] | `362.76` | `156.19` |
-| [Apollo GraphQL] | `293.87` | `338.20` |
-
-<!-- PERFORMANCE_RESULTS_END_2 -->
-
-### Throughput (Higher is better)
+### 2. `{posts {title body}}`
+#### Throughput (Higher is better)
 
 ![Throughput Histogram](assets/req_sec_histogram2.png)
 
-### Latency (Lower is better)
+#### Latency (Lower is better)
 
 ![Latency Histogram](assets/latency_histogram2.png)
 

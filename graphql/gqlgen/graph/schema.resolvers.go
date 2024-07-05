@@ -36,6 +36,7 @@ func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
 
 func batchUsers(ctx context.Context, keys []string) (results []*model.User, errors []error) {
 	var wg sync.WaitGroup
+	var mu sync.Mutex
 	wg.Add(len(keys))
 
 	for _, key := range keys {
@@ -43,16 +44,24 @@ func batchUsers(ctx context.Context, keys []string) (results []*model.User, erro
 			defer wg.Done()
 			resp, err := fetchFromJSONPlaceholder(fmt.Sprintf("/users/%s", key))
 			if err != nil {
+				mu.Lock()
 				errors = append(errors, err)
+				mu.Unlock()
+				return
 			}
 			defer resp.Body.Close()
 
 			var user model.User
 			if err := decodeResponse(resp, &user); err != nil {
+				mu.Lock()
 				errors = append(errors, err)
+				mu.Unlock()
+				return
 			}
 
+			mu.Lock()
 			results = append(results, &user)
+			mu.Unlock()
 		}(key)
 	}
 	wg.Wait()
