@@ -20,6 +20,7 @@ sh nginx/run.sh
 
 function runBenchmark() {
     killServerOnPort 8000
+    killServerOnPort 4000
     sleep 5
     local serviceScript="$1"
     local benchmarks=(1 2 3)
