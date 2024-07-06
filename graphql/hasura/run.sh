@@ -92,6 +92,9 @@ jq -c '.[]' posts.json | while read -r post; do
   psql "postgresql://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME" -c "INSERT INTO public.posts (id, user_id, title, body) VALUES ($id, $user_id, '$title', '$body') ON CONFLICT (id) DO NOTHING;"
 done
 
+# Run handler for greet action
+node ./graphql/hasura/handler.js &
+
 # Clean up temporary files
 rm users.json posts.json
 

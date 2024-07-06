@@ -7,3 +7,6 @@ docker rm postgres
 # Stop and remove Hasura GraphQL Engine container
 docker stop graphql-engine
 docker rm graphql-engine
+
+# Stop handler for greet action
+killall node
