@@ -6,6 +6,8 @@ RUN apt-get update && apt-get install -y \
   build-essential \
   libssl-dev \
   pkg-config \
+  libpcre3 \
+  libpcre3-dev \
   openjdk-17-jdk \
   git \
   curl \
