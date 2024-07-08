@@ -4,12 +4,12 @@
 
 | Server | Requests/sec | Latency (ms) |
 |--------:|--------------:|--------------:|
-| [Tailcall] | `93,342.31` | `1.07` |
-| [Caliban] | `25,046.63` | `3.98` |
-| [async-graphql] | `18,078.63` | `5.53` |
-| [Netflix DGS] | `6,299.71` | `15.82` |
-| [Apollo GraphQL] | `6,112.70` | `16.39` |
-| [Gqlgen] | `5,966.77` | `16.77` |
+| [Tailcall] | `101,998.18` | `0.98` |
+| [async-graphql] | `40,900.27` | `2.44` |
+| [Caliban] | `33,802.21` | `2.95` |
+| [Gqlgen] | `31,334.28` | `3.19` |
+| [Apollo GraphQL] | `13,675.53` | `7.32` |
+| [Netflix DGS] | `221.68` | `461.36` |
 
 <!-- PERFORMANCE_RESULTS_END_1 -->
 ## Benchmark 2 results
@@ -18,95 +18,11 @@
 
 | Server | Requests/sec | Latency (ms) |
 |--------:|--------------:|--------------:|
-| [Gqlgen] | `57,674.11` | `0.00` |
-| [Tailcall] | `54,446.05` | `1.83` |
-| [Caliban] | `3,980.10` | `25.21` |
-| [async-graphql] | `3,262.37` | `30.67` |
-| [Apollo GraphQL] | `1,371.23` | `73.07` |
-| [Netflix DGS] | `1,306.06` | `74.16` |
-
-<!-- PERFORMANCE_RESULTS_END_2 -->
-## Benchmark 1 results
-
-<!-- PERFORMANCE_RESULTS_START_1 -->
-
-| Server | Requests/sec | Latency (ms) |
-|--------:|--------------:|--------------:|
-| [Tailcall] | `93,342.31` | `1.07` |
-| [Caliban] | `25,046.63` | `3.98` |
-| [async-graphql] | `18,078.63` | `5.53` |
-| [Netflix DGS] | `6,299.71` | `15.82` |
-| [Apollo GraphQL] | `6,112.70` | `16.39` |
-| [Gqlgen] | `5,966.77` | `16.77` |
-
-<!-- PERFORMANCE_RESULTS_END_1 -->
-## Benchmark 2 results
-
-<!-- PERFORMANCE_RESULTS_START_2 -->
-
-| Server | Requests/sec | Latency (ms) |
-|--------:|--------------:|--------------:|
-| [Gqlgen] | `57,674.11` | `0.00` |
-| [Tailcall] | `54,446.05` | `1.83` |
-| [Caliban] | `3,980.10` | `25.21` |
-| [async-graphql] | `3,262.37` | `30.67` |
-| [Apollo GraphQL] | `1,371.23` | `73.07` |
-| [Netflix DGS] | `1,306.06` | `74.16` |
-
-<!-- PERFORMANCE_RESULTS_END_2 -->
-## Benchmark 1 results
-
-<!-- PERFORMANCE_RESULTS_START_1 -->
-
-| Server | Requests/sec | Latency (ms) |
-|--------:|--------------:|--------------:|
-| [Tailcall] | `93,342.31` | `1.07` |
-| [Caliban] | `25,046.63` | `3.98` |
-| [async-graphql] | `18,078.63` | `5.53` |
-| [Netflix DGS] | `6,299.71` | `15.82` |
-| [Apollo GraphQL] | `6,112.70` | `16.39` |
-| [Gqlgen] | `5,966.77` | `16.77` |
-
-<!-- PERFORMANCE_RESULTS_END_1 -->
-## Benchmark 2 results
-
-<!-- PERFORMANCE_RESULTS_START_2 -->
-
-| Server | Requests/sec | Latency (ms) |
-|--------:|--------------:|--------------:|
-| [Gqlgen] | `57,674.11` | `0.00` |
-| [Tailcall] | `54,446.05` | `1.83` |
-| [Caliban] | `3,980.10` | `25.21` |
-| [async-graphql] | `3,262.37` | `30.67` |
-| [Apollo GraphQL] | `1,371.23` | `73.07` |
-| [Netflix DGS] | `1,306.06` | `74.16` |
-
-<!-- PERFORMANCE_RESULTS_END_2 -->
-## Benchmark 1 results
-
-<!-- PERFORMANCE_RESULTS_START_1 -->
-
-| Server | Requests/sec | Latency (ms) |
-|--------:|--------------:|--------------:|
-| [Tailcall] | `93,342.31` | `1.07` |
-| [Caliban] | `25,046.63` | `3.98` |
-| [async-graphql] | `18,078.63` | `5.53` |
-| [Netflix DGS] | `6,299.71` | `15.82` |
-| [Apollo GraphQL] | `6,112.70` | `16.39` |
-| [Gqlgen] | `5,966.77` | `16.77` |
-
-<!-- PERFORMANCE_RESULTS_END_1 -->
-## Benchmark 2 results
-
-<!-- PERFORMANCE_RESULTS_START_2 -->
-
-| Server | Requests/sec | Latency (ms) |
-|--------:|--------------:|--------------:|
-| [Gqlgen] | `57,674.11` | `0.00` |
-| [Tailcall] | `54,446.05` | `1.83` |
-| [Caliban] | `3,980.10` | `25.21` |
-| [async-graphql] | `3,262.37` | `30.67` |
-| [Apollo GraphQL] | `1,371.23` | `73.07` |
-| [Netflix DGS] | `1,306.06` | `74.16` |
+| [Tailcall] | `104,244.97` | `0.95` |
+| [async-graphql] | `41,352.03` | `2.42` |
+| [Caliban] | `32,482.42` | `3.08` |
+| [Gqlgen] | `27,677.71` | `3.62` |
+| [Apollo GraphQL] | `13,540.54` | `7.39` |
+| [Netflix DGS] | `3.33` | `0.00` |
 
 <!-- PERFORMANCE_RESULTS_END_2 -->
