@@ -27,8 +27,8 @@ RUN wget https://dl.google.com/go/go1.21.1.linux-amd64.tar.gz -O- | tar xz -C /u
 ENV PATH=$PATH:/usr/local/go/bin
 
 # Install Nginx with echo module
-RUN wget http://nginx.org/download/nginx-1.11.2.tar.gz && \
-  tar -xzvf nginx-1.11.2.tar.gz && \
+RUN wget http://nginx.org/download/nginx-1.26.0.tar.gz && \
+  tar -xzvf nginx-1.26.0.tar.gz && \
   git clone https://github.com/openresty/echo-nginx-module.git && \
   cd nginx-1.11.2 && \
   CFLAGS="-Wno-implicit-fallthrough" ./configure --prefix=/opt/nginx --add-module=../echo-nginx-module && \
