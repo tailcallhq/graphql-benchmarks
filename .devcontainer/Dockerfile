@@ -31,7 +31,7 @@ RUN wget http://nginx.org/download/nginx-1.11.2.tar.gz && \
   tar -xzvf nginx-1.11.2.tar.gz && \
   git clone https://github.com/openresty/echo-nginx-module.git && \
   cd nginx-1.11.2 && \
-  ./configure --prefix=/opt/nginx --add-module=../echo-nginx-module && \
+  CFLAGS="-Wno-implicit-fallthrough" ./configure --prefix=/opt/nginx --add-module=../echo-nginx-module && \
   make -j2 && \
   make install
 
