@@ -106,6 +106,5 @@ rm users.json posts.json
 
 # Apply Hasura metadata
 cd ./graphql/hasura
-# Run handler for greet action
 npx hasura metadata apply --endpoint http://$HASURA_URL:8080
 cd ../..
