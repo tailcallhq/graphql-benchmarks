@@ -26,14 +26,13 @@ RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
 RUN wget https://dl.google.com/go/go1.21.1.linux-amd64.tar.gz -O- | tar xz -C /usr/local
 ENV PATH=$PATH:/usr/local/go/bin
 
-# Install Nginx with echo module
-RUN wget http://nginx.org/download/nginx-1.26.0.tar.gz && \
-  tar -xzvf nginx-1.26.0.tar.gz && \
-  git clone https://github.com/openresty/echo-nginx-module.git && \
-  cd nginx-1.26.0 && \
-  CFLAGS="-Wno-implicit-fallthrough" ./configure --prefix=/opt/nginx --add-module=../echo-nginx-module && \
-  make -j2 && \
-  make install
+# Install Openresty
+RUN apt-get update && \
+    apt-get -y install --no-install-recommends wget gnupg ca-certificates lsb-release && \
+    wget -O - https://openresty.org/package/pubkey.gpg | gpg --dearmor -o /usr/share/keyrings/openresty-archive-keyring.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/openresty-archive-keyring.gpg] http://openresty.org/package/$(dpkg --print-architecture)/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/openresty.list && \
+    apt-get update && \
+    apt-get -y install --no-install-recommends openresty
 
 # Nginx configurations
 RUN mkdir -p /var/cache/nginx-cache \
