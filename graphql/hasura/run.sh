@@ -26,7 +26,7 @@ echo "PostgreSQL is ready!"
 docker run -d --name handler \
   -p 4000:4000 \
   --mount type=bind,source="/home/runner/work/graphql-benchmarks/graphql-benchmarks/graphql/hasura",target=/app \
-  node:14 bash -c "ls -la && cd /app && ls -la && npm install && node handler.js"
+  node:14 bash -c "cd /app && npm install && node handler.js"
 
 HANDLER_URL=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' handler)
 HANDLER_URL="http://$HANDLER_URL:4000/greet"
