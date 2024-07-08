@@ -88,6 +88,15 @@ Get started with the benchmarks:
 
 ![Latency Histogram](assets/latency_histogram2.png)
 
+### 3. `{greet}`
+#### Throughput (Higher is better)
+
+![Throughput Histogram](assets/req_sec_histogram3.png)
+
+#### Latency (Lower is better)
+
+![Latency Histogram](assets/latency_histogram3.png)
+
 ## Architecture
 
 ![Architecture Diagram](assets/architecture.png)

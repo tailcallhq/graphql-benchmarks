@@ -21,5 +21,6 @@ type Post {
 type Query {
   users: [User!]!
   posts: [Post!]!
+  greet: String!
 }
 

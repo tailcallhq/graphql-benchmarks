@@ -56,7 +56,9 @@ done
 
 whichBench=1
 if [[ $1 == bench2* ]]; then
-  whichBench=2
+    whichBench=2
+elif [[ $1 == bench3* ]]; then
+    whichBench=3
 fi
 
 reqSecHistogramFile="req_sec_histogram${whichBench}.png"
@@ -107,8 +109,10 @@ lastServerReqSecs=${avgReqSecs[$lastServer]}
 # Start building the resultsTable
 if [[ $whichBench == 1 ]]; then
     resultsTable="<!-- PERFORMANCE_RESULTS_START -->\n\n| Query | Server | Requests/sec | Latency (ms) | Relative |\n|-------:|--------:|--------------:|--------------:|---------:|\n| $whichBench | \`{ posts { id userId title user { id name email }}}\` |"
-else 
+elif [[ $whichBench == 2 ]]; then
     resultsTable="| $whichBench | \`{ posts { title }}\` |"
+elif [[ $whichBench == 3 ]]; then
+    resultsTable="| $whichBench | \`{ greet }\` |"
 fi
 
 # Build the resultsTable with sorted servers and formatted numbers
@@ -121,7 +125,7 @@ for server in "${sortedServers[@]}"; do
     resultsTable+="\n|| [${formattedServerNames[$server]}] | \`${formattedReqSecs}\` | \`${formattedLatencies}\` | \`${relativePerformance}x\` |"
 done
 
-if [[ $whichBench == 2 ]]; then
+if [[ $whichBench == 3 ]]; then
     resultsTable+="\n\n<!-- PERFORMANCE_RESULTS_END -->"
 fi
 
@@ -132,7 +136,7 @@ resultsFile="results.md"
 echo -e $resultsTable >> $resultsFile
 
 
-if [[ $whichBench == 2 ]]; then
+if [[ $whichBench == 3 ]]; then
     finalResults=$(printf '%s\n' "$(cat $resultsFile)" | sed 's/$/\\n/'| tr -d '\n')
     # Remove the last newline character
     finalResults=${finalResults::-2}

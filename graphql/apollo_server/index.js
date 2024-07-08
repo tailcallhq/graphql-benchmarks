@@ -31,6 +31,7 @@ const typeDefs = `#graphql
 
   type Query {
 		posts: [Post]
+		greet: String!
   }
 `;
 
@@ -44,7 +45,7 @@ async function batchUsers(usersIds) {
           host: "127.0.0.1",
           port: 3000,
         },
-      }
+      },
     );
     return response.data;
   });
@@ -70,6 +71,9 @@ const resolvers = {
         throw new Error("Failed to fetch posts");
       }
     },
+    greet: () => {
+      return "Hello World!";
+    },
   },
   Post: {
     user: async (post, _, { userLoader }) => {
@@ -87,8 +91,8 @@ const { url } = await startStandaloneServer(server, {
   context: async () => {
     return {
       userLoader: new DataLoader(batchUsers, {
-        batchScheduleFn: callback => setTimeout(callback, 1),
-      })
+        batchScheduleFn: (callback) => setTimeout(callback, 1),
+      }),
     };
   },
   listen: { port: 8000 },

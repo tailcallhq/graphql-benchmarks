@@ -14,14 +14,15 @@ function killServerOnPort() {
 }
 bench1Results=()
 bench2Results=()
+bench3Results=()
 killServerOnPort 3000
 sh nginx/run.sh
 
 function runBenchmark() {
-  killServerOnPort 8000
-  sleep 5
-  local serviceScript="$1"
-  local benchmarks=(1 2)
+    killServerOnPort 8000
+    sleep 5
+    local serviceScript="$1"
+    local benchmarks=(1 2 3)
 
   if [[ "$serviceScript" == *"hasura"* ]]; then
     bash "$serviceScript" # Run synchronously without background process
@@ -37,7 +38,7 @@ function runBenchmark() {
   fi
 
   for bench in "${benchmarks[@]}"; do
-    local benchmarkScript="wrk/bench${bench}.sh"
+    local benchmarkScript="wrk/bench.sh"
 
     # Replace / with _
     local sanitizedServiceScriptName=$(echo "$serviceScript" | tr '/' '_')
@@ -47,24 +48,26 @@ function runBenchmark() {
     bash "test_query${bench}.sh" "$graphqlEndpoint"
 
     # Warmup run
-    bash "$benchmarkScript" "$graphqlEndpoint" >/dev/null
+    bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >/dev/null
     sleep 1 # Give some time for apps to finish in-flight requests from warmup
-    bash "$benchmarkScript" "$graphqlEndpoint" >/dev/null
+    bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >/dev/null
     sleep 1
-    bash "$benchmarkScript" "$graphqlEndpoint" >/dev/null
+    bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >/dev/null
     sleep 1
 
-    # 3 benchmark runs
-    for resultFile in "${resultFiles[@]}"; do
-      echo "Running benchmark $bench for $serviceScript"
-      bash "$benchmarkScript" "$graphqlEndpoint" >"bench${bench}_${resultFile}"
-      if [ "$bench" == "1" ]; then
-        bench1Results+=("bench1_${resultFile}")
-      else
-        bench2Results+=("bench2_${resultFile}")
-      fi
+        # 3 benchmark runs
+        for resultFile in "${resultFiles[@]}"; do
+            echo "Running benchmark $bench for $serviceScript"
+            bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >"bench${bench}_${resultFile}"
+            if [ "$bench" == "1" ]; then
+                bench1Results+=("bench1_${resultFile}")
+            elif [ "$bench" == "2" ]; then
+                bench2Results+=("bench2_${resultFile}")
+            elif [ "$bench" == "3" ]; then
+                bench3Results+=("bench3_${resultFile}")
+            fi
+        done
     done
-  done
 }
 
 rm "results.md"
@@ -82,3 +85,4 @@ done
 
 bash analyze.sh "${bench1Results[@]}"
 bash analyze.sh "${bench2Results[@]}"
+bash analyze.sh "${bench3Results[@]}"

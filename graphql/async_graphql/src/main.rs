@@ -111,6 +111,9 @@ impl QueryRoot {
 
         Ok(posts_with_users)
     }
+    pub async fn greet(&self) -> String {
+        "Hello World!".to_string()
+    }
 }
 
 fn main() {
