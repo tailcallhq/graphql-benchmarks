@@ -9,6 +9,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@graphql-tools/schema": "^10.0.4",
     "axios": "^1.7.2",
     "dataloader": "^2.2.2",
     "express": "^4.19.2",

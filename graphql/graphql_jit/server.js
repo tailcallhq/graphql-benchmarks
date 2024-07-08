@@ -1,10 +1,11 @@
 const express = require('express');
-const { buildSchema, parse, execute } = require('graphql');
-const { compileQuery } = require('graphql-jit');
+const { parse } = require('graphql');
+const { compileQuery, isCompiledQuery } = require('graphql-jit');
 const bodyParser = require('body-parser');
 const axios = require('axios');
 const DataLoader = require('dataloader');
 const { Agent } = require('http');
+const { makeExecutableSchema } = require('@graphql-tools/schema');
 
 const httpAgent = new Agent({ keepAlive: true });
 const axiosInstance = axios.create({
@@ -16,7 +17,7 @@ const axiosInstance = axios.create({
   }
 });
 
-const schema = buildSchema(`
+const typeDefs = `
   type Post {
     userId: Int
     id: Int
@@ -38,7 +39,23 @@ const schema = buildSchema(`
     greet: String
     posts: [Post]
   }
-`);
+`;
+
+const resolvers = {
+  Query: {
+    greet: () => 'Hello World!',
+    posts: async () => {
+      try {
+        const response = await axiosInstance.get('http://jsonplaceholder.typicode.com/posts');
+        return response.data;
+      } catch (error) {
+        throw new Error('Failed to fetch posts');
+      }
+    },
+  },
+};
+
+const schema = makeExecutableSchema({ typeDefs, resolvers });
 
 async function batchUsers(userIds) {
   const requests = userIds.map(async (id) => {
@@ -48,21 +65,12 @@ async function batchUsers(userIds) {
   return await Promise.all(requests);
 }
 
-const root = {
-  greet: () => 'Hello World!',
-  posts: async () => {
-    try {
-      const response = await axiosInstance.get('http://jsonplaceholder.typicode.com/posts');
-      return response.data;
-    } catch (error) {
-      throw new Error('Failed to fetch posts');
-    }
-  }
-};
-
 const app = express();
 
 app.use(bodyParser.json());
+
+// In-memory store for compiled queries
+const queryCache = new Map();
 
 app.use('/graphql', async (req, res) => {
   const query = req.body.query || req.query.query;
@@ -72,8 +80,17 @@ app.use('/graphql', async (req, res) => {
   }
 
   try {
-    const document = parse(query);
-    const compiledQuery = compileQuery(schema, document);
+    let compiledQuery;
+    if (queryCache.has(query)) {
+      compiledQuery = queryCache.get(query);
+    } else {
+      const document = parse(query);
+      compiledQuery = compileQuery(schema, document);
+      if (!isCompiledQuery(compiledQuery)) {
+        throw new Error('Error compiling query');
+      }
+      queryCache.set(query, compiledQuery);
+    }
 
     const userLoader = new DataLoader(batchUsers, {
       batchScheduleFn: callback => setTimeout(callback, 1),
@@ -81,27 +98,18 @@ app.use('/graphql', async (req, res) => {
 
     const contextValue = { userLoader };
 
-    const result = await execute({
-      schema,
-      document,
-      rootValue: root,
+    const result = await compiledQuery.query(
+      undefined,
       contextValue,
-      variableValues: req.body.variables,
-      operationName: req.body.operationName,
-      fieldResolver: undefined,
-      typeResolver: undefined,
-      execute: compiledQuery.query,
-    });
+      req.body.variables,
+      req.body.operationName
+    );
 
     res.json(result);
   } catch (error) {
     res.status(500).send(error.message);
   }
 });
-
-schema.getType('Post').getFields().user.resolve = async (post, _, { userLoader }) => {
-  return userLoader.load(post.userId);
-};
 
 app.listen(8000, () => {
   console.log('Running a GraphQL API server at http://localhost:8000/graphql');
