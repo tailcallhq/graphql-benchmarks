@@ -29,8 +29,8 @@ ENV PATH=$PATH:/usr/local/go/bin
 # Install Openresty
 RUN apt-get update && \
     apt-get -y install --no-install-recommends wget gnupg ca-certificates lsb-release && \
-    wget -O - https://openresty.org/package/pubkey.gpg | gpg --dearmor -o /usr/share/keyrings/openresty-archive-keyring.gpg && \
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/openresty-archive-keyring.gpg] http://openresty.org/package/$(dpkg --print-architecture)/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/openresty.list && \
+    wget -O - https://openresty.org/package/pubkey.gpg | gpg --dearmor -o /usr/share/keyrings/openresty.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/openresty.gpg] http://openresty.org/package/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/openresty.list && \
     apt-get update && \
     apt-get -y install --no-install-recommends openresty
 
