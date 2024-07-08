@@ -2,6 +2,19 @@ const express = require('express');
 const { buildSchema, parse, execute } = require('graphql');
 const { compileQuery } = require('graphql-jit');
 const bodyParser = require('body-parser');
+const axios = require('axios');
+const DataLoader = require('dataloader');
+const { Agent } = require('http');
+
+const httpAgent = new Agent({ keepAlive: true });
+const axiosInstance = axios.create({
+  httpAgent,
+  proxy: {
+    protocol: 'http',
+    host: '127.0.0.1',
+    port: 3000,
+  }
+});
 
 const schema = buildSchema(`
   type Post {
@@ -24,32 +37,27 @@ const schema = buildSchema(`
   type Query {
     greet: String
     posts: [Post]
-    users: [User]
-    post(id: Int!): Post
-    user(id: Int!): User
   }
 `);
 
-const fetchData = async (url) => {
-  const fetch = (await import('node-fetch')).default;
-  const response = await fetch(url);
-  return await response.json();
-};
+async function batchUsers(userIds) {
+  const requests = userIds.map(async (id) => {
+    const response = await axiosInstance.get(`http://jsonplaceholder.typicode.com/users/${id}`);
+    return response.data;
+  });
+  return await Promise.all(requests);
+}
 
 const root = {
   greet: () => 'Hello World!',
   posts: async () => {
-    const posts = await fetchData('https://jsonplaceholder.typicode.com/posts');
-    const users = await fetchData('https://jsonplaceholder.typicode.com/users');
-    const usersMap = users.reduce((acc, user) => {
-      acc[user.id] = user;
-      return acc;
-    }, {});
-    return posts.map(post => ({
-      ...post,
-      user: usersMap[post.userId]
-    }));
-  },
+    try {
+      const response = await axiosInstance.get('http://jsonplaceholder.typicode.com/posts');
+      return response.data;
+    } catch (error) {
+      throw new Error('Failed to fetch posts');
+    }
+  }
 };
 
 const app = express();
@@ -67,11 +75,17 @@ app.use('/graphql', async (req, res) => {
     const document = parse(query);
     const compiledQuery = compileQuery(schema, document);
 
+    const userLoader = new DataLoader(batchUsers, {
+      batchScheduleFn: callback => setTimeout(callback, 1),
+    });
+
+    const contextValue = { userLoader };
+
     const result = await execute({
       schema,
       document,
       rootValue: root,
-      contextValue: null,
+      contextValue,
       variableValues: req.body.variables,
       operationName: req.body.operationName,
       fieldResolver: undefined,
@@ -84,6 +98,10 @@ app.use('/graphql', async (req, res) => {
     res.status(500).send(error.message);
   }
 });
+
+schema.getType('Post').getFields().user.resolve = async (post, _, { userLoader }) => {
+  return userLoader.load(post.userId);
+};
 
 app.listen(8000, () => {
   console.log('Running a GraphQL API server at http://localhost:8000/graphql');
