@@ -8,6 +8,7 @@ const servers = {
   caliban: "Caliban",
   async_graphql: "async-graphql",
   hasura: "Hasura",
+  graphql_jit: "GraphQL JIT",
 } as const;
 
 const queries = {
