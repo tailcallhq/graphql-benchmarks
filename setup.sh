@@ -37,5 +37,9 @@ cd graphql/graphql_jit
 npm install
 cd ../../
 
-# install oha
-cargo install oha
+# install oha if rust is installed
+if command -v rustc >/dev/null 2>&1; then
+  cargo install oha
+else
+  echo "Rust is not installed. Skipping oha installation."
+fi
