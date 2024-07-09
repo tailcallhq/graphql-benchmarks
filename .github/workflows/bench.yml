@@ -32,7 +32,8 @@ jobs:
           push: never
           runCmd: |
             bash ./setup.sh
-            bash ./run_benchmarks.sh
+            npm i
+            npx --yes ts-node ./src/run_benchmarks.ts
 
       - name: Print benchmark results
         run: cat ./results.md

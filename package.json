@@ -1,0 +1,19 @@
+{
+  "name": "graphql-benchmarks",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/tailcallhq/graphql-benchmarks)",
+  "main": "index.js",
+  "scripts": {},
+  "dependencies": {
+    "execa": "^9.3.0",
+    "markdown-table": "^3.0.3"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/node": "^20.14.10"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
