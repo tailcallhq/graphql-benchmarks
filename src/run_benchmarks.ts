@@ -49,12 +49,12 @@ async function runBenchmark(serviceScript: string) {
     const stdout = execCommand("docker", [
       "inspect",
       "-f",
-      "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}",
+      "'{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}'",
       "graphql-engine",
     ]);
-    graphqlEndpoint = `http://${stdout?.trim()}:8080/v1/graphql`;
+    const ipAddress = stdout?.trim().replace(/'/g, '');
+    graphqlEndpoint = `http://${ipAddress}:8080/v1/graphql`;
   }
-  console.log(benchmarks, "benchmarks");
   
   for (const bench of benchmarks) {
     execCommand("bash", [`test_query${bench}.sh`, graphqlEndpoint]);
