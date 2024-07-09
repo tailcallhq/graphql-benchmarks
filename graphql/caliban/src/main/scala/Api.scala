@@ -9,7 +9,7 @@ object ServiceSchema extends SchemaDerivation[Service]
 
 case class Query(
     posts: RIO[Service, List[Post]],
-    greet: UIO[String] = ZIO.succeed("Hello World!")
+    greet: () => String = () => "Hello World!"
 ) derives ServiceSchema.SemiAuto
 
 case class User(
