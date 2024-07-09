@@ -25,7 +25,7 @@ const beforeAll = async () => {
 
 const afterAll = () => {
   [bench1Results, bench2Results, bench3Results].map((results) => {
-    analyzeBenchmarks(results);
+    analyzeBenchmarks([...bench1Results, ...bench2Results, ...bench3Results]);
   });
 };
 

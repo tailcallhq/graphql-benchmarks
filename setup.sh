@@ -31,3 +31,6 @@ cd ../../
 cd graphql/hasura
 npm install
 cd ../../
+
+# install oha
+cargo install oha
