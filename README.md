@@ -26,6 +26,7 @@ Explore and compare the performance of the fastest GraphQL frameworks through ou
 [Caliban]: https://github.com/ghostdogpr/caliban
 [async-graphql]: https://github.com/async-graphql/async-graphql
 [Hasura]: https://github.com/hasura/graphql-engine
+[GraphQL JIT]: https://github.com/zalando-incubator/graphql-jit
 
 ## Introduction
 
