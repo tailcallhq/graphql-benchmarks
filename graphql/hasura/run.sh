@@ -82,11 +82,11 @@ echo "$POSTS_DATA" >posts.json
 jq -c '.[]' users.json | while read -r user; do
   id=$(echo "$user" | jq '.id')
   userId=$(echo "$user" | jq '.userId')
-  name=$(echo "$user" | jq -r '.name' | sed "s/'/''/g")
-  username=$(echo "$user" | jq -r '.username' | sed "s/'/''/g")
-  email=$(echo "$user" | jq -r '.email' | sed "s/'/''/g")
-  phone=$(echo "$user" | jq -r '.phone' | sed "s/'/''/g")
-  website=$(echo "$user" | jq -r '.website' | sed "s/'/''/g")
+  name=$(echo "$user" | jq -r '.name' | sed "s/'/''/g; s/\"/\\\\\"/g")
+  username=$(echo "$user" | jq -r '.username' | sed "s/'/''/g; s/\"/\\\\\"/g")
+  email=$(echo "$user" | jq -r '.email' | sed "s/'/''/g; s/\"/\\\\\"/g")
+  phone=$(echo "$user" | jq -r '.phone' | sed "s/'/''/g; s/\"/\\\\\"/g")
+  website=$(echo "$user" | jq -r '.website' | sed "s/'/''/g; s/\"/\\\\\"/g")
 
   psql "postgresql://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME" -c "INSERT INTO public.users (id, user_id, name, username, email, phone, website) VALUES ($id, $userId, '$name', '$username', '$email', '$phone', '$website') ON CONFLICT (id) DO NOTHING;"
 done
@@ -95,8 +95,8 @@ done
 jq -c '.[]' posts.json | while read -r post; do
   id=$(echo "$post" | jq '.id')
   user_id=$(echo "$post" | jq '.userId')
-  title=$(echo "$post" | jq -r '.title' | sed "s/'/''/g")
-  body=$(echo "$post" | jq -r '.body' | sed "s/'/''/g")
+  title=$(echo "$post" | jq -r '.title' | sed "s/'/''/g; s/\"/\\\\\"/g")
+  body=$(echo "$post" | jq -r '.body' | sed "s/'/''/g; s/\"/\\\\\"/g")
 
   psql "postgresql://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME" -c "INSERT INTO public.posts (id, user_id, title, body) VALUES ($id, $user_id, '$title', '$body') ON CONFLICT (id) DO NOTHING;"
 done
