@@ -32,5 +32,10 @@ cd graphql/hasura
 npm install
 cd ../../
 
+# For graphql_jit
+cd graphql/graphql_jit
+npm install
+cd ../../
+
 # install oha
 cargo install oha
