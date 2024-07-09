@@ -33,7 +33,7 @@ jobs:
           runCmd: |
             bash ./setup.sh
             npm i
-            npx --yes ts-node ./src/run_benchmarks.ts
+            npx --yes tsx ./src/run_benchmarks.ts
 
       - name: Print benchmark results
         run: cat ./results.md
