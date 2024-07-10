@@ -74,13 +74,10 @@ rm -f results.md
 # Array of services to benchmark
 services=("apollo_server" "caliban" "netflix_dgs" "gqlgen" "tailcall" "async_graphql" "hasura" "graphql_jit")
 
-# Run benchmarks in parallel
+# Run benchmarks sequentially
 for service in "${services[@]}"; do
-  run_benchmark "$service" &
+  run_benchmark "$service"
 done
-
-# Wait for all benchmarks to complete
-wait
 
 # Analyze results
 for bench in 1 2 3; do
