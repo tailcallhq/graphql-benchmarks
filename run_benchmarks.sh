@@ -1,80 +1,73 @@
 #!/bin/bash
 
-# Function to kill a process running on a specific port
-function killServerOnPort() {
-  local port="$1"
-  local pid=$(lsof -t -i:"$port")
-  if [ -n "$pid" ]; then
-    kill "$pid"
-    echo "Killed process running on port $port"
-  else
-    echo "No process found running on port $port"
-  fi
+# Function to create a Docker network if it doesn't exist
+function create_docker_network() {
+    if ! docker network inspect graphql_benchmark_network >/dev/null 2>&1; then
+        docker network create graphql_benchmark_network
+    fi
 }
 
-# Function to run benchmarks for a single GraphQL server
-function runBenchmark() {
-    local serviceScript="$1"
-    local serviceName=$(basename "$serviceScript" .sh)
-    local benchmarks=(1 2 3)
-    local graphqlEndpoint="http://localhost:8000/graphql"
+# Function to run a service in a Docker container
+function run_service_in_docker() {
+    local service_name="$1"
+    local docker_file="graphql/${service_name}/Dockerfile"
+    local container_name="graphql_${service_name}"
 
-    echo "Starting $serviceName server..."
-    
-    # Start the server
-    if [[ "$serviceScript" == *"hasura"* ]]; then
-        bash "$serviceScript"
-        graphqlEndpoint=http://$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' graphql-engine):8080/v1/graphql
-    else
-        bash "$serviceScript" &
+    # Build the Docker image
+    docker build -t "${container_name}" -f "${docker_file}" .
+
+    # Run the container
+    docker run --rm -d --name "${container_name}" --network graphql_benchmark_network "${container_name}"
+
+    # Wait for the service to start
+    sleep 15
+}
+
+# Function to run benchmarks
+function run_benchmark() {
+    local service_name="$1"
+    local container_name="graphql_${service_name}"
+    local benchmarks=(1 2 3)
+    local graphql_endpoint="http://${container_name}:8000/graphql"
+
+    if [[ "$service_name" == "hasura" ]]; then
+        graphql_endpoint="http://${container_name}:8080/v1/graphql"
     fi
 
-    # Wait for server to start
-    sleep 15
-
-    # Run benchmarks
     for bench in "${benchmarks[@]}"; do
-        local benchmarkScript="wrk/bench.sh"
-        local resultFile="result_${serviceName}_bench${bench}.txt"
+        local benchmark_script="wrk/bench.sh"
+        local result_file="result${bench}_${service_name}.txt"
+
+        # Run test query
+        docker run --rm --network graphql_benchmark_network -v "$(pwd)/test_query${bench}.sh:/test_query.sh" alpine sh /test_query.sh "${graphql_endpoint}"
 
         # Warmup run
-        bash "test_query${bench}.sh" "$graphqlEndpoint"
-        bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >/dev/null
+        docker run --rm --network graphql_benchmark_network -v "$(pwd)/${benchmark_script}:/bench.sh" alpine sh /bench.sh "${graphql_endpoint}" "${bench}" >/dev/null
         sleep 1
 
-        # Actual benchmark run
-        echo "Running benchmark $bench for $serviceName"
-        bash "$benchmarkScript" "$graphqlEndpoint" "$bench" > "$resultFile"
+        # 3 benchmark runs
+        for i in {1..3}; do
+            echo "Running benchmark $bench for $service_name (run $i)"
+            docker run --rm --network graphql_benchmark_network -v "$(pwd)/${benchmark_script}:/bench.sh" alpine sh /bench.sh "${graphql_endpoint}" "${bench}" > "bench${bench}_${result_file}_${i}"
+        done
     done
-
-    # Stop the server
-    if [[ "$serviceScript" == *"apollo_server"* ]]; then
-        cd graphql/apollo_server/
-        npm stop
-        cd ../../
-    elif [[ "$serviceScript" == *"hasura"* ]]; then
-        bash "graphql/hasura/kill.sh"
-    else
-        killServerOnPort 8000
-    fi
-
-    echo "Finished benchmarking $serviceName"
-    sleep 5  # Wait a bit before starting the next server
 }
 
-# Main execution
+# Main script execution
+create_docker_network
+
 rm -f results.md
-killServerOnPort 3000
-sh nginx/run.sh
 
 services=("apollo_server" "caliban" "netflix_dgs" "gqlgen" "tailcall" "async_graphql" "hasura" "graphql_jit")
 
 for service in "${services[@]}"; do
-    runBenchmark "graphql/${service}/run.sh"
+    run_service_in_docker "${service}"
+    run_benchmark "${service}"
+    docker stop "graphql_${service}"
 done
 
-# Analyze results
-for bench in 1 2 3; do
-    resultFiles=($(ls result_*_bench${bench}.txt))
-    bash analyze.sh "${resultFiles[@]}"
-done
+# Run analysis (you may need to adjust this part based on your analysis script)
+bash analyze.sh bench*_result*.txt
+
+# Clean up
+docker network rm graphql_benchmark_network
