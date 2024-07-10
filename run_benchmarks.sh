@@ -15,12 +15,13 @@ run_benchmark() {
   local service=$1
   local port=$(find_available_port)
   local log_file="benchmark_${service}.log"
+  
   echo "Starting benchmark for $service on port $port"
-
+  
   # Stop and remove any existing containers
   docker stop $(docker ps -a -q --filter name=$service) 2>/dev/null || true
   docker rm $(docker ps -a -q --filter name=$service) 2>/dev/null || true
-
+  
   # Start the service
   if [[ "$service" == "hasura" ]]; then
     PORT=$port bash "graphql/${service}/run.sh" > "$log_file" 2>&1
@@ -29,7 +30,7 @@ run_benchmark() {
     PORT=$port bash "graphql/${service}/run.sh" > "$log_file" 2>&1 &
     graphql_endpoint="http://localhost:$port/graphql"
   fi
-
+  
   # Wait for service to start (adjust timeout as needed)
   local timeout=60
   while ! curl -s "$graphql_endpoint" > /dev/null; do
@@ -40,21 +41,23 @@ run_benchmark() {
       return 1
     fi
   done
-
+  
   # Run benchmarks
   for bench in 1 2 3; do
     echo "Running benchmark $bench for $service"
     bash "test_query${bench}.sh" "$graphql_endpoint"
+    
     # Warmup run
     bash "wrk/bench.sh" "$graphql_endpoint" "$bench" >/dev/null
     sleep 1
+    
     # Actual benchmark runs
     for run in {1..3}; do
       bash "wrk/bench.sh" "$graphql_endpoint" "$bench" > "bench${bench}_${service}_run${run}.txt"
       sleep 1
     done
   done
-
+  
   # Stop the service
   if [[ "$service" == "hasura" ]]; then
     bash "graphql/hasura/kill.sh"
@@ -65,6 +68,7 @@ run_benchmark() {
   else
     killall node java go rust 2>/dev/null || true
   fi
+  
   echo "Finished benchmark for $service"
 }
 
