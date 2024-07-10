@@ -21,13 +21,12 @@ run_benchmark() {
   docker stop $(docker ps -a -q --filter name=$service) 2>/dev/null || true
   docker rm $(docker ps -a -q --filter name=$service) 2>/dev/null || true
 
-  # Start the service using the existing run script
-  PORT=$port bash "graphql/${service}/run.sh" > "$log_file" 2>&1 &
-
-  # Determine the GraphQL endpoint
+  # Start the service
   if [[ "$service" == "hasura" ]]; then
+    PORT=$port bash "graphql/${service}/run.sh" > "$log_file" 2>&1
     graphql_endpoint="http://$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' graphql-engine):8080/v1/graphql"
   else
+    PORT=$port bash "graphql/${service}/run.sh" > "$log_file" 2>&1 &
     graphql_endpoint="http://localhost:$port/graphql"
   fi
 
@@ -43,15 +42,15 @@ run_benchmark() {
   done
 
   # Run benchmarks
-  for bench in 1 2 3; do
+  for bench in greet posts posts_with_users; do
     echo "Running benchmark $bench for $service"
-    bash "test_query${bench}.sh" "$graphql_endpoint"
+    bash "test_query_${bench}.sh" "$graphql_endpoint"
     # Warmup run
     bash "wrk/bench.sh" "$graphql_endpoint" "$bench" >/dev/null
     sleep 1
     # Actual benchmark runs
     for run in {1..3}; do
-      bash "wrk/bench.sh" "$graphql_endpoint" "$bench" > "bench${bench}_${service}_run${run}.txt"
+      bash "wrk/bench.sh" "$graphql_endpoint" "$bench" > "bench_${bench}_${service}_run${run}.txt"
       sleep 1
     done
   done
@@ -66,7 +65,6 @@ run_benchmark() {
   else
     killall node java go rust 2>/dev/null || true
   fi
-
   echo "Finished benchmark for $service"
 }
 
@@ -76,14 +74,17 @@ rm -f results.md
 # Array of services to benchmark
 services=("apollo_server" "caliban" "netflix_dgs" "gqlgen" "tailcall" "async_graphql" "hasura" "graphql_jit")
 
-# Run benchmarks sequentially
+# Run benchmarks in parallel
 for service in "${services[@]}"; do
-  run_benchmark "$service"
+  run_benchmark "$service" &
 done
 
+# Wait for all benchmarks to complete
+wait
+
 # Analyze results
-for bench in 1 2 3; do
-  bash analyze.sh bench${bench}_*.txt
+for bench in greet posts posts_with_users; do
+  bash analyze.sh bench_${bench}_*.txt
 done
 
 echo "All benchmarks completed"
