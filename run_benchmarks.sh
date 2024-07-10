@@ -1,93 +1,101 @@
 #!/bin/bash
 
-set -e
+# Start services and run benchmarks
 
-# Function to find an available port
-find_available_port() {
-  local port=8000
-  while netstat -tna | grep -q :$port; do
-    ((port++))
-  done
-  echo $port
+function killServerOnPort() {
+  local port="$1"
+  local pid=$(lsof -t -i:"$port")
+  if [ -n "$pid" ]; then
+    kill "$pid"
+    echo "Killed process running on port $port"
+  else
+    echo "No process found running on port $port"
+  fi
 }
 
-# Function to run a single benchmark
-run_benchmark() {
-  local service=$1
-  local port=$(find_available_port)
-  local log_file="benchmark_${service}.log"
+bench1Results=()
+bench2Results=()
+bench3Results=()
 
-  echo "Starting benchmark for $service on port $port"
+killServerOnPort 3000
+sh nginx/run.sh
 
-  # Stop and remove any existing containers
-  docker stop $(docker ps -a -q --filter name=$service) 2>/dev/null || true
-  docker rm $(docker ps -a -q --filter name=$service) 2>/dev/null || true
+function runBenchmark() {
+    local serviceScript="$1"
+    local port="$2"
+    local benchmarks=(1 2 3)
 
-  # Start the service
-  if [[ "$service" == "hasura" ]]; then
-    PORT=$port bash "graphql/${service}/run.sh" > "$log_file" 2>&1
-    graphql_endpoint="http://$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' graphql-engine):8080/v1/graphql"
-  else
-    PORT=$port bash "graphql/${service}/run.sh" > "$log_file" 2>&1 &
-    graphql_endpoint="http://localhost:$port/graphql"
-  fi
+    killServerOnPort "$port"
+    sleep 5
 
-  # Wait for service to start (adjust timeout as needed)
-  local timeout=60
-  while ! curl -s "$graphql_endpoint" > /dev/null; do
-    sleep 1
-    ((timeout--))
-    if [ $timeout -le 0 ]; then
-      echo "Service $service failed to start within the timeout period"
-      return 1
+    if [[ "$serviceScript" == *"hasura"* ]]; then
+        bash "$serviceScript" # Run synchronously without background process
+    else
+        bash "$serviceScript" & # Run in daemon mode
     fi
-  done
 
-  # Run benchmarks
-  for bench in 1 2 3; do
-    echo "Running benchmark $bench for $service"
-    bash "test_query${bench}.sh" "$graphql_endpoint"
-    # Warmup run
-    bash "wrk/bench.sh" "$graphql_endpoint" "$bench" >/dev/null
-    sleep 1
-    # Actual benchmark runs
-    for run in {1..3}; do
-      bash "wrk/bench.sh" "$graphql_endpoint" "$bench" > "bench${bench}_${service}_run${run}.txt"
-      sleep 1
+    sleep 15 # Give some time for the service to start up
+
+    local graphqlEndpoint="http://localhost:${port}/graphql"
+    if [[ "$serviceScript" == *"hasura"* ]]; then
+        graphqlEndpoint=http://$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' graphql-engine):8080/v1/graphql
+    fi
+
+    for bench in "${benchmarks[@]}"; do
+        local benchmarkScript="wrk/bench.sh"
+        local sanitizedServiceScriptName=$(echo "$serviceScript" | tr '/' '_')
+        local resultFiles=("result1_${sanitizedServiceScriptName}.txt" "result2_${sanitizedServiceScriptName}.txt" "result3_${sanitizedServiceScriptName}.txt")
+
+        bash "test_query${bench}.sh" "$graphqlEndpoint"
+
+        # Warmup run
+        bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >/dev/null
+        sleep 1
+        bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >/dev/null
+        sleep 1
+        bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >/dev/null
+        sleep 1
+
+        # 3 benchmark runs
+        for resultFile in "${resultFiles[@]}"; do
+            echo "Running benchmark $bench for $serviceScript"
+            bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >"bench${bench}_${resultFile}"
+            if [ "$bench" == "1" ]; then
+                bench1Results+=("bench1_${resultFile}")
+            elif [ "$bench" == "2" ]; then
+                bench2Results+=("bench2_${resultFile}")
+            elif [ "$bench" == "3" ]; then
+                bench3Results+=("bench3_${resultFile}")
+            fi
+        done
     done
-  done
 
-  # Stop the service
-  if [[ "$service" == "hasura" ]]; then
-    bash "graphql/hasura/kill.sh"
-  elif [[ "$service" == "apollo_server" ]]; then
-    cd graphql/apollo_server/
-    npm stop
-    cd ../../
-  else
-    killall node java go rust 2>/dev/null || true
-  fi
-
-  echo "Finished benchmark for $service"
+    if [ "$serviceScript" == "graphql/apollo_server/run.sh" ]; then
+        cd graphql/apollo_server/
+        npm stop
+        cd ../../
+    elif [ "$serviceScript" == "graphql/hasura/run.sh" ]; then
+        bash "graphql/hasura/kill.sh"
+    else
+        killServerOnPort "$port"
+    fi
 }
 
-# Main script
-rm -f results.md
-
-# Array of services to benchmark
-services=("apollo_server" "caliban" "netflix_dgs" "gqlgen" "tailcall" "async_graphql" "hasura" "graphql_jit")
+rm "results.md"
 
 # Run benchmarks in parallel
-for service in "${services[@]}"; do
-  run_benchmark "$service" &
-done
+runBenchmark "graphql/apollo_server/run.sh" 8000 &
+runBenchmark "graphql/caliban/run.sh" 8001 &
+runBenchmark "graphql/netflix_dgs/run.sh" 8002 &
+runBenchmark "graphql/gqlgen/run.sh" 8003 &
+runBenchmark "graphql/tailcall/run.sh" 8004 &
+runBenchmark "graphql/async_graphql/run.sh" 8005 &
+runBenchmark "graphql/hasura/run.sh" 8006 &
+runBenchmark "graphql/graphql_jit/run.sh" 8007 &
 
-# Wait for all benchmarks to complete
+# Wait for all background processes to finish
 wait
 
-# Analyze results
-for bench in 1 2 3; do
-  bash analyze.sh bench${bench}_*.txt
-done
-
-echo "All benchmarks completed"
+bash analyze.sh "${bench1Results[@]}"
+bash analyze.sh "${bench2Results[@]}"
+bash analyze.sh "${bench3Results[@]}"
