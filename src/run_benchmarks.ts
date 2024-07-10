@@ -44,6 +44,7 @@ async function runBenchmark(serviceScript: string) {
 
   let graphqlEndpoint = "http://localhost:8000/graphql";
   if (serviceScript.includes("hasura")) {
+    await sleep(60000);
     const stdout = execCommand("docker", [
       "inspect",
       "-f",
