@@ -72,7 +72,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           pattern: benchmark-results-*
-          path: bench*.txt
+          merge-multiple: true
       
       - name: List downloaded artifacts
         run: |
