@@ -1,89 +1,173 @@
 name: "Run benchmark"
 
 on:
+
   pull_request_target:
+
     types: [assigned, opened, synchronize, reopened, edited]
+
   push:
+
     branches:
+
       - main
 
 permissions:
+
   contents: write
+
   pull-requests: write
+
   issues: write
 
 jobs:
+
   benchmark:
+
     runs-on: benchmarking-runner
+
     if: github.event.head_commit.message != 'Update performance results in README.md'
+
     strategy:
+
       matrix:
+
         service: [apollo_server, caliban, netflix_dgs, gqlgen, tailcall, async_graphql, hasura, graphql_jit]
+
     steps:
+
       - name: Checkout (GitHub)
+
         uses: actions/checkout@v4
+
         with:
+
           token: ${{ secrets.GITHUB_TOKEN }}
+
           ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
 
       - name: Build devcontainer and run setup
+
         uses: devcontainers/ci@v0.3
+
         with:
+
           imageName: graphql-benchmarks
+
           push: never
+
           runCmd: |
+
             echo "Running setup script"
+
             bash ./setup.sh
+
             echo "Setup completed"
 
+      - name: Debug Environment
+
+        run: |
+
+          echo "Current directory: $(pwd)"
+
+          echo "Contents of current directory:"
+
+          ls -la
+
+          echo "Matrix service: ${{ matrix.service }}"
+
       - name: Run benchmark
+
         uses: devcontainers/ci@v0.3
+
         with:
+
           imageName: graphql-benchmarks
+
           push: never
+
           runCmd: |
+
+            echo "Current directory: $(pwd)"
+
+            echo "Contents of current directory:"
+
+            ls -la
+
+            echo "Matrix service: ${{ matrix.service }}"
+
             echo "Running benchmark for ${{ matrix.service }}"
-            chmod +x ./run_benchmarks
-            ./run_benchmarks ${{ matrix.service }}
+
+            chmod +x ./run_benchmarks.sh
+
+            ./run_benchmarks.sh "${{ matrix.service }}"
+
             echo "Benchmark completed for ${{ matrix.service }}"
 
       - name: Upload benchmark results
+
         uses: actions/upload-artifact@v2
+
         with:
+
           name: benchmark-results-${{ matrix.service }}
+
           path: bench*.txt
 
   analyze:
+
     needs: benchmark
+
     runs-on: ubuntu-latest
+
     steps:
+
       - name: Checkout (GitHub)
+
         uses: actions/checkout@v4
 
       - name: Download all benchmark results
+
         uses: actions/download-artifact@v2
 
       - name: Analyze results
+
         run: |
+
           for bench in 1 2 3; do
+
             bash analyze.sh benchmark-results-*/bench${bench}*.txt >> results.md
+
           done
 
       - name: Print benchmark results
+
         run: cat ./results.md
 
       - name: Comment benchmark results on PR
+
         if: github.event_name == 'pull_request_target'
+
         uses: peter-evans/commit-comment@v3
+
         with:
+
           sha: ${{ github.event.pull_request.head.sha }}
+
           body-path: "results.md"
+
           reactions: eyes
 
       - name: Commit and push changes (on main branch)
+
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
         uses: stefanzweifel/git-auto-commit-action@v5
+
         with:
+
           branch: main
+
           commit_author: Author <actions@github.com>
+
           commit_message: "Update performance results in README.md"
