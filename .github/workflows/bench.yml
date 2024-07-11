@@ -71,13 +71,11 @@ jobs:
       - name: Download all benchmark results
         uses: actions/download-artifact@v3
         with:
-          pattern: benchmark-results-*
+          path: bench*.txt
           merge-multiple: true
       
       - name: List downloaded artifacts
-        run: |
-          echo "Contents of benchmark-results directory:"
-          ls -la bench*.txt || echo "No matching files found"
+        run: ls -R
           
       - name: Analyze results
         run: |
