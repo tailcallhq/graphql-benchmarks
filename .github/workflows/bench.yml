@@ -34,7 +34,7 @@ jobs:
           push: never
           runCmd: |
             bash ./setup.sh
-            bash ./run_benchmarks.sh "graphql/${{ matrix.service }}/run.sh"
+            bash ./run_benchmarks.sh graphql/${{ matrix.service }}/run.sh
 
       - name: Upload benchmark results
         uses: actions/upload-artifact@v2
