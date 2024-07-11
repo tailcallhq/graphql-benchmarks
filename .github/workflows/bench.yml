@@ -44,7 +44,8 @@ jobs:
           push: never
           runCmd: |
             echo "Running benchmark for ${{ matrix.service }}"
-            bash ./run_benchmarks.sh graphql/${{ matrix.service }}/run.sh
+            chmod +x ./run_benchmarks
+            ./run_benchmarks ${{ matrix.service }}
             echo "Benchmark completed for ${{ matrix.service }}"
 
       - name: Upload benchmark results
