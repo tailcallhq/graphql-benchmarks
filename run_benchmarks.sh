@@ -1,79 +1,71 @@
 #!/bin/bash
-set -e
 
-# Function to find an available port
-find_available_port() {
-  local port=8000
-  while netstat -tna | grep -q :$port; do
-    ((port++))
-  done
-  echo $port
-}
+# run_benchmarks.sh
 
-service=$1
-port=$(find_available_port)
-log_file="benchmark_${service}.log"
+function killServerOnPort() {
+  local port="$1"
+  local pid=$(lsof -t -i:"$port")
 
-echo "Starting benchmark for $service on port $port"
-
-# Function to run a single benchmark
-run_benchmark() {
-  local query_number=$1
-  local endpoint=$2
-
-  echo "Running query $query_number for $service"
-  bash "test_query${query_number}.sh" "$endpoint"
-  
-  # Warmup run
-  bash "wrk/bench.sh" "$endpoint" "$query_number" >/dev/null
-  sleep 1
-
-  # Actual benchmark runs
-  for run in {1..3}; do
-    bash "wrk/bench.sh" "$endpoint" "$query_number" > "query${query_number}_${service}_run${run}.txt"
-    sleep 1
-  done
-}
-
-# Start the service
-if [[ "$service" == "hasura" ]]; then
-  PORT=$port bash "graphql/${service}/run.sh" > "$log_file" 2>&1
-  graphql_endpoint="http://$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' graphql-engine):8080/v1/graphql"
-else
-  PORT=$port bash "graphql/${service}/run.sh" > "$log_file" 2>&1 &
-  graphql_endpoint="http://localhost:$port/graphql"
-fi
-
-# Wait for service to start
-timeout=60
-while ! curl -s "$graphql_endpoint" > /dev/null; do
-  sleep 1
-  ((timeout--))
-  if [ $timeout -le 0 ]; then
-    echo "Service $service failed to start within the timeout period"
-    exit 1
+  if [ -n "$pid" ]; then
+    kill "$pid"
+    echo "Killed process running on port $port"
+  else
+    echo "No process found running on port $port"
   fi
-done
+}
 
-# Run benchmarks in the specified order
-for query_number in 1 2 3; do
-  run_benchmark "$query_number" "$graphql_endpoint"
-done
+killServerOnPort 3000
+sh nginx/run.sh
 
-# Stop the service
-if [[ "$service" == "hasura" ]]; then
-  bash "graphql/hasura/kill.sh"
-elif [[ "$service" == "apollo_server" ]]; then
-  cd graphql/apollo_server/
-  npm stop
-  cd ../../
-else
-  killall node java go rust 2>/dev/null || true
-fi
+function runBenchmark() {
+    killServerOnPort 8000
+    sleep 5
+    local serviceScript="$1"
+    local benchmarks=(1 2 3)
 
-# Analyze results
-for query_number in 1 2 3; do
-  bash analyze.sh query${query_number}_${service}_*.txt >> "results_${service}.md"
-done
+    if [[ "$serviceScript" == *"hasura"* ]]; then
+        bash "$serviceScript" # Run synchronously without background process
+    else
+        bash "$serviceScript" & # Run in daemon mode
+    fi
 
-echo "Benchmark completed for $service"
+    sleep 15 # Give some time for the service to start up
+
+    local graphqlEndpoint="http://localhost:8000/graphql"
+    if [[ "$serviceScript" == *"hasura"* ]]; then
+        graphqlEndpoint=http://$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' graphql-engine):8080/v1/graphql
+    fi
+
+    # Replace / with _
+    local sanitizedServiceScriptName=$(echo "$serviceScript" | tr '/' '_')
+
+    for bench in "${benchmarks[@]}"; do
+        local benchmarkScript="wrk/bench.sh"
+        local resultFile="result${bench}_${sanitizedServiceScriptName}.txt"
+
+        bash "test_query${bench}.sh" "$graphqlEndpoint"
+
+        # Warmup run
+        bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >/dev/null
+        sleep 1 # Give some time for apps to finish in-flight requests from warmup
+        bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >/dev/null
+        sleep 1
+        bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >/dev/null
+        sleep 1
+
+        # Benchmark run
+        echo "Running benchmark $bench for $serviceScript"
+        bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >"bench${bench}_${resultFile}"
+    done
+
+    if [ "$serviceScript" == "graphql/apollo_server/run.sh" ]; then
+        cd graphql/apollo_server/
+        npm stop
+        cd ../../
+    elif [ "$serviceScript" == "graphql/hasura/run.sh" ]; then
+        bash "graphql/hasura/kill.sh"
+    fi
+}
+
+# Run the benchmark for the specified service
+runBenchmark "graphql/$1/run.sh"
