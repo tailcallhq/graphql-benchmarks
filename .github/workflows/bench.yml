@@ -72,12 +72,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           pattern: benchmark-results-*
-          path: benchmark-results
+          path: bench*.txt
       
       - name: List downloaded artifacts
         run: |
           echo "Contents of benchmark-results directory:"
-          ls -R benchmark-results
+          ls -la bench*.txt || echo "No matching files found"
           
       - name: Analyze results
         run: |
