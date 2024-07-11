@@ -72,7 +72,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: benchmark-results-*
-          
+          path: /workspaces/graphql-benchmarks
       
       - name: List downloaded artifacts
         run: ls -R
