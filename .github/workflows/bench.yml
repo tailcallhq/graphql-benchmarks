@@ -13,7 +13,39 @@ permissions:
   issues: write
 
 jobs:
-  
+  benchmark:
+    runs-on: benchmarking-runner
+    if: github.event.head_commit.message != 'Update performance results in README.md'
+    strategy:
+      matrix:
+        service: [apollo_server, caliban, netflix_dgs, gqlgen, tailcall, async_graphql, hasura, graphql_jit]
+    steps:
+      - name: Checkout (GitHub)
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Build devcontainer and run setup and benchmark
+        uses: devcontainers/ci@v0.3
+        with:
+          imageName: graphql-benchmarks
+          push: never
+          runCmd: |
+            echo "Running setup script"
+            bash ./setup.sh
+            echo "Setup completed"
+            echo "Running benchmark for ${{ matrix.service }}"
+            chmod +x ./run_benchmarks.sh
+            ./run_benchmarks.sh ${{ matrix.service }}
+            echo "Benchmark completed for ${{ matrix.service }}"
+
+      - name: Upload benchmark results
+        uses: actions/upload-artifact@v3
+        with:
+          name: benchmark-results-${{ matrix.service }}
+          path: bench*.txt
+
   analyze:
     needs: benchmark
     runs-on: ubuntu-latest
@@ -22,7 +54,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download all benchmark results
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
 
       - name: Analyze results
         run: |
