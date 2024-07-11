@@ -16,6 +16,6 @@ jobs:
     
     steps:
     - name: Say Hello
-      runCmd: |
-            echo "Running setup script"
-            ls
+      run: |
+        echo "lllo"
+        echo "lllo"
