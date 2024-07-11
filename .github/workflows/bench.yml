@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - main
-      - benchmarks_in_parallel
 permissions:
   contents: write
   pull-requests: write
@@ -23,8 +22,8 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
-
-      - name: Build devcontainer
+      
+      - name: Build devcontainer and run setup and benchmark
         uses: devcontainers/ci@v0.3
         with:
           imageName: graphql-benchmarks
@@ -45,7 +44,7 @@ jobs:
                 exit 1
             fi
             echo "Benchmark completed for ${{ matrix.service }}"
-
+      
       - name: Upload benchmark results
         uses: actions/upload-artifact@v3
         with:
@@ -58,19 +57,19 @@ jobs:
     steps:
       - name: Checkout (GitHub)
         uses: actions/checkout@v4
-
+      
       - name: Download all benchmark results
         uses: actions/download-artifact@v4
-
+      
       - name: Analyze results
         run: |
           for bench in 1 2 3; do
             bash analyze.sh benchmark-results-*/bench${bench}*.txt >> results.md
           done
-
+      
       - name: Print benchmark results
         run: cat ./results.md
-
+      
       - name: Comment benchmark results on PR
         if: github.event_name == 'pull_request_target'
         uses: peter-evans/commit-comment@v3
@@ -78,7 +77,7 @@ jobs:
           sha: ${{ github.event.pull_request.head.sha }}
           body-path: "results.md"
           reactions: eyes
-
+      
       - name: Commit and push changes (on main branch)
         if: github.ref == 'refs/heads/main'
         uses: stefanzweifel/git-auto-commit-action@v5
