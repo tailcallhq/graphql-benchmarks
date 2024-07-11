@@ -1,10 +1,12 @@
-name: "Run GraphQL Benchmarks"
+name: "Run parallel benchmarks"
+
 on:
   pull_request_target:
     types: [assigned, opened, synchronize, reopened, edited]
   push:
     branches:
       - main
+
 permissions:
   contents: write
   pull-requests: write
@@ -13,79 +15,42 @@ permissions:
 jobs:
   benchmark:
     runs-on: benchmarking-runner
-    if: github.event.head_commit.message != 'Update performance results in README.md'
     strategy:
       matrix:
         service: [apollo_server, caliban, netflix_dgs, gqlgen, tailcall, async_graphql, hasura, graphql_jit]
-      fail-fast: false
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Checkout (GitHub)
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
-      
-      - name: Set up environment
-        run: bash ./setup.sh
-      
-      - name: Debug - List directory contents
-        run: ls -la
-      
-      - name: Debug - Check run_benchmark.sh exists and is executable
-        run: |
-          if [ -f "./run_benchmark.sh" ]; then
-            echo "run_benchmark.sh exists"
-            if [ -x "./run_benchmark.sh" ]; then
-              echo "run_benchmark.sh is executable"
-            else
-              echo "run_benchmark.sh is not executable"
-              chmod +x ./run_benchmark.sh
-              echo "Made run_benchmark.sh executable"
-            fi
-          else
-            echo "run_benchmark.sh does not exist"
-            exit 1
-          fi
-      
+
       - name: Run benchmark for ${{ matrix.service }}
         run: |
-          echo "Running benchmark for ${{ matrix.service }}"
-          ./run_benchmark.sh ${{ matrix.service }}
-      
-      - name: Upload benchmark results
-        uses: actions/upload-artifact@v3
+          bash ./setup.sh
+          bash ./run_single_benchmark.sh ${{ matrix.service }}
+
+      - name: Upload results
+        uses: actions/upload-artifact@v2
         with:
           name: benchmark-results-${{ matrix.service }}
-          path: bench*_${{ matrix.service }}_*.txt
+          path: results_${{ matrix.service }}.md
 
-  analyze:
+  combine-results:
     needs: benchmark
     runs-on: benchmarking-runner
     steps:
-      - name: Checkout (GitHub)
+      - name: Checkout code
         uses: actions/checkout@v4
-      
-      - name: Download all benchmark results
-        uses: actions/download-artifact@v3
-      
-      - name: Analyze results
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v2
+
+      - name: Combine results
         run: |
-          for bench in 1 2 3; do
-            bash analyze.sh bench${bench}_*.txt >> results.md
-          done
-      
-      - name: Print benchmark results
-        run: cat ./results.md
-      
-      - name: Comment benchmark results on PR
-        if: github.event_name == 'pull_request_target'
-        uses: peter-evans/commit-comment@v3
-        with:
-          body-path: "results.md"
-          reactions: eyes
-      
+          cat benchmark-results-*/results_*.md > combined_results.md
+          bash ./update_readme.sh
+
       - name: Commit and push changes (on main branch)
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: stefanzweifel/git-auto-commit-action@v5
@@ -93,3 +58,11 @@ jobs:
           branch: main
           commit_author: Author <actions@github.com>
           commit_message: "Update performance results in README.md"
+
+      - name: Comment benchmark results on PR
+        if: github.event_name == 'pull_request_target'
+        uses: peter-evans/commit-comment@v3
+        with:
+          sha: ${{ github.event.pull_request.head.sha }}
+          body-path: "combined_results.md"
+          reactions: eyes
