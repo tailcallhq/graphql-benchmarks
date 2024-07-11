@@ -83,6 +83,6 @@ for service in "apollo_server" "caliban" "netflix_dgs" "gqlgen" "tailcall" "asyn
   fi
 done
 
-bash analyze.sh "${bench1Results[@]}"
-bash analyze.sh "${bench2Results[@]}"
-bash analyze.sh "${bench3Results[@]}"
+bash analyze.js "${bench1Results[@]}"
+bash analyze.js "${bench2Results[@]}"
+bash analyze.js "${bench3Results[@]}"
