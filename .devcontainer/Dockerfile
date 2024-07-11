@@ -18,10 +18,9 @@ RUN apt-get update && apt-get install -y \
   && rm -rf /var/lib/apt/lists/*
 
 # Install the latest LTS version of Node.js
-RUN curl -fsSL https://deb.nodesource.com/setup_lts.x -o nodesource_setup.sh && \
+RUN curl -fsSL https://deb.nodesource.com/setup_current.x -o nodesource_setup.sh && \
     bash nodesource_setup.sh && \
     apt-get install -y nodejs && \
-    rm nodesource_setup.sh
 
 # Install Go
 RUN wget https://dl.google.com/go/go1.21.1.linux-amd64.tar.gz -O- | tar xz -C /usr/local
