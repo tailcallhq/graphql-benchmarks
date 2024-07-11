@@ -18,19 +18,19 @@ echo "Starting benchmark for $service on port $port"
 
 # Function to run a single benchmark
 run_benchmark() {
-  local query=$1
+  local query_number=$1
   local endpoint=$2
 
-  echo "Running $query query for $service"
-  bash "test_${query}.sh" "$endpoint"
+  echo "Running query $query_number for $service"
+  bash "test_query${query_number}.sh" "$endpoint"
   
   # Warmup run
-  bash "wrk/bench.sh" "$endpoint" "$query" >/dev/null
+  bash "wrk/bench.sh" "$endpoint" "$query_number" >/dev/null
   sleep 1
 
   # Actual benchmark runs
   for run in {1..3}; do
-    bash "wrk/bench.sh" "$endpoint" "$query" > "${query}_${service}_run${run}.txt"
+    bash "wrk/bench.sh" "$endpoint" "$query_number" > "query${query_number}_${service}_run${run}.txt"
     sleep 1
   done
 }
@@ -56,9 +56,9 @@ while ! curl -s "$graphql_endpoint" > /dev/null; do
 done
 
 # Run benchmarks in the specified order
-run_benchmark "greet" "$graphql_endpoint"
-run_benchmark "posts" "$graphql_endpoint"
-run_benchmark "posts_with_users" "$graphql_endpoint"
+for query_number in 1 2 3; do
+  run_benchmark "$query_number" "$graphql_endpoint"
+done
 
 # Stop the service
 if [[ "$service" == "hasura" ]]; then
@@ -72,8 +72,8 @@ else
 fi
 
 # Analyze results
-for query in greet posts posts_with_users; do
-  bash analyze.sh ${query}_${service}_*.txt >> "results_${service}.md"
+for query_number in 1 2 3; do
+  bash analyze.sh query${query_number}_${service}_*.txt >> "results_${service}.md"
 done
 
 echo "Benchmark completed for $service"
