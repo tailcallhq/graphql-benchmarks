@@ -26,13 +26,18 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
-
+      
       - name: Set up environment
         run: bash ./setup.sh
-
+      
       - name: Run benchmark for ${{ matrix.service }}
-        run: bash ./run_benchmark.sh ${{ matrix.service }}
-
+        uses: devcontainers/ci@v0.3
+        with:
+          imageName: graphql-benchmarks
+          push: never
+          runCmd: |
+            bash ./run_benchmark.sh ${{ matrix.service }}
+      
       - name: Upload benchmark results
         uses: actions/upload-artifact@v3
         with:
@@ -45,27 +50,26 @@ jobs:
     steps:
       - name: Checkout (GitHub)
         uses: actions/checkout@v4
-
+      
       - name: Download all benchmark results
         uses: actions/download-artifact@v3
-
+      
       - name: Analyze results
         run: |
           for bench in 1 2 3; do
             bash analyze.sh bench${bench}_*.txt >> results.md
           done
-
+      
       - name: Print benchmark results
         run: cat ./results.md
-
+      
       - name: Comment benchmark results on PR
         if: github.event_name == 'pull_request_target'
         uses: peter-evans/commit-comment@v3
         with:
-          sha: ${{ github.event.pull_request.head.sha }}
           body-path: "results.md"
           reactions: eyes
-
+      
       - name: Commit and push changes (on main branch)
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: stefanzweifel/git-auto-commit-action@v5
