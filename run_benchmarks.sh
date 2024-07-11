@@ -1,6 +1,15 @@
 #!/bin/bash
 set -e
 
+# Function to find an available port
+find_available_port() {
+  local port=8000
+  while netstat -tna | grep -q :$port; do
+    ((port++))
+  done
+  echo $port
+}
+
 service=$1
 port=$(find_available_port)
 log_file="benchmark_${service}.log"
