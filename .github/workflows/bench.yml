@@ -59,7 +59,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: benchmark-results-${{ matrix.service }}
-          path: bench*.txt
+          path: /workspaces/graphql-benchmarks
 
   analyze:
     needs: benchmark
