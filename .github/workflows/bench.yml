@@ -19,7 +19,6 @@ jobs:
     strategy:
       matrix:
         service: [apollo_server, caliban, netflix_dgs, gqlgen, tailcall, async_graphql, hasura, graphql_jit]
-    
     steps:
       - name: Checkout (GitHub)
         uses: actions/checkout@v4
