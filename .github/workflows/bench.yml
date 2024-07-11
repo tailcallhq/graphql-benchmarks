@@ -27,14 +27,25 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
 
-      - name: Build devcontainer and run benchmarks
+      - name: Build devcontainer and run setup
         uses: devcontainers/ci@v0.3
         with:
           imageName: graphql-benchmarks
           push: never
           runCmd: |
+            echo "Running setup script"
             bash ./setup.sh
+            echo "Setup completed"
+
+      - name: Run benchmark
+        uses: devcontainers/ci@v0.3
+        with:
+          imageName: graphql-benchmarks
+          push: never
+          runCmd: |
+            echo "Running benchmark for ${{ matrix.service }}"
             bash ./run_benchmarks.sh graphql/${{ matrix.service }}/run.sh
+            echo "Benchmark completed for ${{ matrix.service }}"
 
       - name: Upload benchmark results
         uses: actions/upload-artifact@v2
