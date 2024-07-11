@@ -2,9 +2,13 @@ name: Hello World
 
 on:
   push:
-    branches: [ main ]
+    branches: 
+      - main
+      - benchmarks_in_parallel
   pull_request:
-    branches: [ main ]
+    branches: 
+      - main
+      - benchmarks_in_parallel
 
 jobs:
   say-hello:
