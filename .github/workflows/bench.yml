@@ -1,76 +1,43 @@
 name: "Run benchmark"
+
 on:
   pull_request_target:
     types: [assigned, opened, synchronize, reopened, edited]
   push:
     branches:
       - main
-      - benchmarks_in_parallel
+
 permissions:
   contents: write
   pull-requests: write
   issues: write
+
 jobs:
-  benchmark:
+  build:
     runs-on: benchmarking-runner
     if: github.event.head_commit.message != 'Update performance results in README.md'
-    strategy:
-      matrix:
-        service: [apollo_server, caliban, netflix_dgs, gqlgen, tailcall, async_graphql, hasura, graphql_jit]
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout (GitHub)
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
-      
-      - name: Build devcontainer 
+          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
+
+      - name: Build devcontainer and run benchmarks
         uses: devcontainers/ci@v0.3
         with:
           imageName: graphql-benchmarks
           push: never
           runCmd: |
-            echo "Running setup script"
             bash ./setup.sh
-            echo "Setup completed"
-            echo "Running benchmark for ${{ matrix.service }}"
-            chmod +x ./run_benchmarks.sh
-            valid_services=("apollo_server" "caliban" "netflix_dgs" "gqlgen" "tailcall" "async_graphql" "hasura" "graphql_jit")
-            if [[ ! " ${valid_services[@]} " =~ " ${{ matrix.service }} " ]]; then
-                echo "Error: Invalid service name '${{ matrix.service }}'"
-                exit 1
-            fi
-            if ! ./run_benchmarks.sh ${{ matrix.service }}; then
-                echo "Error: Benchmark failed for ${{ matrix.service }}"
-                exit 1
-            fi
-            echo "Benchmark completed for ${{ matrix.service }}"
-      
-      - name: Upload benchmark results
-        uses: actions/upload-artifact@v3
-        with:
-          name: benchmark-results-${{ matrix.service }}
-          path: bench*.txt
+            echo "Testing * *"
+            bash ./run_benchmarks.sh
 
-  analyze:
-    needs: benchmark
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout (GitHub)
-        uses: actions/checkout@v4
-      
-      - name: Download all benchmark results
-        uses: actions/download-artifact@v4
-      
-      - name: Analyze results
-        run: |
-          for bench in 1 2 3; do
-            bash analyze.sh benchmark-results-*/bench${bench}*.txt >> results.md
-          done
-      
       - name: Print benchmark results
         run: cat ./results.md
-      
+
       - name: Comment benchmark results on PR
         if: github.event_name == 'pull_request_target'
         uses: peter-evans/commit-comment@v3
@@ -78,9 +45,9 @@ jobs:
           sha: ${{ github.event.pull_request.head.sha }}
           body-path: "results.md"
           reactions: eyes
-      
+
       - name: Commit and push changes (on main branch)
-        if: github.ref == 'refs/heads/main'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           branch: main
