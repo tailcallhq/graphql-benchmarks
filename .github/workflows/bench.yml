@@ -1,21 +1,23 @@
-name: "Run benchmark"
-
+name: "Run GraphQL Benchmarks"
 on:
   pull_request_target:
     types: [assigned, opened, synchronize, reopened, edited]
   push:
     branches:
       - main
-
 permissions:
   contents: write
   pull-requests: write
   issues: write
 
 jobs:
-  build:
+  benchmark:
     runs-on: benchmarking-runner
     if: github.event.head_commit.message != 'Update performance results in README.md'
+    strategy:
+      matrix:
+        service: [apollo_server, caliban, netflix_dgs, gqlgen, tailcall, async_graphql, hasura, graphql_jit]
+      fail-fast: false
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -25,14 +27,33 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
 
-      - name: Build devcontainer and run benchmarks
-        uses: devcontainers/ci@v0.3
+      - name: Set up environment
+        run: bash ./setup.sh
+
+      - name: Run benchmark for ${{ matrix.service }}
+        run: bash ./run_benchmark.sh ${{ matrix.service }}
+
+      - name: Upload benchmark results
+        uses: actions/upload-artifact@v3
         with:
-          imageName: graphql-benchmarks
-          push: never
-          runCmd: |
-            bash ./setup.sh
-            bash ./run_benchmarks.sh
+          name: benchmark-results-${{ matrix.service }}
+          path: bench*_${{ matrix.service }}_*.txt
+
+  analyze:
+    needs: benchmark
+    runs-on: benchmarking-runner
+    steps:
+      - name: Checkout (GitHub)
+        uses: actions/checkout@v4
+
+      - name: Download all benchmark results
+        uses: actions/download-artifact@v3
+
+      - name: Analyze results
+        run: |
+          for bench in 1 2 3; do
+            bash analyze.sh bench${bench}_*.txt >> results.md
+          done
 
       - name: Print benchmark results
         run: cat ./results.md
