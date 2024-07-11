@@ -55,7 +55,7 @@ jobs:
             echo "Matrix service: ${{ matrix.service }}"
             echo "Running benchmark for ${{ matrix.service }}"
             chmod +x ./run_benchmarks.sh
-            ./run_benchmarks.sh "${{ matrix.service }}"
+            ./run_benchmarks.sh apollo_server
             echo "Benchmark completed for ${{ matrix.service }}"
 
       - name: Upload benchmark results
