@@ -5,7 +5,7 @@ on:
     types: [assigned, opened, synchronize, reopened, edited]
   push:
     branches:
-      - main
+      - benchmarks_in_parallel
 
 permissions:
   contents: write
@@ -35,10 +35,10 @@ jobs:
             echo "Testing * *"
             bash ./run_benchmarks.sh
 
-      - name: Print benchmark results
+      - name: Print benchmark resultss
         run: cat ./results.md
 
-      - name: Comment benchmark results on PR
+      - name: Comment benchmark results on PRR
         if: github.event_name == 'pull_request_target'
         uses: peter-evans/commit-comment@v3
         with:
