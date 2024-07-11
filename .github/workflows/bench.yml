@@ -70,7 +70,15 @@ jobs:
       
       - name: Download all benchmark results
         uses: actions/download-artifact@v4
+        with:
+          pattern: benchmark-results-*
+          path: benchmark-results
       
+      - name: List downloaded artifacts
+        run: |
+          echo "Contents of benchmark-results directory:"
+          ls -R benchmark-results
+          
       - name: Analyze results
         run: |
           for bench in 1 2 3; do
