@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - benchmarks_in_parallel
 permissions:
   contents: write
   pull-requests: write
