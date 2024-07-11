@@ -30,13 +30,29 @@ jobs:
       - name: Set up environment
         run: bash ./setup.sh
       
+      - name: Debug - List directory contents
+        run: ls -la
+      
+      - name: Debug - Check run_benchmark.sh exists and is executable
+        run: |
+          if [ -f "./run_benchmark.sh" ]; then
+            echo "run_benchmark.sh exists"
+            if [ -x "./run_benchmark.sh" ]; then
+              echo "run_benchmark.sh is executable"
+            else
+              echo "run_benchmark.sh is not executable"
+              chmod +x ./run_benchmark.sh
+              echo "Made run_benchmark.sh executable"
+            fi
+          else
+            echo "run_benchmark.sh does not exist"
+            exit 1
+          fi
+      
       - name: Run benchmark for ${{ matrix.service }}
-        uses: devcontainers/ci@v0.3
-        with:
-          imageName: graphql-benchmarks
-          push: never
-          runCmd: |
-            bash ./run_benchmark.sh ${{ matrix.service }}
+        run: |
+          echo "Running benchmark for ${{ matrix.service }}"
+          ./run_benchmark.sh ${{ matrix.service }}
       
       - name: Upload benchmark results
         uses: actions/upload-artifact@v3
