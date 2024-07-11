@@ -71,7 +71,7 @@ jobs:
       - name: Download all benchmark results
         uses: actions/download-artifact@v3
         with:
-          name: benchmark-results-*
+          name: bench*.txt
           path: /workspaces/graphql-benchmarks
       
       - name: List downloaded artifacts
