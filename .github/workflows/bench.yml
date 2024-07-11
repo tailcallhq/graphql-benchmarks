@@ -72,7 +72,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: benchmark-results-*
-          merge-multiple: true
+          
       
       - name: List downloaded artifacts
         run: ls -R
