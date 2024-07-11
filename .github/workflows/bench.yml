@@ -1,4 +1,4 @@
-name: "Run benchmarks"
+name: "Run benchmark"
 
 on:
   pull_request_target:
@@ -19,9 +19,7 @@ jobs:
     strategy:
       matrix:
         service: [apollo_server, caliban, netflix_dgs, gqlgen, tailcall, async_graphql, hasura, graphql_jit]
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+    
     steps:
       - name: Checkout (GitHub)
         uses: actions/checkout@v4
@@ -29,20 +27,20 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
 
-      - name: Build devcontainer and run benchmark
+      - name: Build devcontainer and run benchmarks
         uses: devcontainers/ci@v0.3
         with:
           imageName: graphql-benchmarks
           push: never
           runCmd: |
             bash ./setup.sh
-            bash ./run_benchmarks.sh ${{ matrix.service }}
+            bash ./run_benchmarks.sh "graphql/${{ matrix.service }}/run.sh"
 
       - name: Upload benchmark results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: benchmark-results-${{ matrix.service }}
-          path: bench*_result*_graphql_${{ matrix.service }}_run.sh.txt
+          path: bench*.txt
 
   analyze:
     needs: benchmark
@@ -52,13 +50,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download all benchmark results
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v2
 
       - name: Analyze results
         run: |
           for bench in 1 2 3; do
-            files=$(find . -name "bench${bench}_result*_graphql_*_run.sh.txt")
-            bash analyze.sh $files >> results.md
+            bash analyze.sh bench${bench}*.txt >> results.md
           done
 
       - name: Print benchmark results
