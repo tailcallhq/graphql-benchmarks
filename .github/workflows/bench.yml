@@ -1,55 +1,15 @@
-name: "Run benchmark"
+name: Hello World
 
 on:
-  pull_request_target:
-    types: [assigned, opened, synchronize, reopened, edited]
   push:
-    branches:
-      - benchmarks_in_parallel
-
-permissions:
-  contents: write
-  pull-requests: write
-  issues: write
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  build:
-    runs-on: benchmarking-runner
-    if: github.event.head_commit.message != 'Update performance results in README.md'
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  say-hello:
+    runs-on: ubuntu-latest
+    
     steps:
-      - name: Checkout (GitHub)
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
-
-      - name: Build devcontainer and run benchmarks FF
-        uses: devcontainers/ci@v0.3
-        with:
-          imageName: graphql-benchmarks
-          push: never
-          runCmd: |
-            bash ./setup.sh
-            echo "Testing * *"
-            bash ./run_benchmarks.sh
-
-      - name: Print benchmark resultss
-        run: cat ./results.md
-
-      - name: Comment benchmark results on PRR
-        if: github.event_name == 'pull_request_target'
-        uses: peter-evans/commit-comment@v3
-        with:
-          sha: ${{ github.event.pull_request.head.sha }}
-          body-path: "results.md"
-          reactions: eyes
-
-      - name: Commit and push changes (on main branch)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          branch: main
-          commit_author: Author <actions@github.com>
-          commit_message: "Update performance results in README.md"
+    - name: Say Hello
+      run: echo "Hello World"
