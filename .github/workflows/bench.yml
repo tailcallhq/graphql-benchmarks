@@ -24,7 +24,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
       
-      - name: Build devcontainer and run setup and benchmark
+      - name: Build devcontainer and run setup and benchmark Test**
         uses: devcontainers/ci@v0.3
         with:
           imageName: graphql-benchmarks
@@ -45,7 +45,16 @@ jobs:
                 exit 1
             fi
             echo "Benchmark completed for ${{ matrix.service }}"
-      
+
+
+      - name: List benchmark files
+        run: |
+          echo "Contents of current directory:"
+          ls -la
+          echo "Matching bench*.txt files:"
+          ls -la bench*.txt || echo "No matching files found"
+
+          
       - name: Upload benchmark results
         uses: actions/upload-artifact@v3
         with:
