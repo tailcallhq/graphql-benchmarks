@@ -59,7 +59,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: bench*.txt
-        
+          path: /workspaces/graphql-benchmarks
 
   analyze:
     needs: benchmark
