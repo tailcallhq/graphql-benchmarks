@@ -58,8 +58,8 @@ jobs:
       - name: Upload benchmark results
         uses: actions/upload-artifact@v3
         with:
-          name: benchmark-results-${{ matrix.service }}
-          path: bench*.txt
+          name: bench*.txt
+        
 
   analyze:
     needs: benchmark
