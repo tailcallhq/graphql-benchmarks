@@ -124,7 +124,7 @@ jobs:
           chmod +x ./gnuplot_check.sh
           ./gnuplot_check.sh
 
-      - name: gnu test
+      - name: gnu test output
         run: find / -type f -name "test_plot.png"
 
 
@@ -138,7 +138,7 @@ jobs:
           done
       
       - name: Search for *.png files
-        run: find . -type f -name "*.png"
+        run: ls -R
 
       - name: Print benchmark results
         run: cat ./results.md
