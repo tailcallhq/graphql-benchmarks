@@ -78,6 +78,8 @@ function runBenchmark() {
     fi
 }
 
+rm -f "results.md"
+
 # Main execution
 if [ $# -eq 0 ]; then
     echo "Usage: $0 <server_name>"
@@ -95,7 +97,5 @@ fi
 
 killServerOnPort 3000
 sh nginx/run.sh
-
-rm -f results.md
 
 runBenchmark "$serviceScript"
