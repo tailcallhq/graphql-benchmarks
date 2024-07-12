@@ -37,34 +37,41 @@ function runBenchmark() {
         graphqlEndpoint=http://$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' graphql-engine):8080/v1/graphql
     fi
 
+    # Replace / with _
+    local sanitizedServiceScriptName=$(echo "$serviceScript" | tr '/' '_')
+
+    # Run benchmarks in parallel
     for bench in "${benchmarks[@]}"; do
-        local benchmarkScript="wrk/bench.sh"
-        # Replace / with _
-        local sanitizedServiceScriptName=$(echo "$serviceScript" | tr '/' '_')
-        local resultFiles=("result1_${sanitizedServiceScriptName}.txt" "result2_${sanitizedServiceScriptName}.txt" "result3_${sanitizedServiceScriptName}.txt")
+        (
+            local benchmarkScript="wrk/bench.sh"
+            local resultFiles=("result1_${sanitizedServiceScriptName}.txt" "result2_${sanitizedServiceScriptName}.txt" "result3_${sanitizedServiceScriptName}.txt")
 
-        bash "test_query${bench}.sh" "$graphqlEndpoint"
-        # Warmup run
-        bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >/dev/null
-        sleep 1 # Give some time for apps to finish in-flight requests from warmup
-        bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >/dev/null
-        sleep 1
-        bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >/dev/null
-        sleep 1
+            bash "test_query${bench}.sh" "$graphqlEndpoint"
+            # Warmup run
+            bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >/dev/null
+            sleep 1 # Give some time for apps to finish in-flight requests from warmup
+            bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >/dev/null
+            sleep 1
+            bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >/dev/null
+            sleep 1
 
-        # 3 benchmark runs
-        for resultFile in "${resultFiles[@]}"; do
-            echo "Running benchmark $bench for $serviceScript"
-            bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >"bench${bench}_${resultFile}"
-            if [ "$bench" == "1" ]; then
-                bench1Results+=("bench1_${resultFile}")
-            elif [ "$bench" == "2" ]; then
-                bench2Results+=("bench2_${resultFile}")
-            elif [ "$bench" == "3" ]; then
-                bench3Results+=("bench3_${resultFile}")
-            fi
-        done
+            # 3 benchmark runs
+            for resultFile in "${resultFiles[@]}"; do
+                echo "Running benchmark $bench for $serviceScript"
+                bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >"bench${bench}_${resultFile}"
+                if [ "$bench" == "1" ]; then
+                    bench1Results+=("bench1_${resultFile}")
+                elif [ "$bench" == "2" ]; then
+                    bench2Results+=("bench2_${resultFile}")
+                elif [ "$bench" == "3" ]; then
+                    bench3Results+=("bench3_${resultFile}")
+                fi
+            done
+        ) &
     done
+
+    # Wait for all background processes to finish
+    wait
 
     # Clean up
     if [ "$serviceScript" == "graphql/apollo_server/run.sh" ]; then
@@ -99,3 +106,8 @@ sh nginx/run.sh
 rm -f results.md
 
 runBenchmark "$serviceScript"
+
+# Print results (you may want to modify this part based on how you want to handle the results)
+echo "Benchmark 1 Results: ${bench1Results[@]}"
+echo "Benchmark 2 Results: ${bench2Results[@]}"
+echo "Benchmark 3 Results: ${bench3Results[@]}"
