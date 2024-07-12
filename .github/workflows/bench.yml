@@ -72,8 +72,8 @@ jobs:
       - name: Download all benchmark results
         uses: actions/download-artifact@v3
         with:
-          pattern: bench*
-          merge-multiple: true
+          name: benchmark-results
+          path: .
       
       - name: List downloaded artifacts
         run: ls -R
@@ -81,7 +81,7 @@ jobs:
       - name: Analyze results
         run: |
           for bench in 1 2 3; do
-            bash analyze.sh benchmark-results-*/bench${bench}*.txt >> results.md
+            bash analyze.sh bench${bench}*.txt >> results.md
           done
       
       - name: Print benchmark results
