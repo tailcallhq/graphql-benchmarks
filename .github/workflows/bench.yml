@@ -125,7 +125,7 @@ jobs:
           ./gnuplot_check.sh
 
       - name: gnu test output
-        run: find / -type f -name "test_plot.png"
+        run: ls -R
 
 
       - name: Analyze results
