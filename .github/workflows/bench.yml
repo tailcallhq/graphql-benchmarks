@@ -77,7 +77,10 @@ jobs:
       
       - name: List downloaded artifacts
         run: ls -R
-          
+      
+      - name: Install gnuplot
+        run: sudo apt-get update && sudo apt-get install -y gnuplot
+
       - name: Analyze results
         run: |
           for bench in 1 2 3; do
