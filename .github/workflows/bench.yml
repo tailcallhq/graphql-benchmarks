@@ -88,7 +88,7 @@ jobs:
           done
       
       - name: Search for *.png files
-        run: ls -R
+        run: find *.png
 
       - name: Print benchmark results
         run: cat ./results.md
