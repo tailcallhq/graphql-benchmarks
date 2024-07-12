@@ -125,17 +125,20 @@ jobs:
           ./gnuplot_check.sh
 
       - name: gnu test
-        run: ls -R
+        run: find / -type f -name "test_plot.png"
+
 
       - name: Analyze results
         run: |
           for bench in 1 2 3; do
+            ls bench${bench}*.txt || echo "No matching files found for bench${bench}*.txt"
+            echo "Processing files for bench${bench}:"
             bash analyze.sh bench${bench}*.txt
             echo bench${bench}*.txt
           done
       
       - name: Search for *.png files
-        run: ls -R
+        run: find . -type f -name "*.png"
 
       - name: Print benchmark results
         run: cat ./results.md
