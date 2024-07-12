@@ -84,9 +84,12 @@ jobs:
       - name: Analyze results
         run: |
           for bench in 1 2 3; do
-            bash analyze.sh bench${bench}*.txt >> results.md
+            bash analyze.sh bench${bench}*.txt
           done
       
+      - name: Search for *.png files
+        run: ls -R
+
       - name: Print benchmark results
         run: cat ./results.md
       
