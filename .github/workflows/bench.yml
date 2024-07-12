@@ -58,7 +58,6 @@ jobs:
       - name: Upload benchmark results
         uses: actions/upload-artifact@v3
         with:
-          name: benchmark-results-${{ matrix.service }}
           path: bench*.txt
 
 
@@ -72,8 +71,7 @@ jobs:
       - name: Download all benchmark results
         uses: actions/download-artifact@v3
         with:
-          name: bench*.txt
-          pattern: bench*.txt
+          pattern: benchmark-results-*
           merge-multiple: true
       
       - name: List downloaded artifacts
