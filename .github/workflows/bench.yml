@@ -131,6 +131,7 @@ jobs:
         run: |
           for bench in 1 2 3; do
             bash analyze.sh bench${bench}*.txt
+            echo bench${bench}*.txt
           done
       
       - name: Search for *.png files
