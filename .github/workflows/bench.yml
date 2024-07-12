@@ -81,6 +81,52 @@ jobs:
       - name: Install gnuplot
         run: sudo apt-get update && sudo apt-get install -y gnuplot
 
+      - name: Check gnuplot installation
+        run: |
+          cat << EOF > gnuplot_check.sh
+          #!/bin/bash
+
+          echo "Checking gnuplot installation..."
+
+          # Check if gnuplot is installed
+          if ! command -v gnuplot &> /dev/null; then
+              echo "gnuplot is not installed or not in PATH"
+              exit 1
+          fi
+
+          echo "gnuplot is installed. Version:"
+          gnuplot --version
+
+          echo "Attempting to generate a test plot..."
+
+          # Create a simple data file
+          echo "1 1
+          2 4
+          3 9
+          4 16" > test_data.txt
+
+          # Create a gnuplot script
+          echo "set terminal png
+          set output 'test_plot.png'
+          plot 'test_data.txt' with lines" > test_plot.gp
+
+          # Run gnuplot
+          if gnuplot test_plot.gp; then
+              echo "Successfully generated test_plot.png"
+              ls -l test_plot.png
+          else
+              echo "Failed to generate plot"
+              exit 1
+          fi
+
+          echo "Gnuplot check completed"
+          EOF
+          chmod +x ./gnuplot_check.sh
+          ./gnuplot_check.sh
+
+      - name: gnu test
+        run: ls -R
+
       - name: Analyze results
         run: |
           for bench in 1 2 3; do
