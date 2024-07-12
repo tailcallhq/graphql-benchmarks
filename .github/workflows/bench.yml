@@ -72,7 +72,8 @@ jobs:
       - name: Download all benchmark results
         uses: actions/download-artifact@v3
         with:
-          path: .
+          pattern: bench*
+          merge-multiple: true
       
       - name: List downloaded artifacts
         run: ls -R
