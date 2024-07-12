@@ -84,7 +84,7 @@ jobs:
       - name: Analyze results
         run: |
           for bench in 1 2 3; do
-            bash analyze.sh bench${bench}*.txt
+            bash analyze.sh bench*.txt
           done
       
       - name: Search for *.png files
