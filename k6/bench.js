@@ -39,7 +39,7 @@ export default function() {
 }
 
 export function handleSummary(data) {
-  const requestCount = (data.metrics.http_reqs.values.count/duration).toFixed(0);
+  const requestCount = data.metrics.http_reqs.values.count/duration;
   const avgLatency = Math.round(data.metrics.http_req_duration.values.avg * 100) / 100;
   const requestCountMessage = `Requests/sec: ${requestCount}\n`;
   const latencyMessage = `Latency: ${avgLatency} ms\n`;
