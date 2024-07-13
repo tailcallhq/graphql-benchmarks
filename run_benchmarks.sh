@@ -39,7 +39,7 @@ function runBenchmark() {
   fi
 
   for bench in "${benchmarks[@]}"; do
-    local benchmarkScript="wrk/bench.sh"
+    local benchmarkScript="k6/bench.sh"
 
     # Replace / with _
     local sanitizedServiceScriptName=$(echo "$serviceScript" | tr '/' '_')
