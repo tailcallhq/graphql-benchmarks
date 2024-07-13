@@ -7,8 +7,6 @@ Explore and compare the performance of the fastest GraphQL frameworks through ou
 - [Introduction](#introduction)
 - [Quick Start](#quick-start)
 - [Benchmark Results](#benchmark-results)
-  - [Throughput (Higher is better)](#throughput-higher-is-better)
-  - [Latency (Lower is better)](#latency-lower-is-better)
 - [Architecture](#architecture)
   - [K6](#k6)
   - [GraphQL](#graphql)
