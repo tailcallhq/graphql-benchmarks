@@ -81,7 +81,7 @@ for service in "apollo_server" "caliban" "netflix_dgs" "gqlgen" "tailcall" "asyn
     cd ../../
   elif [ "$service" == "hasura" ]; then
     bash "graphql/hasura/kill.sh"
-    fi
+  fi
 done
 
 bash analyze.sh "${bench1Results[@]}"
