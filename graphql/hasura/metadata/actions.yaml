@@ -1,0 +1,5 @@
+actions:
+    - name: greet
+      definition:
+        kind: synchronous
+        handler: '{{HASURA_GRAPHQL_ACTION_HANDLER_URL}}'

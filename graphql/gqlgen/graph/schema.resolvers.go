@@ -84,12 +84,9 @@ func (r *queryResolver) Posts(ctx context.Context) ([]*model.Post, error) {
 
 	for _, field := range fields {
 		if field == "user" {
-			var wg sync.WaitGroup
-			wg.Add(len(posts))
 			var userLoader = dataloadgen.NewLoader(batchUsers, dataloadgen.WithWait(time.Millisecond))
 			for _, post := range posts {
-				go func(post *model.Post) {
-					defer wg.Done()
+				func(post *model.Post) {
 					user, err := userLoader.Load(ctx, fmt.Sprintf("%d", post.UserID))
 					if err != nil {
 						return
@@ -97,12 +94,15 @@ func (r *queryResolver) Posts(ctx context.Context) ([]*model.Post, error) {
 					post.User = user
 				}(post)
 			}
-			wg.Wait()
 			break
 		}
 	}
 
 	return posts, nil
+}
+
+func (r *queryResolver) Greet(ctx context.Context) (string, error) {
+	return "Hello World!", nil
 }
 
 func (r *userResolver) Posts(ctx context.Context, obj *model.User) ([]*model.Post, error) {

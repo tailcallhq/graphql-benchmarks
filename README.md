@@ -17,12 +17,14 @@ Explore and compare the performance of the fastest GraphQL frameworks through ou
 - [GraphQL Schema](#graphql-schema)
 - [Contribute](#contribute)
 
-[Tailcall]: https://tailcall.run/
-[Gqlgen]: https://gqlgen.com/
-[Apollo GraphQL]: https://new.apollographql.com/
-[Netflix DGS]: https://netflix.github.io/dgs/
-[Caliban]: https://ghostdogpr.github.io/caliban/
+[Tailcall]: https://github.com/tailcallhq/tailcall
+[Gqlgen]: https://github.com/99designs/gqlgen
+[Apollo GraphQL]: https://github.com/apollographql/apollo-server
+[Netflix DGS]: https://github.com/netflix/dgs-framework
+[Caliban]: https://github.com/ghostdogpr/caliban
 [async-graphql]: https://github.com/async-graphql/async-graphql
+[Hasura]: https://github.com/hasura/graphql-engine
+[GraphQL JIT]: https://github.com/zalando-incubator/graphql-jit
 
 ## Introduction
 
@@ -49,21 +51,32 @@ Get started with the benchmarks:
 | Query | Server | Requests/sec | Latency (ms) | Relative |
 |-------:|--------:|--------------:|--------------:|---------:|
 | 1 | `{ posts { id userId title user { id name email }}}` |
-|| [Tailcall] | `29,534.90` | `3.37` | `102.64x` |
-|| [Hasura] | `4,601.66` | `21.71` | `15.99x` |
-|| [Caliban] | `1,574.63` | `63.42` | `5.47x` |
-|| [async-graphql] | `1,457.27` | `68.51` | `5.06x` |
-|| [Gqlgen] | `641.88` | `156.54` | `2.23x` |
-|| [Netflix DGS] | `362.21` | `150.25` | `1.26x` |
-|| [Apollo GraphQL] | `287.75` | `345.31` | `1.00x` |
+|| [Tailcall] | `30,004.80` | `3.32` | `111.96x` |
+|| [async-graphql] | `1,862.55` | `53.71` | `6.95x` |
+|| [Caliban] | `1,535.48` | `65.27` | `5.73x` |
+|| [Hasura] | `1,474.01` | `67.57` | `5.50x` |
+|| [GraphQL JIT] | `1,325.51` | `75.13` | `4.95x` |
+|| [Gqlgen] | `763.01` | `130.02` | `2.85x` |
+|| [Netflix DGS] | `362.91` | `160.04` | `1.35x` |
+|| [Apollo GraphQL] | `268.00` | `367.08` | `1.00x` |
 | 2 | `{ posts { title }}` |
-|| [Tailcall] | `61,457.60` | `1.62` | `38.92x` |
-|| [Caliban] | `9,243.21` | `11.19` | `5.85x` |
-|| [async-graphql] | `7,321.85` | `13.66` | `4.64x` |
-|| [Hasura] | `5,648.75` | `17.70` | `3.58x` |
-|| [Gqlgen] | `2,196.22` | `46.47` | `1.39x` |
-|| [Apollo GraphQL] | `1,735.65` | `57.40` | `1.10x` |
-|| [Netflix DGS] | `1,579.14` | `69.21` | `1.00x` |
+|| [Tailcall] | `61,811.50` | `1.61` | `44.69x` |
+|| [async-graphql] | `9,412.32` | `10.76` | `6.81x` |
+|| [Caliban] | `9,057.38` | `11.39` | `6.55x` |
+|| [Hasura] | `2,437.90` | `40.99` | `1.76x` |
+|| [Gqlgen] | `2,176.64` | `47.66` | `1.57x` |
+|| [Apollo GraphQL] | `1,750.92` | `57.02` | `1.27x` |
+|| [Netflix DGS] | `1,598.51` | `69.51` | `1.16x` |
+|| [GraphQL JIT] | `1,383.03` | `72.19` | `1.00x` |
+| 3 | `{ greet }` |
+|| [Caliban] | `68,200.20` | `1.07` | `26.86x` |
+|| [Tailcall] | `63,728.50` | `1.58` | `25.10x` |
+|| [async-graphql] | `51,025.70` | `1.98` | `20.09x` |
+|| [Gqlgen] | `47,338.30` | `5.10` | `18.64x` |
+|| [Netflix DGS] | `8,138.82` | `15.05` | `3.20x` |
+|| [Apollo GraphQL] | `7,989.19` | `12.73` | `3.15x` |
+|| [GraphQL JIT] | `5,136.79` | `19.44` | `2.02x` |
+|| [Hasura] | `2,539.46` | `39.31` | `1.00x` |
 
 <!-- PERFORMANCE_RESULTS_END -->
 
@@ -86,6 +99,15 @@ Get started with the benchmarks:
 #### Latency (Lower is better)
 
 ![Latency Histogram](assets/latency_histogram2.png)
+
+### 3. `{greet}`
+#### Throughput (Higher is better)
+
+![Throughput Histogram](assets/req_sec_histogram3.png)
+
+#### Latency (Lower is better)
+
+![Latency Histogram](assets/latency_histogram3.png)
 
 ## Architecture
 

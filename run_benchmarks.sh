@@ -14,15 +14,15 @@ function killServerOnPort() {
 }
 bench1Results=()
 bench2Results=()
+bench3Results=()
 killServerOnPort 3000
 sh nginx/run.sh
 
 function runBenchmark() {
     killServerOnPort 8000
     sleep 5
-    local service="$1"
-    local serviceScript="graphql/${service}/run.sh"
-    local benchmarks=(1 2)
+    local serviceScript="$1"
+    local benchmarks=(1 2 3)
 
   if [[ "$service" == "hasura" ]]; then
     bash "$serviceScript" # Run synchronously without background process
@@ -37,31 +37,34 @@ function runBenchmark() {
     graphqlEndpoint=http://$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' graphql-engine):8080/v1/graphql
   fi
 
-    for bench in "${benchmarks[@]}"; do
-        local benchmarkScript="k6/bench.sh"
-        # Replace / with _
-        local sanitizedServiceScriptName=$(echo "$serviceScript" | tr '/' '_')
-        
-        local resultFiles=("result1_${sanitizedServiceScriptName}.txt" "result2_${sanitizedServiceScriptName}.txt" "result3_${sanitizedServiceScriptName}.txt")
+  for bench in "${benchmarks[@]}"; do
+    local benchmarkScript="wrk/bench.sh"
+
+    # Replace / with _
+    local sanitizedServiceScriptName=$(echo "$serviceScript" | tr '/' '_')
+
+    local resultFiles=("result1_${sanitizedServiceScriptName}.txt" "result2_${sanitizedServiceScriptName}.txt" "result3_${sanitizedServiceScriptName}.txt")
 
         bash "test_query${bench}.sh" "$graphqlEndpoint"
 
-        # Warmup run
-        bash "$benchmarkScript" "$graphqlEndpoint" >/dev/null
-        sleep 1 # Give some time for apps to finish in-flight requests from warmup
-        bash "$benchmarkScript" "$graphqlEndpoint" >/dev/null
-        sleep 1
-        bash "$benchmarkScript" "$graphqlEndpoint" >/dev/null
-        sleep 1
+    # Warmup run
+    bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >/dev/null
+    sleep 1 # Give some time for apps to finish in-flight requests from warmup
+    bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >/dev/null
+    sleep 1
+    bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >/dev/null
+    sleep 1
 
         # 3 benchmark runs
         for resultFile in "${resultFiles[@]}"; do
             echo "Running benchmark $bench for $serviceScript"
-            bash "$benchmarkScript" "$graphqlEndpoint" "upload" "$service" "$bench" > "bench${bench}_${resultFile}"
+            bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >"bench${bench}_${resultFile}"
             if [ "$bench" == "1" ]; then
                 bench1Results+=("bench1_${resultFile}")
-            else
+            elif [ "$bench" == "2" ]; then
                 bench2Results+=("bench2_${resultFile}")
+            elif [ "$bench" == "3" ]; then
+                bench3Results+=("bench3_${resultFile}")
             fi
         done
     done
@@ -69,16 +72,17 @@ function runBenchmark() {
 
 rm "results.md"
 
-for service in "apollo_server" "caliban" "netflix_dgs" "gqlgen" "tailcall" "async_graphql" "hasura"; do
-    runBenchmark "$service"
-    if [ "$service" == "apollo_server" ]; then
-        cd graphql/apollo_server/
-        npm stop
-        cd ../../
-    elif [ "$service" == "hasura" ]; then
+for service in "apollo_server" "caliban" "netflix_dgs" "gqlgen" "tailcall" "async_graphql" "hasura" "graphql_jit"; do
+  runBenchmark "graphql/${service}/run.sh"
+  if [ "$service" == "apollo_server" ]; then
+    cd graphql/apollo_server/
+    npm stop
+    cd ../../
+  elif [ "$service" == "hasura" ]; then
     bash "graphql/hasura/kill.sh"
     fi
 done
 
 bash analyze.sh "${bench1Results[@]}"
 bash analyze.sh "${bench2Results[@]}"
+bash analyze.sh "${bench3Results[@]}"
