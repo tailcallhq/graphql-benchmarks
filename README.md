@@ -47,11 +47,11 @@ Get started with the benchmarks:
 | Throughput (Higher is better) | Latency (Lower is better) | 
 |-------:|--------:|
 |  `{{ posts { id userId title user { id name email }}}}` |
-| ![](assets/posts_users_reqs.png) | ![](assets/posts_users_latency.png) |
+| ![](assets/posts_users_req.png) | ![](assets/posts_users_latency.png) |
 |  `{ posts { title }}` |
-| ![](assets/posts_reqs.png) | ![](assets/posts_latency.png) |
+| ![](assets/posts_req.png) | ![](assets/posts_latency.png) |
 |  `{greet}` |
-| ![](assets/greet_reqs.png) | ![](assets/greet_latency.png) |
+| ![](assets/greet_req.png) | ![](assets/greet_latency.png) |
 
 <!-- PERFORMANCE_RESULTS_START -->
 
