@@ -46,6 +46,15 @@ Get started with the benchmarks:
 
 ## Benchmark Results
 
+| Throughput (Higher is better) | Latency (Lower is better) | 
+|-------:|--------:|
+|  `{{ posts { id userId title user { id name email }}}}` |
+| ![](assets/posts_users_reqs.png) | ![](assets/posts_users_latency.png) |
+|  `{ posts { title }}` |
+| ![](assets/posts_reqs.png) | ![](assets/posts_latency.png) |
+|  `{greet}` |
+| ![](assets/greet_reqs.png) | ![](assets/greet_latency.png) |
+
 <!-- PERFORMANCE_RESULTS_START -->
 
 | Query | Server | Requests/sec | Latency (ms) | Relative |
@@ -79,35 +88,6 @@ Get started with the benchmarks:
 || [Hasura] | `2,539.46` | `39.31` | `1.00x` |
 
 <!-- PERFORMANCE_RESULTS_END -->
-
-
-
-### 1. `{posts {title body user {name}}}`
-#### Throughput (Higher is better)
-
-![Throughput Histogram](assets/req_sec_histogram1.png)
-
-#### Latency (Lower is better)
-
-![Latency Histogram](assets/latency_histogram1.png)
-
-### 2. `{posts {title body}}`
-#### Throughput (Higher is better)
-
-![Throughput Histogram](assets/req_sec_histogram2.png)
-
-#### Latency (Lower is better)
-
-![Latency Histogram](assets/latency_histogram2.png)
-
-### 3. `{greet}`
-#### Throughput (Higher is better)
-
-![Throughput Histogram](assets/req_sec_histogram3.png)
-
-#### Latency (Lower is better)
-
-![Latency Histogram](assets/latency_histogram3.png)
 
 ## Architecture
 
