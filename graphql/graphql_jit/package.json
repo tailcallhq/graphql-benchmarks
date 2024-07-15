@@ -1,0 +1,19 @@
+{
+  "name": "graphql_jit",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@graphql-tools/schema": "^10.0.4",
+    "axios": "^1.7.2",
+    "dataloader": "^2.2.2",
+    "express": "^4.19.2",
+    "graphql": "^15.9.0",
+    "graphql-jit": "^0.8.6"
+  }
+}
