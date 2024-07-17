@@ -25,6 +25,9 @@ RUN curl -L https://deb.nodesource.com/nsolid_setup_deb.sh | bash -s -- 18 && \
 RUN wget https://dl.google.com/go/go1.21.1.linux-amd64.tar.gz -O- | tar xz -C /usr/local
 ENV PATH=$PATH:/usr/local/go/bin
 
+# Install Hasura CLI
+RUN curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
+
 # Nginx configurations
 RUN mkdir -p /var/cache/nginx-cache \
   /var/lib/nginx/body \
