@@ -39,7 +39,6 @@ docker run -d --name graphql-engine \
   -e HASURA_GRAPHQL_ENABLED_LOG_TYPES=startup,http-log,webhook-log,websocket-log,query-log \
   -e HASURA_GRAPHQL_EXPERIMENTAL_FEATURES=naming_convention \
   -e HASURA_GRAPHQL_DEFAULT_NAMING_CONVENTION=graphql-default \
-  -p 8080:8080 \
   --network host \
   hasura/graphql-engine:v2.40.0
 
