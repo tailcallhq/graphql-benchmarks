@@ -14,7 +14,7 @@ docker run -d --name postgres \
   -p $DB_PORT:5432 \
   postgres:13
 
-DB_HOST=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' postgres)
+DB_HOST=127.0.0.1
 
 # Wait for PostgreSQL to be ready
 echo "Waiting for PostgreSQL to be ready..."
@@ -24,11 +24,11 @@ done
 echo "PostgreSQL is ready!"
 
 docker run -d --name handler \
-  -p 4000:4000 \
+  --network host \
   --mount type=bind,source="/home/runner/work/graphql-benchmarks/graphql-benchmarks/graphql/hasura",target=/app \
   node:14 bash -c "cd /app && npm install && node handler.js"
 
-HANDLER_URL=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' handler)
+HANDLER_URL=127.0.0.1
 HANDLER_URL="http://$HANDLER_URL:4000"
 
 # Start Hasura GraphQL Engine container
@@ -40,11 +40,10 @@ docker run -d --name graphql-engine \
   -e HASURA_GRAPHQL_EXPERIMENTAL_FEATURES=naming_convention \
   -e HASURA_GRAPHQL_DEFAULT_NAMING_CONVENTION=graphql-default \
   -p 8080:8080 \
+  --network host \
   hasura/graphql-engine:v2.40.0
-
-HASURA_URL=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' graphql-engine)
 
 # Apply Hasura metadata
 cd ./graphql/hasura
-hasura metadata apply --endpoint http://$HASURA_URL:8080
+npx hasura metadata apply
 cd ../..
