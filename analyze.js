@@ -1,19 +1,24 @@
 #!/usr/bin/env node
 
 const fs = require("fs");
-const { exec } = require("child_process");
+const { execSync } = require("child_process");
 const path = require("path");
 
-// Helper functions
-const extractMetric = (file, metric) => {
-  const content = fs.readFileSync(file, "utf-8");
-  const regex = new RegExp(`${metric}\\s+(\\d+\\.?\\d*)`);
-  const match = content.match(regex);
-  return match ? parseFloat(match[1]) : null;
-};
+function extractMetric(file, metric) {
+  try {
+    const command = `grep "${metric}" "${file}" | awk '{print $2}' | sed 's/ms//'`;
+    const result = execSync(command, { encoding: "utf-8" }).trim();
+    return result;
+  } catch (error) {
+    console.error(`Error extracting metric from ${file}: ${error.message}`);
+    return null;
+  }
+}
 
-const average = (values) =>
-  values.reduce((sum, value) => sum + value, 0) / values.length;
+function average(values) {
+  const sum = values.reduce((a, b) => parseFloat(a) + parseFloat(b), 0);
+  return sum / values.length;
+}
 
 const formattedServerNames = {
   tailcall: "Tailcall",
@@ -40,14 +45,16 @@ const resultFiles = process.argv.slice(2);
 const avgReqSecs = {};
 const avgLatencies = {};
 
-// Extract metrics and calculate averages
 servers.forEach((server, idx) => {
+  const startIdx = idx * 3;
   const reqSecVals = [];
   const latencyVals = [];
   for (let j = 0; j < 3; j++) {
-    const fileIdx = idx * 3 + j;
-    reqSecVals.push(extractMetric(resultFiles[fileIdx], "Requests/sec"));
-    latencyVals.push(extractMetric(resultFiles[fileIdx], "Latency"));
+    const fileIdx = startIdx + j;
+    const reqSec = extractMetric(resultFiles[fileIdx], "Requests/sec");
+    const latency = extractMetric(resultFiles[fileIdx], "Latency");
+    if (reqSec !== null) reqSecVals.push(reqSec);
+    if (latency !== null) latencyVals.push(latency);
   }
   avgReqSecs[server] = average(reqSecVals);
   avgLatencies[server] = average(latencyVals);
@@ -57,24 +64,17 @@ servers.forEach((server, idx) => {
 const reqSecData = "/tmp/reqSec.dat";
 const latencyData = "/tmp/latency.dat";
 
-const writeDataFile = (filePath, data) => {
-  const content = [
-    "Server Value",
-    ...data.map(({ server, value }) => `${server} ${value}`),
-  ].join("\n");
-  fs.writeFileSync(filePath, content);
-};
-
-writeDataFile(
+fs.writeFileSync(
   reqSecData,
-  servers.map((server) => ({ server, value: avgReqSecs[server] }))
+  "Server Value\n" +
+    servers.map((server) => `${server} ${avgReqSecs[server]}`).join("\n")
 );
-writeDataFile(
+fs.writeFileSync(
   latencyData,
-  servers.map((server) => ({ server, value: avgLatencies[server] }))
+  "Server Value\n" +
+    servers.map((server) => `${server} ${avgLatencies[server]}`).join("\n")
 );
 
-// Determine which benchmark to use
 let whichBench = 1;
 if (resultFiles[0].startsWith("bench2")) {
   whichBench = 2;
@@ -85,37 +85,68 @@ if (resultFiles[0].startsWith("bench2")) {
 const reqSecHistogramFile = `req_sec_histogram${whichBench}.png`;
 const latencyHistogramFile = `latency_histogram${whichBench}.png`;
 
-// Plotting using gnuplot
-const plotWithGnuplot = (outputFile, title, dataFile) => {
-  const script = `
-    set term pngcairo size 1280,720 enhanced font "Courier,12"
-    set output "${outputFile}"
-    set style data histograms
-    set style histogram cluster gap 1
-    set style fill solid border -1
-    set xtics rotate by -45
-    set boxwidth 0.9
-    set title "${title}"
-    stats "${dataFile}" using 2 nooutput
-    set yrange [0:STATS_max*1.2]
-    set key outside right top
-    plot "${dataFile}" using 2:xtic(1) title "${title.split(" ")[0]}"
-  `;
-  exec(`gnuplot -e '${script}'`);
-};
+function getMaxValue(data) {
+  return Math.max(
+    ...data
+      .split("\n")
+      .slice(1)
+      .map((line) => parseFloat(line.split(" ")[1]))
+  );
+}
 
-plotWithGnuplot(reqSecHistogramFile, "Requests/Sec", reqSecData);
-plotWithGnuplot(latencyHistogramFile, "Latency (in ms)", latencyData);
+const reqSecMax = getMaxValue(fs.readFileSync(reqSecData, "utf-8")) * 1.2;
+const latencyMax = getMaxValue(fs.readFileSync(latencyData, "utf-8")) * 1.2;
 
-// Move PNGs to assets
+const gnuplotScript = `
+set term pngcairo size 1280,720 enhanced font 'Courier,12'
+set output '${reqSecHistogramFile}'
+set style data histograms
+set style histogram cluster gap 1
+set style fill solid border -1
+set xtics rotate by -45
+set boxwidth 0.9
+set title 'Requests/Sec'
+set yrange [0:${reqSecMax}]
+set key outside right top
+plot '${reqSecData}' using 2:xtic(1) title 'Req/Sec'
+set output '${latencyHistogramFile}'
+set title 'Latency (in ms)'
+set yrange [0:${latencyMax}]
+plot '${latencyData}' using 2:xtic(1) title 'Latency'
+`;
+
+const gnuplotScriptFile = "/tmp/gnuplot_script.gp";
+fs.writeFileSync(gnuplotScriptFile, gnuplotScript);
+
+try {
+  execSync(`gnuplot ${gnuplotScriptFile}`, { stdio: "inherit" });
+  console.log("Gnuplot executed successfully");
+} catch (error) {
+  console.error("Error executing gnuplot:", error.message);
+  process.exit(1);
+}
+
 const assetsDir = path.join(__dirname, "assets");
 if (!fs.existsSync(assetsDir)) {
   fs.mkdirSync(assetsDir);
 }
-fs.renameSync(reqSecHistogramFile, path.join(assetsDir, reqSecHistogramFile));
-fs.renameSync(latencyHistogramFile, path.join(assetsDir, latencyHistogramFile));
 
-// Calculate relative performance and build the results table
+function moveFile(source, destination) {
+  try {
+    if (fs.existsSync(source)) {
+      fs.renameSync(source, destination);
+      console.log(`Moved ${source} to ${destination}`);
+    } else {
+      console.log(`Source file ${source} does not exist`);
+    }
+  } catch (error) {
+    console.error(`Error moving file ${source}: ${error.message}`);
+  }
+}
+
+moveFile(reqSecHistogramFile, path.join(assetsDir, reqSecHistogramFile));
+moveFile(latencyHistogramFile, path.join(assetsDir, latencyHistogramFile));
+
 const serverRPS = {};
 servers.forEach((server) => {
   serverRPS[server] = avgReqSecs[server];
@@ -127,14 +158,28 @@ const sortedServers = Object.keys(serverRPS).sort(
 const lastServer = sortedServers[sortedServers.length - 1];
 const lastServerReqSecs = avgReqSecs[lastServer];
 
+const resultsFile = "results.md";
+
+if (
+  !fs.existsSync(resultsFile) ||
+  fs.readFileSync(resultsFile, "utf8").trim() === ""
+) {
+  fs.writeFileSync(
+    resultsFile,
+    `<!-- PERFORMANCE_RESULTS_START -->
+| Query | Server | Requests/sec | Latency (ms) | Relative |
+|-------:|--------:|--------------:|--------------:|---------:|`
+  );
+}
+
 let resultsTable = "";
 
 if (whichBench === 1) {
-  resultsTable += `<!-- PERFORMANCE_RESULTS_START -->\n\n| Query | Server | Requests/sec | Latency (ms) | Relative |\n|-------:|--------:|--------------:|--------------:|---------:|\n| ${whichBench} | \`{ posts { id userId title user { id name email }}}\` |`;
+  resultsTable += `\n| ${whichBench} | \`{ posts { id userId title user { id name email }}}\` |`;
 } else if (whichBench === 2) {
-  resultsTable += `| ${whichBench} | \`{ posts { title }}\` |`;
+  resultsTable += `\n| ${whichBench} | \`{ posts { title }}\` |`;
 } else if (whichBench === 3) {
-  resultsTable += `| ${whichBench} | \`{ greet }\` |`;
+  resultsTable += `\n| ${whichBench} | \`{ greet }\` |`;
 }
 
 sortedServers.forEach((server) => {
@@ -153,14 +198,11 @@ sortedServers.forEach((server) => {
   resultsTable += `\n|| [${formattedServerNames[server]}] | \`${formattedReqSecs}\` | \`${formattedLatencies}\` | \`${relativePerformance}x\` |`;
 });
 
-if (whichBench === 3) {
-  resultsTable += `\n\n<!-- PERFORMANCE_RESULTS_END -->`;
-}
-
-const resultsFile = "results.md";
-fs.writeFileSync(resultsFile, resultsTable);
+fs.appendFileSync(resultsFile, resultsTable);
 
 if (whichBench === 3) {
+  fs.appendFileSync(resultsFile, "\n\n<!-- PERFORMANCE_RESULTS_END -->");
+
   const finalResults = fs
     .readFileSync(resultsFile, "utf-8")
     .replace(/(\r\n|\n|\r)/gm, "\\n");
