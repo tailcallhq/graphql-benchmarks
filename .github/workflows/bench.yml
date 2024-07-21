@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   benchmark:
-    runs-on: benchmarking-runner
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         benchmark_candidate:
