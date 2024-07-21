@@ -88,7 +88,7 @@ jobs:
 
       - name: Analyze results
         run: |
-          ./run_analyze_script.sh
+          bash run_analyze_script.sh
 
       - name: Print benchmark results
         run: cat ./results.md
