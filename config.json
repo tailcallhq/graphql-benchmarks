@@ -1,0 +1,23 @@
+{
+  "benchmarks": {
+    "Query1": "./wrk/benchmarks/wrk1.lua",
+    "Query2": "./wrk/benchmarks/wrk2.lua",
+    "Query3": "./wrk/benchmarks/wrk3.lua"
+  },
+  "benchmarkCandidates": [
+    "apollo_server",
+    "caliban",
+    "netflix_dgs",
+    "gqlgen",
+    "tailcall",
+    "async_graphql",
+    "hasura",
+    "graphql_jit"
+  ],
+  "reRuns": 3,
+  "warmupReqs": 3,
+  "graphqlEndpoint": {
+    "hasura": "http://127.0.0.1:8080/v1/graphql",
+    "default": "http://localhost:8000/graphql"
+  }
+}

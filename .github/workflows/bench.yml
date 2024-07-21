@@ -15,6 +15,19 @@ permissions:
 jobs:
   build:
     runs-on: benchmarking-runner
+    strategy:
+      matrix:
+        benchmark_candidate:
+          [
+            "apollo_server",
+            "caliban",
+            "netflix_dgs",
+            "gqlgen",
+            "tailcall",
+            "async_graphql",
+            "hasura",
+            "graphql_jit",
+          ]
     if: github.event.head_commit.message != 'Update performance results in README.md'
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -31,11 +44,13 @@ jobs:
           imageName: graphql-benchmarks
           push: never
           runCmd: |
-            bash ./setup.sh
-            bash ./run_benchmarks.sh
+            bash ./setup.sh ${matrix.benchmark_candidate}
+            python3 ./benchmarks.py ${matrix.benchmark_candidate}
 
-      - name: Print benchmark results
-        run: cat ./results.md
+      - name: Analyse and Print benchmark results
+        run: |
+          python3 ./analyze.py
+          cat benchmark_results.json
 
       - name: Comment benchmark results on PR
         if: github.event_name == 'pull_request_target'
