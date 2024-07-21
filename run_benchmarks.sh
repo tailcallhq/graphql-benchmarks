@@ -21,6 +21,38 @@ function runBenchmark() {
     sleep 5
     local serviceScript="$1"
     local benchmarks=(1 2 3)
+
+  if [[ "$serviceScript" == *"hasura"* ]]; then
+    bash "$serviceScript" # Run synchronously without background process
+  else
+    bash "$serviceScript" & # Run in daemon mode
+  fi
+
+  sleep 15 # Give some time for the service to start up
+
+  local graphqlEndpoint="http://localhost:8000/graphql"
+  if [[ "$serviceScript" == *"hasura"* ]]; then
+    graphqlEndpoint=http://127.0.0.1:8080/v1/graphql
+  fi
+
+  for bench in "${benchmarks[@]}"; do
+    local benchmarkScript="wrk/bench.sh"
+
+    # Replace / with _
+    local sanitizedServiceScriptName=$(echo "$serviceScript" | tr '/' '_')
+
+    local resultFiles=("result1_${sanitizedServiceScriptName}.txt" "result2_${sanitizedServiceScriptName}.txt" "result3_${sanitizedServiceScriptName}.txt")
+
+    bash "test_query${bench}.sh" "$graphqlEndpoint"
+
+    # Warmup run
+    bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >/dev/null
+    sleep 1 # Give some time for apps to finish in-flight requests from warmup
+    bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >/dev/null
+    sleep 1
+    bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >/dev/null
+    sleep 1
+
     if [[ "$serviceScript" == *"hasura"* ]]; then
         bash "$serviceScript" # Run synchronously without background process
     else
