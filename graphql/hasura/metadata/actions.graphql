@@ -1,3 +1,20 @@
 type Query {
   greet: String!
+  posts: [Post!]!
+}
+
+type Post {
+  id: ID!
+  userId: ID!
+  title: String!
+  body: String!
+  user: User
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  phone: String!
+  website: String!
 }
