@@ -85,38 +85,11 @@ jobs:
       
       - name: List downloaded artifacts
         run: ls -la bench*.txt || echo "No matching files found"
-      
-      - name: output of tailcall
-        run: |
-          echo "Benchmark 1"
-          cat ./bench1_result1_graphql_tailcall_run.sh.txt
-          cat ./bench1_result2_graphql_tailcall_run.sh.txt
-          cat ./bench1_result3_graphql_tailcall_run.sh.txt
-          echo "End of Becnhmark 1"
-          echo ""
-          echo "Benchmark 2"
-          cat ./bench2_result1_graphql_tailcall_run.sh.txt
-          cat ./bench2_result2_graphql_tailcall_run.sh.txt
-          cat ./bench2_result3_graphql_tailcall_run.sh.txt
-          echo "End of Becnhmark 2"
-          echo ""
-          echo "Becnhmark 3"
-          cat ./bench3_result1_graphql_tailcall_run.sh.txt
-          cat ./bench3_result2_graphql_tailcall_run.sh.txt
-          cat ./bench3_result3_graphql_tailcall_run.sh.txt
-          echo "End of Benchmark 2"
-          echo ""
 
       - name: Analyze results
         run: |
-          rm results.md
-          for bench in 1 2 3; do
-            ls bench${bench}*.txt || echo "No matching files found for bench${bench}*.txt"
-            echo "Processing files for bench${bench}:"
-            bash analyze.sh bench${bench}*.txt
-            echo bench${bench}*.txt
-          done
-      
+          ./run_analyze_script.sh
+
       - name: Print benchmark results
         run: cat ./results.md
       
@@ -129,7 +102,7 @@ jobs:
           reactions: eyes
       
       - name: Commit and push changes (on main branch)
-        if: github.ref == 'refs/heads/main'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           branch: main
