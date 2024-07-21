@@ -13,7 +13,7 @@ permissions:
   issues: write
 
 jobs:
-  build:
+  benchmark:
     runs-on: benchmarking-runner
     strategy:
       matrix:
