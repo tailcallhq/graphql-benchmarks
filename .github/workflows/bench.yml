@@ -12,7 +12,6 @@ permissions:
 jobs:
   benchmark:
     runs-on: benchmarking-runner
-    if: github.event.head_commit.message != 'Update performance results in README.md'
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     strategy:
@@ -82,4 +81,4 @@ jobs:
         with:
           branch: main
           commit_author: Author <actions@github.com>
-          commit_message: "Update performance results in README.md"
+          commit_message: "[ci skip] update performance results in README.md"
