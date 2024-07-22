@@ -37,9 +37,10 @@ for benchmark in config["benchmarks"].keys():
     subprocess.call("sleep 1");
   
   benchmark_result = {};
+  bench = config["benchmarks"][benchmark];
   for i in range(1, config["reRuns"] + 1):
     # run benchmark script
-    output = subprocess.getoutput(f"bash ./wrk/run.sh ${benchmark_candidate} ${graphql_endpoint} ${config["benchmarks"][benchmark]}");
+    output = subprocess.getoutput(f"bash ./wrk/run.sh ${benchmark_candidate} ${graphql_endpoint} ${bench}");
     print(output)
 
     # requests per sec
