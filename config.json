@@ -1,8 +1,8 @@
 {
   "benchmarks": {
-    "Query1": "./wrk/benchmarks/wrk1.lua",
-    "Query2": "./wrk/benchmarks/wrk2.lua",
-    "Query3": "./wrk/benchmarks/wrk3.lua"
+    "Query1": "benchmarks/wrk1.lua",
+    "Query2": "benchmarks/wrk2.lua",
+    "Query3": "benchmarks/wrk3.lua"
   },
   "benchmarkCandidates": [
     "apollo_server",

@@ -18,7 +18,10 @@ RUN apt-get update && apt-get install -y \
   python3 \
   && rm -rf /var/lib/apt/lists/*
 
-#
+# Install docker engine in linux
+RUN curl -fsSL https://get.docker.com -o get-docker.sh \
+  sudo sh get-docker.sh
+
 # Install the latest LTS version of Node.js
 RUN curl -L https://deb.nodesource.com/nsolid_setup_deb.sh | bash -s -- 18 && \
   apt-get install -y nodejs
