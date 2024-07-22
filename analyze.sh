@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Install gnuplot
-sudo apt-get update && sudo apt-get install -y gnuplot
-
 function extractMetric() {
   local file="$1"
   local metric="$2"
