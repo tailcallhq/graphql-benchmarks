@@ -5,7 +5,12 @@ import json;
 
 benchmark_candidate = sys.argv[1];
 
-# make this dynamics instead of hard coding here
+#ram
+#........
+
+
+
+# Make this dynamics instead of hard coding here
 config = {};
 with open("./config.json", 'r') as config:
   config = json.load(config);
