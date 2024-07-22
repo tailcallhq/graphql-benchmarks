@@ -38,7 +38,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./devcontainer/Dockerfile
+          file: ./.devcontainer/Dockerfile
           tags: graphql-benchmarks:v1
           outputs : type=docker,dest=/tmp/graphql-benchmarks.tar
 
