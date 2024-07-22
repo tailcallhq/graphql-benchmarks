@@ -68,7 +68,7 @@ jobs:
           docker run --rm \
           -v $PWD:/workspace \
           graphql-benchmarks:v1 \
-          bash -c "cd/workspace && bash ./setup.sh ${{matrix.benchmark_candidate}} && python3 ./benchmark.py ${{matrix.benchmark_candidate}}"
+          bash -c "cd /workspace && bash ./setup.sh ${{matrix.benchmark_candidate}} && python3 ./benchmark.py ${{matrix.benchmark_candidate}}"
 
       - name: Analyse and Print benchmark results
         run: |
