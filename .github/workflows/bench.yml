@@ -1,4 +1,4 @@
-name: "Run graphql servers benchmarks"
+name: "Run benchmark"
 
 on:
   pull_request_target:
@@ -19,11 +19,6 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Checkout (GitHub)
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
       
       - name: Check if there are any changes in .devcontainer and Dockerfile path
         id: changes
@@ -42,7 +37,7 @@ jobs:
           tags: graphql-benchmarks:v1
           outputs : type=docker,dest=/tmp/graphql-benchmarks.tar
 
-      - name: Upload container artifact
+      - name: Upload docker image artifact
         uses: actions/upload-artifact@v4
         with:
           name: graphql-benchmarks
@@ -56,8 +51,16 @@ jobs:
       matrix:
         benchmark_candidate: ["tailcall"]
     if: github.event.head_commit.message != 'Update performance results in README.md'
-    steps:  
-      - name: Upload container artifact
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout (GitHub)
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
+      
+      - name: DOcker docker image artifact
         uses: actions/download-artifact@v4
         with:
           name: graphql-benchmarks
