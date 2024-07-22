@@ -8,8 +8,6 @@ benchmark_candidate = sys.argv[1];
 #ram
 #........
 
-
-
 # Make this dynamics instead of hard coding here
 config = {};
 with open("./config.json", 'r') as config:
@@ -34,9 +32,9 @@ for benchmark in config["benchmarks"].keys():
   
   print(f"Running benchmark for candidate: ${benchmark_candidate}");
   
-  ## start benchmark candidate server
-  server_start_command_script = "graphql/" + benchmark_candidate + "/run.sh &";
-  subprocess.call(server_start_command_script);
+  ## start benchmark candidate service
+  server_start_command_script = "graphql/"  + benchmark_candidate + "/run.sh";
+  subprocess.call([server_start_command_script, "&"]);
 
   ## warmup the server
   print("Running warmup for candidate: ${benchmark_candidate}");
