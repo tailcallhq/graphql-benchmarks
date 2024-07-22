@@ -72,11 +72,11 @@ function run_pre_setup() {
     sh nginx/run.sh
 }
 
-function run_setup_1() {
-    echo "hello/n";
-}
 
 # setup
+echo "Benchmarking Setup started ...."
 benchmark_candidate=$1
+echo "Setting up ${benchmark_candidate} project ...... "
 run_pre_setup
 "run_setup_${benchmark_candidate}"
+echo "Benchmarking Setup Finished ...."

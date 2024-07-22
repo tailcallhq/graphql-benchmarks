@@ -19,6 +19,12 @@ graphql_endpoint = config["graphqlEndpoint"]["default"];
 if benchmark_candidate in config["graphqlEndpoint"].keys() :
   graphql_endpoint = config["graphqlEndpoint"][benchmark_candidate];
 
+## Start benchmark candidate service
+server_start_command_script = "graphql/" + benchmark_candidate + "/run.sh";
+subprocess.Popen(["bash", server_start_command_script, "&"]);
+_= subprocess.getoutput("sleep 15");
+
+
 # some script constants
 latency_regex = r'Latency\s*(\d+ms)';
 requests_per_sec_regex = r'Requests\/sec:\s*(\d+)';
@@ -31,11 +37,6 @@ for benchmark in config["benchmarks"].keys():
   benchmark_path = config["benchmarks"][benchmark];
   
   print(f"Running benchmark for candidate:{benchmark_candidate}");
-  
-  ## Start benchmark candidate service
-  server_start_command_script = "graphql/" + benchmark_candidate + "/run.sh";
-  subprocess.Popen(["bash", server_start_command_script, "&"]);
-  _= subprocess.getoutput("sleep 15");
   
   ## warmup the server
   print(f"Running warmup for candidate: ${benchmark_candidate}");
