@@ -34,13 +34,13 @@ for benchmark in config["benchmarks"].keys():
   
   ## start benchmark candidate service
   server_start_command_script = "graphql/"  + benchmark_candidate + "/run.sh";
-  subprocess.call([server_start_command_script, "&"]);
-
+  subprocess.call(["bash", server_start_command_script, "&"]);
+  
   ## warmup the server
   print("Running warmup for candidate: ${benchmark_candidate}");
   for i in range(1, config["warmup_reqs"] + 1):
-    subprocess.call(f"bash ./wrk/run.sh ${graphql_endpoint} ${benchmark_path}");
-    subprocess.call("sleep 1");
+    _= subprocess.getoutput(f"bash ./wrk/run.sh ${graphql_endpoint} ${benchmark_path}");
+    _= subprocess.getoutput("sleep 1");
   
   benchmark_result = {};
   for i in range(1, config["reRuns"] + 1):

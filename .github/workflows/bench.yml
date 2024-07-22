@@ -59,7 +59,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
       
-      - name: DOcker docker image artifact
+      - name: Download docker image artifact
         uses: actions/download-artifact@v4
         with:
           name: graphql-benchmarks
