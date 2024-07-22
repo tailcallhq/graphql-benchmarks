@@ -38,7 +38,7 @@ for benchmark in config["benchmarks"].keys():
   
   ## warmup the server
   print("Running warmup for candidate: ${benchmark_candidate}");
-  for i in range(1, config["warmup_reqs"] + 1):
+  for i in range(1, config["warmupReqs"] + 1):
     _= subprocess.getoutput(f"bash ./wrk/run.sh ${graphql_endpoint} ${benchmark_path}");
     _= subprocess.getoutput("sleep 1");
   
