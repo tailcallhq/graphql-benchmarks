@@ -1,4 +1,4 @@
-name: "Run benchmark"
+name: "Benchmark workflow"
 
 on:
   pull_request_target:
