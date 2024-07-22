@@ -4,13 +4,13 @@ on:
     types: [assigned, opened, synchronize, reopened, edited]
   push:
     branches:
-      - benchmarks_in_parallel
+      - main
 permissions:
   contents: write
   pull-requests: write
   issues: write
 jobs:
-  benchmark:
+  build:
     runs-on: benchmarking-runner
     if: github.event.head_commit.message != 'Update performance results in README.md'
     env:
