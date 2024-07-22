@@ -19,13 +19,6 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      
-      - name: Check if there are any changes in .devcontainer and Dockerfile path
-        id: changes
-        run: |
-          git fetch origin main
-          git diff --quiet origin/main -- .devcontainers/
-        
       - name:   Setup docker buildx
         uses: docker/setup-buildx-action@v3
         
