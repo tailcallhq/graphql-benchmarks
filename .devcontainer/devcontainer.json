@@ -10,7 +10,7 @@
     "dockerfile": "Dockerfile",
     "context": ".."
   },
-  "runArgs": ["-v", "/var/run/docker.sock:/var/run/docker.sock"],
+  "runArgs": ["-v", "/var/run/docker.sock:/var/run/docker.sock", "--network=host"],
   "forwardPorts": [8000, 3000],
   "postCreateCommand": "bash ./setup.sh"
 }
