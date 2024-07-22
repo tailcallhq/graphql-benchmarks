@@ -32,9 +32,9 @@ for benchmark in config["benchmarks"].keys():
   
   print(f"Running benchmark for candidate: ${benchmark_candidate}");
   
-  ## start benchmark candidate service
-  server_start_command_script = "graphql/"  + benchmark_candidate + "/run.sh";
-  subprocess.call(["bash", server_start_command_script, "&"]);
+  ## Start benchmark candidate service
+  server_start_command_script = "graphql/" + benchmark_candidate + "/run.sh";
+  subprocess.Popen(["bash", server_start_command_script, "&"]);
   
   ## warmup the server
   print("Running warmup for candidate: ${benchmark_candidate}");
