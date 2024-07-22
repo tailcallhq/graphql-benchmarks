@@ -44,8 +44,8 @@ jobs:
           imageName: graphql-benchmarks
           push: never
           runCmd: |
-            bash ./setup.sh ${matrix.benchmark_candidate}
-            python3 ./benchmarks.py ${matrix.benchmark_candidate}
+            bash ./setup.sh ${{matrix.benchmark_candidate}}
+            python3 ./benchmarks.py ${{matrix.benchmark_candidate}}
 
       - name: Analyse and Print benchmark results
         run: |
