@@ -30,22 +30,23 @@ for benchmark in config["benchmarks"].keys():
 
   benchmark_path = config["benchmarks"][benchmark];
   
-  print(f"Running benchmark for candidate: ${benchmark_candidate}");
+  print(f"Running benchmark for candidate:{benchmark_candidate}");
   
   ## Start benchmark candidate service
   server_start_command_script = "graphql/" + benchmark_candidate + "/run.sh";
   subprocess.Popen(["bash", server_start_command_script, "&"]);
+  _= subprocess.getoutput("sleep 15");
   
   ## warmup the server
-  print("Running warmup for candidate: ${benchmark_candidate}");
+  print(f"Running warmup for candidate: ${benchmark_candidate}");
   for i in range(1, config["warmupReqs"] + 1):
-    _= subprocess.getoutput(f"bash ./wrk/run.sh ${graphql_endpoint} ${benchmark_path}");
+    _= subprocess.getoutput(f"bash ./wrk/run.sh {graphql_endpoint} {benchmark_path}");
     _= subprocess.getoutput("sleep 1");
   
   benchmark_result = {};
   for i in range(1, config["reRuns"] + 1):
     # run benchmark script
-    output = subprocess.getoutput(f"bash ./wrk/run.sh ${graphql_endpoint} ${benchmark_path}");
+    output = subprocess.getoutput(f"bash ./wrk/run.sh {graphql_endpoint} {benchmark_path}");
     print(output)
 
     # requests per sec
