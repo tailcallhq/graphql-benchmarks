@@ -4,7 +4,7 @@ on:
     types: [assigned, opened, synchronize, reopened, edited]
   push:
     branches:
-      - benchmarks_in_parallel
+      - main
 permissions:
   contents: write
   pull-requests: write
