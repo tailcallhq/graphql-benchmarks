@@ -1,4 +1,4 @@
-name: "Run benchmark"
+name: "Run graphql servers benchmark"
 
 on:
   pull_request_target:
@@ -13,21 +13,8 @@ permissions:
   issues: write
 
 jobs:
-  benchmark:
+  build-job:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        benchmark_candidate:
-          [
-            "apollo_server",
-            "caliban",
-            "netflix_dgs",
-            "gqlgen",
-            "tailcall",
-            "async_graphql",
-            "hasura",
-            "graphql_jit",
-          ]
     if: github.event.head_commit.message != 'Update performance results in README.md'
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -37,15 +24,54 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
-
-      - name: Build devcontainer and run benchmarks
-        uses: devcontainers/ci@v0.3
+      
+      - name: Check if there are any changes in .devcontainer and Dockerfile path
+        id: changes
+        run: |
+          git fetch origin main
+          git diff --quiet origin/main -- .devcontainers/ Dockerfile
+        
+      - name:   Setup docker buildx
+        if: steps.changes.outputs.exit-code !=0
+        uses: docker/setup-buildx-action@v3
+        
+      - name: Build docker imaage
+        if: steps.changes.outputs.exit-code !=0
+        uses: docker/build-push-action@v6
         with:
-          imageName: graphql-benchmarks
-          push: never
-          runCmd: |
-            bash ./setup.sh ${{matrix.benchmark_candidate}}
-            python3 ./benchmark.py ${{matrix.benchmark_candidate}}
+          context: .
+          file: ./Dockerfile
+          tags: graphql-benchmarks:v1
+          outputs : type=docker,dest=/tmp/graphql-benchmarks.tar
+
+      - name: Upload container artifact
+        if: steps.changes.outputs.exit-code !=0
+        uses: actions/upload-artifact@v4
+        with:
+          name: graphql-benchmarks
+          path: /tmp/graphql-benchmarks.tar
+      
+          
+  benchmark-job:
+    needs: build-job
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        benchmark_candidate: ["tailcall"]
+    if: github.event.head_commit.message != 'Update performance results in README.md'
+    steps:  
+      - name: Upload container artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: graphql-benchmarks
+          path: /tmp/
+      - name: Load Docker image and Run benchmarks
+        run: |
+          docker load -i /tmp/graphql-benchmarks.tar
+          docker run --rm \
+          -v $PWD:/workspace \
+          graphql-benchmarks:v1 \
+          bash -c "cd/workspace && bash ./setup.sh ${{matrix.benchmark_candidate}} && python3 ./benchmark.py ${{matrix.benchmark_candidate}}"
 
       - name: Analyse and Print benchmark results
         run: |
