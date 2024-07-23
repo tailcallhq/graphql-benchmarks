@@ -46,7 +46,7 @@ jobs:
 
 
   analyze:
-    needs: benchmark
+    needs: build
     runs-on: benchmarking-runner
     steps:
       - name: Checkout (GitHub)
