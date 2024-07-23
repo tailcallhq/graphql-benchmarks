@@ -22,10 +22,11 @@ sh nginx/run.sh
 function runBenchmark() {
     killServerOnPort 8000
     sleep 5
-    local serviceScript="$1"
+    local service="$1"
+    local serviceScript="graphql/${service}/run.sh"
     local benchmarks=(1 2 3)
 
-  if [[ "$serviceScript" == *"hasura"* ]]; then
+  if [[ "$service" == "hasura" ]]; then
     bash "$serviceScript" # Run synchronously without background process
   else
     bash "$serviceScript" & # Run in daemon mode
@@ -34,12 +35,12 @@ function runBenchmark() {
   sleep 15 # Give some time for the service to start up
 
   local graphqlEndpoint="http://localhost:8000/graphql"
-  if [[ "$serviceScript" == *"hasura"* ]]; then
+  if [[ "$service" == "hasura" ]]; then
     graphqlEndpoint=http://127.0.0.1:8080/v1/graphql
   fi
 
   for bench in "${benchmarks[@]}"; do
-    local benchmarkScript="wrk/bench.sh"
+    local benchmarkScript="k6/bench.sh"
 
     # Replace / with _
     local sanitizedServiceScriptName=$(echo "$serviceScript" | tr '/' '_')
@@ -59,7 +60,7 @@ function runBenchmark() {
         # 3 benchmark runs
         for resultFile in "${resultFiles[@]}"; do
             echo "Running benchmark $bench for $serviceScript"
-            bash "$benchmarkScript" "$graphqlEndpoint" "$bench" >"bench${bench}_${resultFile}"
+            bash "$benchmarkScript" "$graphqlEndpoint" "$service" "$bench" > "bench${bench}_${resultFile}"
             if [ "$bench" == "1" ]; then
                 bench1Results+=("bench1_${resultFile}")
             elif [ "$bench" == "2" ]; then
@@ -88,9 +89,7 @@ if [[ ! " ${valid_services[@]} " =~ " ${service} " ]]; then
     exit 1
 fi
 
-
-
-runBenchmark "graphql/${service}/run.sh"
+runBenchmark "${service}"
     
 if [ "$service" == "apollo_server" ]; then
     cd graphql/apollo_server/

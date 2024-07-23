@@ -34,3 +34,7 @@ for bench in 1 2 3; do
     echo "Executing: $cmd"
     eval $cmd
 done
+
+if [[ "$UPLOAD_TO_CLOUD" == "true" ]]; then
+    bash fetch_panels.sh
+fi

@@ -7,10 +7,8 @@ Explore and compare the performance of the fastest GraphQL frameworks through ou
 - [Introduction](#introduction)
 - [Quick Start](#quick-start)
 - [Benchmark Results](#benchmark-results)
-  - [Throughput (Higher is better)](#throughput-higher-is-better)
-  - [Latency (Lower is better)](#latency-lower-is-better)
 - [Architecture](#architecture)
-  - [WRK](#wrk)
+  - [K6](#k6)
   - [GraphQL](#graphql)
   - [Nginx](#nginx)
   - [Jsonplaceholder](#jsonplaceholder)
@@ -46,6 +44,15 @@ Get started with the benchmarks:
 
 ## Benchmark Results
 
+| Throughput (Higher is better) | Latency (Lower is better) | 
+|-------:|--------:|
+|  `{{ posts { id userId title user { id name email }}}}` |
+| ![](assets/posts_users_req.png) | ![](assets/posts_users_latency.png) |
+|  `{ posts { title }}` |
+| ![](assets/posts_req.png) | ![](assets/posts_latency.png) |
+|  `{greet}` |
+| ![](assets/greet_req.png) | ![](assets/greet_latency.png) |
+
 <!-- PERFORMANCE_RESULTS_START -->
 
 | Query | Server | Requests/sec | Latency (ms) | Relative |
@@ -80,44 +87,15 @@ Get started with the benchmarks:
 
 <!-- PERFORMANCE_RESULTS_END -->
 
-
-
-### 1. `{posts {title body user {name}}}`
-#### Throughput (Higher is better)
-
-![Throughput Histogram](assets/req_sec_histogram1.png)
-
-#### Latency (Lower is better)
-
-![Latency Histogram](assets/latency_histogram1.png)
-
-### 2. `{posts {title body}}`
-#### Throughput (Higher is better)
-
-![Throughput Histogram](assets/req_sec_histogram2.png)
-
-#### Latency (Lower is better)
-
-![Latency Histogram](assets/latency_histogram2.png)
-
-### 3. `{greet}`
-#### Throughput (Higher is better)
-
-![Throughput Histogram](assets/req_sec_histogram3.png)
-
-#### Latency (Lower is better)
-
-![Latency Histogram](assets/latency_histogram3.png)
-
 ## Architecture
 
 ![Architecture Diagram](assets/architecture.png)
 
-A client (`wrk`) sends requests to a GraphQL server to fetch post titles. The GraphQL server, in turn, retrieves data from an external source, `jsonplaceholder.typicode.com`, routed through the `nginx` reverse proxy.
+A client (`k6`) sends requests to a GraphQL server to fetch post titles. The GraphQL server, in turn, retrieves data from an external source, `jsonplaceholder.typicode.com`, routed through the `nginx` reverse proxy.
 
-### WRK
+### K6
 
-`wrk` serves as our test client, sending GraphQL requests at a high rate.
+`k6` serves as our test client, sending GraphQL requests at a high rate.
 
 ### GraphQL
 
