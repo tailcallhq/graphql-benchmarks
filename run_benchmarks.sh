@@ -89,9 +89,7 @@ if [[ ! " ${valid_services[@]} " =~ " ${service} " ]]; then
     exit 1
 fi
 
-
-
-runBenchmark "graphql/${service}/run.sh"
+runBenchmark "${service}"
     
 if [ "$service" == "apollo_server" ]; then
     cd graphql/apollo_server/
@@ -99,23 +97,4 @@ if [ "$service" == "apollo_server" ]; then
     cd ../../
 elif [ "$service" == "hasura" ]; then
     bash "graphql/hasura/kill.sh"
-fi
-
-bash analyze.sh "${bench1Results[@]}"
-bash analyze.sh "${bench2Results[@]}"
-bash analyze.sh "${bench3Results[@]}"
-
-if [[ "$UPLOAD_TO_CLOUD" == "true" ]]; then
-  # Wait for 5 seconds to ensure the results are uploaded to influxdb
-  sleep 5
-
-  # Get rendered panels from grafana
-  from=$(date -u -d "-30 minutes" +"%Y-%m-%dT%H:%M:%S.%3NZ")
-  now=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
-  curl -o assets/posts_users_req.png -H "Authorization: Bearer $GRAFANA_API_KEY" "https://tailcall.grafana.net/render/d-solo/cdqucydulbfggb?tab=queries&from=$from&to=$now&panelId=panel-1&__feature.dashboardSceneSolo&width=1000&height=500&tz=Asia%2FCalcutta" --connect-timeout 120
-  curl -o assets/posts_users_latency.png -H "Authorization: Bearer $GRAFANA_API_KEY" "https://tailcall.grafana.net/render/d-solo/cdqucydulbfggb?tab=queries&from=$from&to=$now&panelId=panel-2&__feature.dashboardSceneSolo&width=1000&height=500&tz=Asia%2FCalcutta" --connect-timeout 120
-  curl -o assets/posts_req.png -H "Authorization: Bearer $GRAFANA_API_KEY" "https://tailcall.grafana.net/render/d-solo/cdqucydulbfggb?tab=queries&from=$from&to=$now&panelId=panel-5&__feature.dashboardSceneSolo&width=1000&height=500&tz=Asia%2FCalcutta" --connect-timeout 120
-  curl -o assets/posts_latency.png -H "Authorization: Bearer $GRAFANA_API_KEY" "https://tailcall.grafana.net/render/d-solo/cdqucydulbfggb?tab=queries&from=$from&to=$now&panelId=panel-6&__feature.dashboardSceneSolo&width=1000&height=500&tz=Asia%2FCalcutta" --connect-timeout 120
-  curl -o assets/greet_req.png -H "Authorization: Bearer $GRAFANA_API_KEY" "https://tailcall.grafana.net/render/d-solo/cdqucydulbfggb?tab=queries&from=$from&to=$now&panelId=panel-8&__feature.dashboardSceneSolo&width=1000&height=500&tz=Asia%2FCalcutta" --connect-timeout 120
-  curl -o assets/greet_latency.png -H "Authorization: Bearer $GRAFANA_API_KEY" "https://tailcall.grafana.net/render/d-solo/cdqucydulbfggb?tab=queries&from=$from&to=$now&panelId=panel-9&__feature.dashboardSceneSolo&width=1000&height=500&tz=Asia%2FCalcutta" --connect-timeout 120
 fi

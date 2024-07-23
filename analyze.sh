@@ -44,16 +44,6 @@ for idx in "${!servers[@]}"; do
   avgLatencies[${servers[$idx]}]=$(average "${latencyVals[@]}")
 done
 
-echo "Server Value" >"$reqSecData"
-for server in "${servers[@]}"; do
-  echo "$server ${avgReqSecs[$server]}" >>"$reqSecData"
-done
-
-echo "Server Value" >"$latencyData"
-for server in "${servers[@]}"; do
-  echo "$server ${avgLatencies[$server]}" >>"$latencyData"
-done
-
 whichBench=1
 if [[ $1 == bench2* ]]; then
     whichBench=2
