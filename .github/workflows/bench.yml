@@ -1,17 +1,14 @@
 name: "Run benchmark"
-
 on:
   pull_request_target:
     types: [assigned, opened, synchronize, reopened, edited]
   push:
     branches:
       - main
-
 permissions:
   contents: write
   pull-requests: write
   issues: write
-
 jobs:
   build:
     runs-on: benchmarking-runner
@@ -22,6 +19,19 @@ jobs:
       INFLUXDB_TOKEN: ${{ secrets.INFLUXDB_TOKEN }}
       INFLUXDB_ORG: ${{ secrets.INFLUXDB_ORG }}
       INFLUXDB_URL: ${{ secrets.INFLUXDB_URL }}
+    strategy:
+      matrix:
+        service:
+          [
+            apollo_server,
+            caliban,
+            netflix_dgs,
+            gqlgen,
+            tailcall,
+            async_graphql,
+            hasura,
+            graphql_jit,
+          ]
     steps:
       - name: Checkout (GitHub)
         uses: actions/checkout@v4
@@ -53,9 +63,37 @@ jobs:
 
       - name: Run benchmarks
         run: |
-          bash ./setup.sh
-          bash ./run_benchmarks.sh
+          bash ./graphql/${{ matrix.service }}/setup.sh
+          bash run_benchmarks.sh ${{ matrix.service }}
+      - name: List benchmark files
+        run: |
+          ls -la bench*.txt || echo "No matching files found"
 
+      - name: Upload benchmark results
+        uses: actions/upload-artifact@v3
+        with:
+          name: benchmark-results
+          path: bench*.txt
+
+  analyze:
+    needs: build
+    runs-on: benchmarking-runner
+    steps:
+      - name: Checkout (GitHub)
+        uses: actions/checkout@v4
+
+      - name: Download all benchmark results
+        uses: actions/download-artifact@v3
+        with:
+          name: benchmark-results
+          path: .
+
+      - name: List downloaded artifacts
+        run: ls -la bench*.txt || echo "No matching files found"
+
+      - name: Analyze results
+        run: |
+          bash run_analyze_script.sh
       - name: Print benchmark results
         run: cat ./results.md
 
@@ -73,4 +111,4 @@ jobs:
         with:
           branch: main
           commit_author: Author <actions@github.com>
-          commit_message: "Update performance results in README.md"
+          commit_message: "[ci skip] update performance results in README.md"
