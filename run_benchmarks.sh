@@ -12,6 +12,7 @@ function killServerOnPort() {
     echo "No process found running on port $port"
   fi
 }
+
 bench1Results=()
 bench2Results=()
 bench3Results=()
@@ -72,17 +73,29 @@ function runBenchmark() {
 
 rm "results.md"
 
-for service in "apollo_server" "caliban" "netflix_dgs" "gqlgen" "tailcall" "async_graphql" "hasura" "graphql_jit"; do
-  runBenchmark "graphql/${service}/run.sh"
-  if [ "$service" == "apollo_server" ]; then
+# Main script
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <service_name>"
+    echo "Available services: apollo_server, caliban, netflix_dgs, gqlgen, tailcall, async_graphql, hasura, graphql_jit"
+    exit 1
+fi  
+
+service="$1"
+valid_services=("apollo_server" "caliban" "netflix_dgs" "gqlgen" "tailcall" "async_graphql" "hasura" "graphql_jit")
+
+if [[ ! " ${valid_services[@]} " =~ " ${service} " ]]; then
+    echo "Invalid service name. Available services: ${valid_services[*]}"
+    exit 1
+fi
+
+
+
+runBenchmark "graphql/${service}/run.sh"
+    
+if [ "$service" == "apollo_server" ]; then
     cd graphql/apollo_server/
     npm stop
     cd ../../
-  elif [ "$service" == "hasura" ]; then
+elif [ "$service" == "hasura" ]; then
     bash "graphql/hasura/kill.sh"
-  fi
-done
-
-node analyze.js "${bench1Results[@]}"
-node analyze.js "${bench2Results[@]}"
-node analyze.js "${bench3Results[@]}"
+fi
