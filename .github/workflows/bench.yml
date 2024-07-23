@@ -17,14 +17,24 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     strategy:
       matrix:
-        service: [apollo_server, caliban, netflix_dgs, gqlgen, tailcall, async_graphql, hasura, graphql_jit]
+        service:
+          [
+            apollo_server,
+            caliban,
+            netflix_dgs,
+            gqlgen,
+            tailcall,
+            async_graphql,
+            hasura,
+            graphql_jit,
+          ]
     steps:
       - name: Checkout (GitHub)
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
-      
+
       - name: Build devcontainer and run setup and benchmark
         uses: devcontainers/ci@v0.3
         with:
@@ -37,13 +47,12 @@ jobs:
       - name: List benchmark files
         run: |
           ls -la bench*.txt || echo "No matching files found"
-          
+
       - name: Upload benchmark results
         uses: actions/upload-artifact@v3
         with:
           name: benchmark-results
           path: bench*.txt
-
 
   analyze:
     needs: build
@@ -51,13 +60,13 @@ jobs:
     steps:
       - name: Checkout (GitHub)
         uses: actions/checkout@v4
-      
+
       - name: Download all benchmark results
         uses: actions/download-artifact@v3
         with:
           name: benchmark-results
           path: .
-      
+
       - name: List downloaded artifacts
         run: ls -la bench*.txt || echo "No matching files found"
 
@@ -67,7 +76,7 @@ jobs:
 
       - name: Print benchmark results
         run: cat ./results.md
-      
+
       - name: Comment benchmark results on PR
         if: github.event_name == 'pull_request_target'
         uses: peter-evans/commit-comment@v3
@@ -75,11 +84,11 @@ jobs:
           sha: ${{ github.event.pull_request.head.sha }}
           body-path: "results.md"
           reactions: eyes
-      
+
       - name: Commit and push changes (on main branch)
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           branch: main
           commit_author: Author <actions@github.com>
-          commit_message: "Update performance results in README.md"
+          commit_message: "[ci skip] update performance results in README.md"
