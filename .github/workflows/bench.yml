@@ -42,7 +42,7 @@ jobs:
           push: never
           runCmd: |
             bash ./graphql/${{ matrix.service }}/setup.sh
-            bash run_benchmarks.sh ${{ matrix.service }}
+            node run_benchmarks.js ${{ matrix.service }}
 
       - name: List benchmark files
         run: |
