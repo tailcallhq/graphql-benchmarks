@@ -12,8 +12,9 @@ services=("apollo" "caliban" "netflixdgs" "gqlgen" "tailcall" "async_graphql" "h
 for bench in 1 2 3; do
     echo "Processing files for bench${bench}:"
     
-    # Construct the command for each benchmark
-    cmd="node analyze.js"
+    tsc analyze.ts
+	# Construct the command for each benchmark
+	cmd="node analyze.js"
     
     # Loop through each service 
     for service in "${services[@]}"; do
