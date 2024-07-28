@@ -2,6 +2,7 @@
 
 # Update and install gnuplot
 sudo apt-get update && sudo apt-get install -y gnuplot
+npm install
 
 # Remove existing results file
 rm -f results.md
