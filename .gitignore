@@ -24,3 +24,4 @@ graphql/gqlgen/main
 tailcall-src
 
 metals.*
+parser/target/*
