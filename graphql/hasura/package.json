@@ -2,6 +2,10 @@
   "name": "hasura",
   "version": "1.0.0",
   "main": "index.js",
+  "scripts": {
+    "start": "PORT=4000 pm2 start handler.js -i max",
+    "stop": "pm2 stop handler"
+  },
   "dependencies": {
     "axios": "^1.7.2",
     "dataloader": "^2.2.2",
