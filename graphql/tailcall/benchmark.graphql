@@ -1,7 +1,6 @@
 schema
   @server(
    port: 8000
-   dedupe: true
   )
   @upstream(
     baseURL: "http://jsonplaceholder.typicode.com"
