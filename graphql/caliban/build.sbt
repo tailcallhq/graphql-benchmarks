@@ -11,7 +11,7 @@ lazy val root = (project in file("."))
     libraryDependencies ++= Seq(
       "com.github.ghostdogpr"                 %% "caliban-quick"         % "2.9.0",
       "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-core"   % "2.30.13",
-      "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.30.12" % Provided,
+      "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-macros" % "2.30.13" % Provided,
       "org.apache.httpcomponents.client5"      % "httpclient5"           % "5.4",
       "dev.zio"                               %% "zio"                   % "2.1.9"
     )
