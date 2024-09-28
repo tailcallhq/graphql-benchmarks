@@ -1,20 +1,17 @@
 schema
-  @server(
-   port: 8000
-   dedupe: true
-  )
+  @server(port: 8000)
   @upstream(
     baseURL: "http://jsonplaceholder.typicode.com"
     poolMaxIdlePerHost: 200
     tcpKeepAlive: 60
-    proxy: { url: "http://127.0.0.1:3000" }
+    # proxy: { url: "http://127.0.0.1:3000" }
   ) {
   query: Query
 }
 
 type Query {
-  posts: [Post] @http(path: "/posts")
-  greet: String!  @expr(body: "Hello World!")
+  posts: [Post] @http(path: "/posts", dedupe: true)
+  greet: String! @expr(body: "Hello World!")
 }
 
 type User {
@@ -31,5 +28,5 @@ type Post {
   userId: Int!
   title: String!
   body: String!
-  user: User @http(path: "/users/{{value.userId}}")
+  user: User @http(path: "/users/{{value.userId}}", dedupe: true)
 }
