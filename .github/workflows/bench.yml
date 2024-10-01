@@ -39,8 +39,7 @@ jobs:
       - name: Build devcontainer and run setup and benchmark
         uses: devcontainers/ci@v0.3
         with:
-          imageName: graphql-benchmark
-          registry: ghcr.io
+          imageName: ghcr.io/tailcallhq/graphql-benchmark
           push: always
 
       - name: Run Benchmarks
