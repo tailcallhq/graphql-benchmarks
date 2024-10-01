@@ -46,11 +46,9 @@ jobs:
         with:
           imageName: ghcr.io/tailcallhq/graphql-benchmark
           push: always
-
-      - name: Run Benchmarks
-        run: |
-          bash ./graphql/${{ matrix.service }}/setup.sh
-          bash run_benchmarks.sh ${{ matrix.service }}
+          runCmd: |
+            bash ./graphql/${{ matrix.service }}/setup.sh
+            bash run_benchmarks.sh ${{ matrix.service }}
 
       - name: List benchmark files
         run: |
