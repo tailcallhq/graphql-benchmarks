@@ -35,13 +35,9 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.sha || github.sha }}
 
-      - name: Build devcontainer and run setup and benchmark
-        uses: devcontainers/ci@v0.3
-        with:
-          imageName: graphql-benchmarks
-          push: always
-          runCmd: |
-      
+      - name: Pull pre-built image from GHCR
+        run: docker pull ghcr.io/tailcallhq/graphql-benchmarks:latest
+
       - name: Run Benchmarks
         run: |
           bash ./graphql/${{ matrix.service }}/setup.sh
