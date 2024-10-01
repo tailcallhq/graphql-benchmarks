@@ -51,31 +51,31 @@ Get started with the benchmarks:
 | Query | Server | Requests/sec | Latency (ms) | Relative |
 |-------:|--------:|--------------:|--------------:|---------:|
 | 1 | `{ posts { id userId title user { id name email }}}` |
-|| [GraphQL JIT] | `1,086.81` | `91.48` | `x` |
-|| [async-graphql] | `1,079.32` | `92.11` | `x` |
-|| [Caliban] | `883.46` | `112.88` | `x` |
-|| [Gqlgen] | `400.02` | `246.60` | `x` |
-|| [Netflix DGS] | `188.89` | `519.06` | `x` |
-|| [Apollo GraphQL] | `125.26` | `726.58` | `x` |
-|| [Hasura] | `115.90` | `774.12` | `x` |
+|| [GraphQL JIT] | `1,075.30` | `92.47` | `x` |
+|| [async-graphql] | `1,059.72` | `93.84` | `x` |
+|| [Caliban] | `875.13` | `114.51` | `x` |
+|| [Gqlgen] | `392.46` | `251.40` | `x` |
+|| [Netflix DGS] | `190.62` | `521.11` | `x` |
+|| [Apollo GraphQL] | `124.69` | `728.09` | `x` |
+|| [Hasura] | `117.50` | `765.28` | `x` |
 || [Tailcall] | `0.00` | `0.00` | `x` |
 | 2 | `{ posts { title }}` |
-|| [Caliban] | `5,658.83` | `17.73` | `x` |
-|| [async-graphql] | `5,295.24` | `18.89` | `x` |
-|| [GraphQL JIT] | `1,125.86` | `88.57` | `x` |
-|| [Gqlgen] | `1,119.15` | `98.09` | `x` |
-|| [Apollo GraphQL] | `867.14` | `115.80` | `x` |
-|| [Netflix DGS] | `816.15` | `157.29` | `x` |
-|| [Hasura] | `473.38` | `213.40` | `x` |
+|| [Caliban] | `5,566.02` | `18.03` | `x` |
+|| [async-graphql] | `5,264.75` | `18.99` | `x` |
+|| [GraphQL JIT] | `1,125.53` | `88.67` | `x` |
+|| [Gqlgen] | `1,098.04` | `99.92` | `x` |
+|| [Apollo GraphQL] | `839.73` | `119.55` | `x` |
+|| [Netflix DGS] | `819.10` | `151.77` | `x` |
+|| [Hasura] | `419.16` | `239.86` | `x` |
 || [Tailcall] | `0.00` | `0.00` | `x` |
 | 3 | `{ greet }` |
-|| [Caliban] | `46,678.90` | `2.08` | `x` |
-|| [Gqlgen] | `25,588.20` | `5.04` | `x` |
-|| [async-graphql] | `25,539.30` | `3.90` | `x` |
-|| [GraphQL JIT] | `4,555.71` | `21.90` | `x` |
-|| [Netflix DGS] | `4,201.54` | `28.80` | `x` |
-|| [Apollo GraphQL] | `3,919.15` | `29.48` | `x` |
-|| [Hasura] | `1,620.70` | `64.15` | `x` |
+|| [Caliban] | `47,146.60` | `2.06` | `x` |
+|| [Gqlgen] | `24,837.10` | `5.10` | `x` |
+|| [async-graphql] | `24,415.70` | `4.09` | `x` |
+|| [GraphQL JIT] | `4,525.89` | `22.01` | `x` |
+|| [Netflix DGS] | `4,208.82` | `28.61` | `x` |
+|| [Apollo GraphQL] | `3,828.18` | `29.96` | `x` |
+|| [Hasura] | `1,594.58` | `64.39` | `x` |
 || [Tailcall] | `0.00` | `0.00` | `x` |
 
 <!-- PERFORMANCE_RESULTS_END -->
