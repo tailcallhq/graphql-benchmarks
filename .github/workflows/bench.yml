@@ -39,10 +39,13 @@ jobs:
         uses: devcontainers/ci@v0.3
         with:
           imageName: graphql-benchmarks
-          push: never
+          push: always
           runCmd: |
-            bash ./graphql/${{ matrix.service }}/setup.sh
-            bash run_benchmarks.sh ${{ matrix.service }}
+      
+      - name: Run Benchmarks
+        run: |
+          bash ./graphql/${{ matrix.service }}/setup.sh
+          bash run_benchmarks.sh ${{ matrix.service }}
 
       - name: List benchmark files
         run: |
