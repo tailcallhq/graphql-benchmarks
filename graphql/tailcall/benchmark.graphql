@@ -10,7 +10,7 @@ schema
 }
 
 type Query {
-  posts: [Post] @http(path: "/posts")
+  posts: [Post] @http(path: "/posts", dedupe: true)
   greet: String! @expr(body: "Hello World!")
 }
 
