@@ -24,3 +24,6 @@ graphql/gqlgen/main
 tailcall-src
 
 metals.*
+
+analyze/*
+analyze.js
