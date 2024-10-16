@@ -55,7 +55,7 @@ jobs:
           ls -la bench*.txt || echo "No matching files found"
 
       - name: Upload benchmark results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: benchmark-results
           path: bench*.txt
@@ -68,7 +68,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download all benchmark results
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: benchmark-results
           path: .
