@@ -28,5 +28,5 @@ type Post {
   userId: Int!
   title: String!
   body: String!
-  user: User @http(path: "/users/{{value.userId}}", dedupe: true)
+  user: User @http(url: "http://jsonplaceholder.typicode.com/users/{{value.userId}}", dedupe: true)
 }
