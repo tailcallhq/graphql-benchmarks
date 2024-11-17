@@ -63,7 +63,6 @@ jobs:
 
   analyze:
     needs: build
-    runs-on: benchmarking-runner
     steps:
       - name: Checkout (GitHub)
         uses: actions/checkout@v4
