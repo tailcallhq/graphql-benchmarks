@@ -8,6 +8,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@tailcallhq/tailcall": "0.129.2"
+    "@tailcallhq/tailcall": "0.130.0"
   }
 }
