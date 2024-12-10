@@ -6,7 +6,6 @@ RUN apt-get update && apt-get install -y \
   build-essential \
   libssl-dev \
   pkg-config \
-  nginx \
   openjdk-17-jdk \
   git \
   curl \
@@ -24,6 +23,14 @@ RUN curl -L https://deb.nodesource.com/nsolid_setup_deb.sh | bash -s -- 18 && \
 # Install Go
 RUN wget https://dl.google.com/go/go1.21.1.linux-amd64.tar.gz -O- | tar xz -C /usr/local
 ENV PATH=$PATH:/usr/local/go/bin
+
+# Install Openresty
+RUN apt-get update && \
+    apt-get -y install --no-install-recommends wget gnupg ca-certificates lsb-release && \
+    wget -O - https://openresty.org/package/pubkey.gpg | gpg --dearmor -o /usr/share/keyrings/openresty.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/openresty.gpg] http://openresty.org/package/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/openresty.list && \
+    apt-get update && \
+    apt-get -y install --no-install-recommends openresty
 
 # Nginx configurations
 RUN mkdir -p /var/cache/nginx-cache \
