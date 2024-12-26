@@ -6,7 +6,7 @@ toolchain go1.23.4
 
 require (
 	github.com/99designs/gqlgen v0.17.61
-	github.com/vektah/gqlparser/v2 v2.5.20
+	github.com/vektah/gqlparser/v2 v2.5.21
 	github.com/vikstrous/dataloadgen v0.0.6
 )
 
