@@ -8,6 +8,12 @@ lazy val root = (project in file("."))
     name       := "scala-caliban",
     run / fork := true,
     run / javaOptions ++= Seq("-Xms4G", "-Xmx4G"),
+    assembly / mainClass := Some("Main"),
+    assembly / assemblyMergeStrategy := {
+      case PathList("META-INF", "MANIFEST.MF")                  => MergeStrategy.discard
+      case PathList("META-INF", "io.netty.versions.properties") => MergeStrategy.first
+      case x                                                    => MergeStrategy.first
+    },
     libraryDependencies ++= Seq(
       "com.github.ghostdogpr"                 %% "caliban-quick"         % "2.9.0",
       "com.github.plokhotnyuk.jsoniter-scala" %% "jsoniter-scala-core"   % "2.32.0",

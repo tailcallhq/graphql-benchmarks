@@ -2,5 +2,5 @@
 
 # For caliban
 cd graphql/caliban
-./sbt compile
+./sbt assembly
 cd ../../
