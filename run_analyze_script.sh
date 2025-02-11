@@ -2,6 +2,7 @@
 
 # Update and install gnuplot
 sudo apt-get update && sudo apt-get install -y gnuplot
+npm install
 
 # Remove existing results file
 rm -f results.md
@@ -12,8 +13,9 @@ services=("apollo" "caliban" "netflixdgs" "gqlgen" "tailcall" "async_graphql" "h
 for bench in 1 2 3; do
     echo "Processing files for bench${bench}:"
     
-    # Construct the command for each benchmark
-    cmd="bash analyze.sh"
+    tsc analyze.ts
+	# Construct the command for each benchmark
+	cmd="node analyze.js"
     
     # Loop through each service 
     for service in "${services[@]}"; do
