@@ -18,7 +18,7 @@ repositories {
 dependencyManagement {
     imports {
         mavenBom "com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:9.2.2"
-        mavenBom "io.projectreactor:reactor-bom:2023.0.14"
+        mavenBom "io.projectreactor:reactor-bom:2024.0.3"
     }
 }
 
