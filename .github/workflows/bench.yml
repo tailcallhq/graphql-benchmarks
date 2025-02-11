@@ -48,8 +48,14 @@ jobs:
           imageName: ghcr.io/tailcallhq/graphql-benchmark
           push: always
           runCmd: |
-            bash ./graphql/${{ matrix.service }}/setup.sh
-            bash run_benchmarks.sh ${{ matrix.service }}
+
+            bash ./graphql/${{ matrix.service }}/setup.sha
+
+            npm install
+            sudo npm install -g typescript
+
+            tsc run_benchmarks.tx
+            node run_benchmarks.js ${{ matrix.service }}
 
       - name: List benchmark files
         run: |
