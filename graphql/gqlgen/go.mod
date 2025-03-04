@@ -2,7 +2,7 @@ module example.com/gqlgen-users
 
 go 1.22.5
 
-toolchain go1.23.5
+toolchain go1.24.1
 
 require (
 	github.com/99designs/gqlgen v0.17.64
